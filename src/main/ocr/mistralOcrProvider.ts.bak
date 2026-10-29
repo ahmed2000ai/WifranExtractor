@@ -1,0 +1,247 @@
+import { readFileSync } from 'fs'
+import { loadEnvConfig } from '../config/env'
+import { normalizeOcrExtractionResponse } from '../../shared/utils/ocrNormalization'
+import { saveOcrDebugData } from './ocrDebugStorage'
+import { buildWifranLeafletExtractionPrompt, buildWifranDocumentAnnotationFormat } from './ocrPromptBuilder'
+import type { OcrChunkInput, OcrExtractedDocument, OcrProvider } from './ocrTypes'
+
+export class MistralOcrProvider implements OcrProvider {
+  async extractOffersFromChunk(input: OcrChunkInput): Promise<OcrExtractedDocument> {
+    const rawConfig = loadEnvConfig()
+    const apiKey = rawConfig.mistral.apiKey
+    
+    if (!apiKey) {
+      throw new Error('MISSING_MISTRAL_API_KEY: Mistral API key is not configured.')
+    }
+
+    const { Mistral } = await import('@mistralai/mistralai')
+    const mistral = new Mistral({ apiKey })
+
+    // Read PDF file as Base64 Data URI
+    let pdfBuffer: Buffer
+    try {
+      pdfBuffer = readFileSync(input.chunkPdfPath)
+    } catch (e: any) {
+      throw new Error(`OCR_FILE_READ_ERROR: Could not read chunk PDF from ${input.chunkPdfPath}`)
+    }
+
+    const base64Pdf = pdfBuffer.toString('base64')
+    const documentUrl = `data:application/pdf;base64,${base64Pdf}`
+
+    const prompt = buildWifranLeafletExtractionPrompt({
+      originalPageNumbers: input.originalPageNumbers
+    })
+    const format = buildWifranDocumentAnnotationFormat()
+
+    let response: any
+    try {
+      const mistralResponse = await fetch(rawConfig.mistral.ocrEndpoint || 'https://api.mistral.ai/v1/ocr', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: rawConfig.mistral.ocrModel || 'mistral-ocr-latest',
+          document: {
+            type: 'document_url',
+            document_url: documentUrl
+          },
+          document_annotation_prompt: prompt,
+          document_annotation_format: format,
+          extract_header: false,
+          extract_footer: false,
+          include_image_base64: false
+        })
+      })
+      
+      if (!mistralResponse.ok) {
+        const errText = await mistralResponse.text()
+        throw new Error(`HTTP ${mistralResponse.status}: ${errText}`)
+      }
+      
+      response = await mistralResponse.json()
+    } catch (e: any) {
+      console.error('[MistralOcrProvider] Mistral API call failed:', e)
+      throw new Error(`OCR_API_ERROR: Mistral request failed: ${e.message}`)
+    }
+
+    console.log('[DEBUG] Mistral SDK Response:', JSON.stringify(response, null, 2))
+
+    // Parse document_annotation
+    // In Mistral OCR API, the response structure usually has:
+    // response.pages[].documentAnnotation or response.documentAnnotation (if not per-page)
+    // Actually, it usually responds with `pages` array containing `markdown`.
+    // Wait! If document_annotation_format is used, the response contains `document_annotation` or `documentAnnotation` at the root, or inside `pages`.
+    // Let's check both possibilities.
+    let rawAnnotation: unknown = null
+
+    // Look at root first
+    if (response.documentAnnotation) {
+      rawAnnotation = response.documentAnnotation
+    } else if (response.document_annotation) {
+      rawAnnotation = response.document_annotation
+    } else if (response.pages && response.pages.length > 0) {
+      // Sometimes it's inside the first page or concatenated
+      for (const p of response.pages) {
+        if (p.documentAnnotation || p.document_annotation) {
+          rawAnnotation = p.documentAnnotation || p.document_annotation
+          break
+        }
+      }
+    }
+
+    if (!rawAnnotation) {
+      // Fallback: maybe mistral ignored annotation format and returned raw markdown or JSON block in `markdown`
+      if (response.pages && response.pages.length > 0) {
+        const text = response.pages.map((p: any) => p.markdown || '').join('\n')
+        // Try extracting JSON
+        const jsonMatch = text.match(/```json\s*([\s\S]*?)\s*```/)
+        if (jsonMatch) {
+          try {
+            rawAnnotation = JSON.parse(jsonMatch[1])
+          } catch {}
+        } else {
+          try {
+            rawAnnotation = JSON.parse(text)
+          } catch {}
+        }
+      }
+    }
+
+    if (!rawAnnotation) {
+      throw new Error('OCR_EMPTY_RESPONSE: Could not find document annotation in OCR response.')
+    }
+
+    let parsedAnnotation: any
+    if (typeof rawAnnotation === 'string') {
+      try {
+        parsedAnnotation = JSON.parse(rawAnnotation)
+      } catch (e) {
+        throw new Error('OCR_JSON_PARSE_ERROR: Failed to parse document annotation string as JSON.')
+      }
+    } else if (typeof rawAnnotation === 'object' && rawAnnotation !== null) {
+      parsedAnnotation = rawAnnotation
+    } else {
+      throw new Error('OCR_JSON_PARSE_ERROR: Invalid document annotation type.')
+    }
+
+    // Map image_id back to bounding_box BEFORE normalization
+    if (response.pages && response.pages.length > 0 && parsedAnnotation.items) {
+      // 1. Force fix missing image_id using Markdown proximity
+      for (const p of response.pages) {
+        if (!p.markdown) continue
+        
+        const expectedPage = input.originalPageNumbers[p.index] || (p.index + 1)
+        // DEBUG: write markdown to file
+        const fs = require('fs')
+        fs.writeFileSync(`tests/ocr-crop/test-output/page-${expectedPage}-markdown.txt`, p.markdown)
+
+        const normalizedMd = p.markdown.replace(/\s+/g, ' ')
+        
+        for (const item of parsedAnnotation.items) {
+          const expectedPage = input.originalPageNumbers[p.index] || (p.index + 1)
+          if (response.pages.length > 1 && item.page_number !== expectedPage && item.page_number !== (p.index + 1)) continue
+          
+          // Always ignore LLM-assigned image_id as it often hallucinates and misaligns images.
+          // Rely on our markdown parsing heuristic to map the product to the correct image block.
+          const originalImageId = item.image_id
+          item.image_id = null
+
+          if (!item.image_id) {
+            const searchStr = item.product_name_ar || item.product_name_en
+            if (searchStr) {
+              const normalizedSearch = searchStr.replace(/\s+/g, ' ')
+              let idx = normalizedMd.indexOf(normalizedSearch)
+              if (idx === -1) {
+                const firstWord = searchStr.split(' ')[0]
+                if (firstWord && firstWord.length > 2) {
+                  idx = normalizedMd.indexOf(firstWord)
+                }
+              }
+              if (idx !== -1) {
+                const substring = normalizedMd.substring(0, idx)
+                const matches = [...substring.matchAll(/!\[(img-\d+\.jpeg)\]/g)]
+                if (matches.length > 0) {
+                  item.image_id = matches[matches.length - 1][1]
+                }
+              }
+            }
+          }
+          
+          if (!item.image_id) {
+            item.image_id = originalImageId
+          }
+        }
+      }
+
+      // 2. Fallback for missing bounding boxes
+      for (const p of response.pages) {
+        if (!p.images || p.images.length === 0 || !p.dimensions) continue
+        
+        const dim = p.dimensions
+        const imagesOnPage = p.images
+
+        for (const item of parsedAnnotation.items) {
+          const expectedPage = input.originalPageNumbers[p.index] || (p.index + 1)
+          if (response.pages.length > 1 && item.page_number !== expectedPage && item.page_number !== (p.index + 1)) continue
+          
+          if (Array.isArray(item.bounding_box) && item.bounding_box.length === 4) {
+            const [ymin, xmin, ymax, xmax] = item.bounding_box
+            item.bounding_box = {
+              x: xmin / 1000,
+              y: ymin / 1000,
+              width: (xmax - xmin) / 1000,
+              height: (ymax - ymin) / 1000
+            }
+          } else if (!item.bounding_box && item.image_id) {
+            const img = imagesOnPage.find((i: any) => i.id === item.image_id)
+            if (img) {
+              item.bounding_box = {
+                x: img.top_left_x / dim.width,
+                y: img.top_left_y / dim.height,
+                width: (img.bottom_right_x - img.top_left_x) / dim.width,
+                height: (img.bottom_right_y - img.top_left_y) / dim.height
+              }
+            }
+          }
+        }
+
+      }
+    }
+
+    const normalizationResult = normalizeOcrExtractionResponse(parsedAnnotation)
+
+    const debugPath = await saveOcrDebugData(
+      input.workspacePath,
+      input.chunkId,
+      response,
+      parsedAnnotation,
+      normalizationResult.rows
+    )
+
+    let usageInfo: any = response.usage || response.usage_info || response.token_usage || response.pages_processed || null;
+    let _rawTokens: number | undefined;
+
+    if (usageInfo) {
+      if (typeof usageInfo.total_tokens === 'number') _rawTokens = usageInfo.total_tokens;
+      else if (typeof usageInfo.prompt_tokens === 'number' && typeof usageInfo.completion_tokens === 'number') {
+        _rawTokens = usageInfo.prompt_tokens + usageInfo.completion_tokens;
+      }
+    }
+
+    return {
+      provider: 'mistral',
+      model: rawConfig.mistral.ocrModel || 'mistral-ocr-latest',
+      chunkId: input.chunkId,
+      originalPageNumbers: input.originalPageNumbers,
+      rawResponse: response,
+      rawDocumentAnnotation: parsedAnnotation,
+      items: normalizationResult.items,
+      normalizedRows: normalizationResult.rows,
+      usageInfo,
+      _rawTokens,
+      debugFilePath: debugPath
+    }
+  }
+}

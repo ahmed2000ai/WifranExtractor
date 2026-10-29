@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "id": "city-scope-riyadh-offer",
+  "description": "City-scoped offer for Riyadh – appears only for matching city, hidden for others",
+  "supermarket_slug": "panda",
+
+  "source": {
+    "page_number": 11,
+    "item_number": "013",
+    "notes": ["City-scoped to city-riyadh only"]
+  },
+
+  "trusted_context": {
+    "supermarket_id": "sm-panda",
+    "supermarket_slug": "panda",
+    "location_scope": "city",
+    "city_id": "city-riyadh",
+    "region_id": null,
+    "offer_start_date": "2026-06-01",
+    "offer_end_date": "2026-12-31"
+  },
+
+  "inputs": {
+    "raw_mistral_response": {
+      "name_en": "Local Bread",
+      "name_ar": "خبز محلي",
+      "offer_price": 5,
+      "original_price": 8,
+      "currency": "SAR",
+      "size": "500g",
+      "brand": "Bakery"
+    }
+  },
+
+  "expected": {
+    "blocking_error_codes": [],
+
+    "comparison": {
+      "comparison_eligible": true,
+      "comparison_unit": "kilogram",
+      "comparison_unit_price": 10.0,
+      "tolerance": 0.05
+    },
+
+    "decision": {
+      "publish_decision": "publish",
+      "should_upsert_db": true,
+      "should_upload_image": true,
+      "status_for_db": "published"
+    },
+
+    "utilization": {
+      "appears_for_city_ids": ["city-riyadh"],
+      "hidden_for_city_ids": ["city-jeddah", "city-dammam", "city-mecca", "city-medina"],
+      "included_in_search": true,
+      "included_in_best_unit_price_ranking": true,
+      "excluded_from_comparison": false
+    }
+  }
+}

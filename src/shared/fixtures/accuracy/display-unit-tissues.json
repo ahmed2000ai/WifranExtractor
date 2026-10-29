@@ -1,0 +1,19 @@
+{
+  "name": "display-unit-tissues",
+  "description": "100 tissues chooses 10 pieces display basis",
+  "raw_ocr_json": {
+    "name_en": "Tissues",
+    "offer_price": 10,
+    "currency": "SAR",
+    "size": "100pcs"
+  },
+  "expected": {
+    "publish_decision": "publish",
+    "display": {
+      "show_display_unit_price": true,
+      "display_unit_basis_value": 100,
+      "display_unit_basis_unit": "piece",
+      "display_unit_price": 5.0
+    }
+  }
+}

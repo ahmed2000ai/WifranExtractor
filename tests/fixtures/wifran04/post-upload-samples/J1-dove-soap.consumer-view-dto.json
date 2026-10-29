@@ -1,0 +1,148 @@
+{
+  "source_offer_id": "tamimi-national-national-2026-10-20:p001:i012:s01",
+  "leaflet_id": null,
+  "supermarket_id": "c2cc16c2-0005-4444-b000-c00000000005",
+  "supermarket_slug": "tamimi",
+  "location_scope": "national",
+  "city_id": null,
+  "region_id": null,
+  "valid_from": "2026-10-14",
+  "valid_to": "2026-10-20",
+  "temporal_lifecycle_state": "active",
+  "title_ar": "صابون دوف للاستحمام ١٢٥ جرام ٥+١ مجانا منوع",
+  "title_en": "Dove Soap 125Gm 5+1 Free Asstd.",
+  "normalized_title_ar": "صابون دوف للاستحمام ٥+١",
+  "normalized_title_en": "Dove Soap 5+1 Asstd.",
+  "brand_name": "Dove",
+  "category_slug": "personal-care",
+  "derived_subcategory_slug": "bath_soap",
+  "derived_subcategory": "bath_soap",
+  "commodity_tag": "bath_soap",
+  "item_domain": "personal_care",
+  "product_attributes": {
+    "model": {
+      "state": "not_applicable",
+      "value": null,
+      "provenance": null
+    },
+    "scent": {
+      "state": "unknown",
+      "value": null,
+      "provenance": null
+    },
+    "flavor": {
+      "state": "not_applicable",
+      "value": null,
+      "provenance": null
+    },
+    "fat_level": {
+      "state": "not_applicable",
+      "value": null,
+      "provenance": null
+    },
+    "dimensions": {
+      "state": "not_applicable",
+      "value": null,
+      "provenance": null
+    },
+    "power_watts": {
+      "state": "not_applicable",
+      "value": null,
+      "provenance": null
+    },
+    "product_form": {
+      "state": "supported",
+      "value": "bar",
+      "provenance": "title_heuristic"
+    },
+    "milk_processing_type": {
+      "state": "not_applicable",
+      "value": null,
+      "provenance": null
+    }
+  },
+  "offer_price": "25.00",
+  "original_price": "42.99",
+  "source_reported_original_price": "42.99",
+  "verified_non_member_price": null,
+  "currency": "SAR",
+  "price_basis": "per_pack",
+  "sale_unit": "pack",
+  "inner_count": 6,
+  "is_indivisible_sale_unit": true,
+  "size_text": null,
+  "total_content_value": 750,
+  "total_content_unit": "gram",
+  "promotion_mechanic": "bonus_pack",
+  "special_offer_tag": "5+1 Free",
+  "bonus_wording": "5+1 Free",
+  "bonus_fulfillment": "unresolved",
+  "loyalty_requirement": "required",
+  "is_loyalty_required": true,
+  "assortment_status": "indicated_with_conflict",
+  "exact_identity_status": "unresolved",
+  "reason_codes": [
+    "COORDINATE_SYSTEM_UNDECLARED",
+    "ASSORTMENT_FLAG_CONFLICT",
+    "EXACT_VARIANT_NOT_ESTABLISHED",
+    "BONUS_FULFILLMENT_NOT_ESTABLISHED",
+    "LOYALTY_REQUIRED",
+    "CHANNEL_UNKNOWN",
+    "PRICE_EVIDENCE_INCOMPLETE",
+    "CONFIDENCE_SCOPE_CONFLICT"
+  ],
+  "display_unit_price": 3.33,
+  "display_unit_price_label_ar": "3.33 ر.س / 100 جم",
+  "display_unit_price_label_en": "SAR 3.33 / 100g",
+  "image_url": "https://cdn.wifran.com/leaflets/2026/Alwafa_Test_p001_012.webp",
+  "thumbnail_url": "https://cdn.wifran.com/leaflets/2026/Alwafa_Test_p001_012-thumb.webp",
+  "image_subject_scope": "representative_assortment",
+  "card_image_subject_scope": "representative_assortment",
+  "thumbnail_subject_scope": "representative_assortment",
+  "card_image_upload_state": "uploaded",
+  "thumbnail_upload_state": "uploaded",
+  "quantity_semantics": {
+    "sale_unit": "pack",
+    "inner_count": 6,
+    "is_indivisible_sale_unit": true,
+    "each_size_value": 125,
+    "each_size_unit": "gram",
+    "total_content_value": 750,
+    "total_content_unit": "gram"
+  },
+  "eligibility": {
+    "loyalty_requirement": "required",
+    "sales_channel": "unknown",
+    "quantity_limit_value": null,
+    "quantity_limit_unit": null,
+    "quantity_limit_scope": null
+  },
+  "capabilities": {
+    "save_to_list": "supported",
+    "offer_display": "supported",
+    "unit_price_calculation": "supported",
+    "selected_offer_subtotal": "supported",
+    "exact_product_comparison": "conditional",
+    "automatic_list_fulfillment": "needs_review"
+  },
+  "assessments": {
+    "capabilities": {
+      "save_to_list": "supported",
+      "offer_display": "supported",
+      "unit_price_calculation": "supported",
+      "selected_offer_subtotal": "supported",
+      "exact_product_comparison": "conditional",
+      "automatic_list_fulfillment": "needs_review"
+    },
+    "reason_codes": [
+      "COORDINATE_SYSTEM_UNDECLARED",
+      "ASSORTMENT_FLAG_CONFLICT",
+      "EXACT_VARIANT_NOT_ESTABLISHED",
+      "BONUS_FULFILLMENT_NOT_ESTABLISHED",
+      "LOYALTY_REQUIRED",
+      "CHANNEL_UNKNOWN",
+      "PRICE_EVIDENCE_INCOMPLETE",
+      "CONFIDENCE_SCOPE_CONFLICT"
+    ]
+  }
+}

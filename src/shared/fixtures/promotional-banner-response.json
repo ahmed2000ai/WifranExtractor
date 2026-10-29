@@ -1,0 +1,13 @@
+{
+  "items": [
+    {
+      "row_id": "promo_banner_001",
+      "description_en": "Special Offer Mega Festival!",
+      "offer_price": null,
+      "original_price": null,
+      "brand_name_en": "Supermarket",
+      "category_name_en": "Promotional",
+      "confidence": 0.8
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "pack-8x135g",
+  "description": "8 x 135g pack",
+  "raw_ocr_json": {
+    "name_en": "Snack Pack",
+    "offer_price": 12,
+    "currency": "SAR",
+    "size": "135g",
+    "pack_quantity": 8
+  },
+  "expected": {
+    "blocking_error_codes": [],
+    "warning_codes": ["missing_original_price"],
+    "comparison_eligible": true,
+    "publish_decision": "publish"
+  }
+}

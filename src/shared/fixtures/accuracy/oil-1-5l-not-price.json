@@ -1,0 +1,18 @@
+{
+  "name": "oil-1-5l-not-price",
+  "description": "1.5L must be content size, not offer price",
+  "raw_ocr_json": {
+    "name_en": "Cooking Oil",
+    "offer_price": 1.5,
+    "currency": "SAR",
+    "size": "1.5L"
+  },
+  "expected": {
+    "blocking_error_codes": [
+      "offer_price_matches_size_value"
+    ],
+    "warning_codes": [],
+    "comparison_eligible": false,
+    "publish_decision": "skip_or_quarantine"
+  }
+}

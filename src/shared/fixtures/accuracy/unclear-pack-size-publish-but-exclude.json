@@ -1,0 +1,17 @@
+{
+  "name": "unclear-pack-size-publish-but-exclude",
+  "description": "Unclear pack size excludes from comparison",
+  "raw_ocr_json": {
+    "name_en": "Biscuits",
+    "offer_price": 15,
+    "original_price": 20,
+    "currency": "SAR",
+    "size": ""
+  },
+  "expected": {
+    "blocking_error_codes": [],
+    "warning_codes": [],
+    "comparison_eligible": false,
+    "publish_decision": "publish_but_exclude_from_comparison"
+  }
+}

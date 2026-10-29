@@ -1,0 +1,82 @@
+export function buildWifranLeafletExtractionPrompt(input: { originalPageNumbers: number[] }): string {
+  const pageNumbersStr = input.originalPageNumbers.join(', ')
+  
+  return `
+You are extracting grocery product offers from a Saudi supermarket promotional leaflet (Othaim / العثيم).
+
+RULES:
+- Return only valid JSON matching the schema. No markdown, no explanation, no prose.
+- Extract each product-offer block as one item row.
+- A product-offer block consists of: a product photo, the product name (Arabic and/or English), the offer price (bold number), optionally the old/original price (crossed out), pack size, discount badge, and brand name.
+- EVERY real product MUST have an offer_price. Read the large bold number on or near the colored price tag below each product image. If you cannot read it, set offer_price to null but still include the item.
+- Products come in DIFFERENT SIZES on the page. Some items occupy a full column width or half the page; others are small grid cells. Extract ALL of them regardless of size.
+- The image_id MUST be the product photo (e.g. a food package, cleaning bottle, etc.), NOT the supermarket logo, NOT a discount badge, NOT a decorative graphic, NOT a category banner.
+- Associate nearby price, old price, discount badge, product image, product name, pack size, and notes into one item row.
+- Do not create separate rows for: prices alone, old prices alone, discount badges alone, SKU/item codes alone, branch notes alone, Or/أو labels alone.
+- If a price is above a product image and the name is below the image, treat them as one product offer block.
+- If a discount badge such as 1+1 or 1+2 is attached to a product, store it in discount_text.
+- If a discount badge appears alone without a product, ignore it.
+- If an Or/أو badge connects alternative products in the same offer area, capture it in notes_ar or discount_text; do not create an Or/أو row.
+- Ignore campaign banners, cover graphics, page headers, page footers, supermarket logos, sponsor logos, date badges, decorative graphics, and generic promotion slogans unless they are part of a specific product offer item.
+- Do not create rows from text like عروض تزين عيدك or هنا التوفير or خيارات أكثر unless attached to a specific product offer.
+- Use null for unknown optional values.
+- Use 1-indexed original PDF page numbers.
+- The original PDF page numbers in this request are: ${pageNumbersStr}.
+- Include the markdown image ID (e.g. img-0.jpeg) of the main product image as image_id.
+- You MUST provide the bounding_box for each item. The bounding_box MUST encompass the ENTIRE product offer (the product packaging AND the price tag).
+- DO NOT output the bounding box of just a small discount badge or a logo. If unsure, provide the bounding box of the main product photo.
+`
+}
+
+export function buildWifranDocumentAnnotationFormat(): unknown {
+  return {
+    "type": "json_schema",
+    "json_schema": {
+      "name": "wifran_offers",
+      "schema": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "row_id": { "type": "string" },
+                "page_number": { "type": "integer" },
+                "product_name_ar": { "type": ["string", "null"] },
+                "product_name_en": { "type": ["string", "null"] },
+                "brand_name_ar": { "type": ["string", "null"] },
+                "brand_name_en": { "type": ["string", "null"] },
+                "category_name_ar": { "type": ["string", "null"] },
+                "category_name_en": { "type": ["string", "null"] },
+                "description_ar": { "type": ["string", "null"] },
+                "description_en": { "type": ["string", "null"] },
+                "offer_price": { "type": ["number", "string", "null"] },
+                "original_price": { "type": ["number", "string", "null"] },
+                "discount_text": { "type": ["string", "null"] },
+                "pack_size_value": { "type": ["number", "string", "null"] },
+                "pack_size_unit": { "type": ["string", "null"] },
+                "pack_quantity": { "type": ["number", "string", "null"] },
+                "notes_ar": { "type": ["string", "null"] },
+                "image_id": { "type": ["string", "null"] },
+                "bounding_box": {
+                  "type": ["object", "null"],
+                  "properties": {
+                    "x": { "type": "number" },
+                    "y": { "type": "number" },
+                    "width": { "type": "number" },
+                    "height": { "type": "number" }
+                  },
+                  "required": ["x", "y", "width", "height"]
+                }
+              },
+              "required": ["page_number"]
+            }
+          }
+        },
+        "required": ["items"],
+        "additionalProperties": false
+      }
+    }
+  }
+}

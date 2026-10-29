@@ -1,0 +1,41 @@
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+keys/
+
+# Local Processing, Leaflets & Large Extracts
+Extracts/
+Extracts_QA/
+Leaflets/
+*.pdf
+training-data/
+training_data/
+ocr-test-output/
+tmp/
+release/
+json/
+metadata/
+
+# Dependencies & Python Runtimes
+node_modules/
+.ml-runtime/
+venv/
+.venv/
+
+# Build caches & outputs
+dist/
+out/
+*.tsbuildinfo
+electron.vite.config.*.mjs
+
+# Local debug & temporary files
+files.txt
+scratch-*.js
+test-*.ts
+test_query.ts
+mistral-ocr-test.json
+
+# System files
+.DS_Store
+Thumbs.db

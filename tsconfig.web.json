@@ -1,0 +1,27 @@
+{
+  "extends": "@electron-toolkit/tsconfig/tsconfig.web.json",
+  "include": [
+    "src/renderer/src/**/*",
+    "src/preload/index.d.ts",
+    "src/shared/**/*"
+  ],
+  "exclude": [
+    "src/shared/utils/__tests__/**/*",
+    "src/shared/utils/__tests__/wifran04ContractUpgrade.test.ts",
+    "src/shared/utils/__tests__/wifran07aIntegrationAcceptance.test.ts",
+    "src/shared/utils/__tests__/wifran07bPostgresFreezeVerification.test.ts"
+  ],
+  "compilerOptions": {
+    "composite": true,
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@renderer/*": [
+        "src/renderer/src/*"
+      ],
+      "@shared/*": [
+        "src/shared/*"
+      ]
+    }
+  }
+}

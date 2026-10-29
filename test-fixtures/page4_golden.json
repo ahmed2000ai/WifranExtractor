@@ -1,0 +1,231 @@
+{
+  "is_loyalty_page": true,
+  "loyalty_program_name": "Iktissab",
+  "validity_start_date": "2026-06-10",
+  "validity_end_date": "2026-06-16",
+  "ignored_banners": [
+    "Center vertical gold Iktissab / اكتساب QR code mobile app download banner"
+  ],
+  "offers": [
+    {
+      "offer_number": 1,
+      "arabic_title": "جبن المراعي فيتا كامل الدسم 400 جم",
+      "english_title": "Almarai Feta Cheese Full Cream 400g",
+      "brand": "Almarai",
+      "is_multi_brand_or_variant": false,
+      "size_value": "400g",
+      "unit_type": "Each / للحبة",
+      "promo_price": 9.95,
+      "original_price": 14.5,
+      "promo_condition": "LOYALTY_CARD_REQUIRED",
+      "confidence": 0.98,
+      "components": {
+        "product_graphic_box": [60, 45, 230, 460],
+        "promo_price_box": [190, 320, 255, 470],
+        "original_price_box": [165, 320, 192, 470],
+        "unit_and_size_badge_box": [130, 320, 165, 470],
+        "title_text_box": [235, 45, 275, 460]
+      }
+    },
+    {
+      "offer_number": 2,
+      "arabic_title": "حليب نادك طويل الأجل كامل الدسم 12 × 1 لتر",
+      "english_title": "Nadec UHT Milk Full Cream 12x1L",
+      "brand": "Nadec",
+      "is_multi_brand_or_variant": false,
+      "size_value": "12x1L",
+      "unit_type": "Per Box / للكرتون",
+      "promo_price": 49.95,
+      "original_price": 68.0,
+      "promo_condition": "LOYALTY_CARD_REQUIRED",
+      "confidence": 0.98,
+      "components": {
+        "product_graphic_box": [60, 540, 230, 955],
+        "promo_price_box": [190, 810, 255, 960],
+        "original_price_box": [165, 810, 192, 960],
+        "unit_and_size_badge_box": [130, 810, 165, 960],
+        "title_text_box": [235, 540, 275, 955]
+      }
+    },
+    {
+      "offer_number": 3,
+      "arabic_title": "زيت عافية ذرة نقي 2 × 1.5 لتر + 500 مل",
+      "english_title": "Afia Pure Corn Oil 2x1.5L + 500ml",
+      "brand": "Afia",
+      "is_multi_brand_or_variant": false,
+      "size_value": "2x1.5L+500ml",
+      "unit_type": "Per Pack / للربطة",
+      "promo_price": 34.95,
+      "original_price": 46.95,
+      "promo_condition": "LOYALTY_CARD_REQUIRED",
+      "confidence": 0.97,
+      "components": {
+        "product_graphic_box": [290, 45, 450, 335],
+        "promo_price_box": [410, 215, 470, 340],
+        "original_price_box": [385, 215, 412, 340],
+        "unit_and_size_badge_box": [350, 215, 385, 340],
+        "title_text_box": [455, 45, 495, 335]
+      }
+    },
+    {
+      "offer_number": 4,
+      "arabic_title": "مناديل كلينكس كلاسيك 10 × 148 منديل",
+      "english_title": "Kleenex Classic Tissues 10x148s",
+      "brand": "Kleenex",
+      "is_multi_brand_or_variant": false,
+      "size_value": "10x148s",
+      "unit_type": "Per Pack / للربطة",
+      "promo_price": 22.95,
+      "original_price": 31.5,
+      "promo_condition": "LOYALTY_CARD_REQUIRED",
+      "confidence": 0.98,
+      "components": {
+        "product_graphic_box": [290, 355, 450, 645],
+        "promo_price_box": [410, 525, 470, 650],
+        "original_price_box": [385, 525, 412, 650],
+        "unit_and_size_badge_box": [350, 525, 385, 650],
+        "title_text_box": [455, 355, 495, 645]
+      }
+    },
+    {
+      "offer_number": 5,
+      "arabic_title": "مسحوق غسيل بوناكس أصلي 5 كجم",
+      "english_title": "Bonux Detergent Original 5kg",
+      "brand": "Bonux",
+      "is_multi_brand_or_variant": false,
+      "size_value": "5kg",
+      "unit_type": "Each / للحبة",
+      "promo_price": 29.95,
+      "original_price": 48.95,
+      "promo_condition": "LOYALTY_CARD_REQUIRED",
+      "confidence": 0.97,
+      "components": {
+        "product_graphic_box": [290, 665, 450, 955],
+        "promo_price_box": [410, 835, 470, 960],
+        "original_price_box": [385, 835, 412, 960],
+        "unit_and_size_badge_box": [350, 835, 385, 960],
+        "title_text_box": [455, 665, 495, 955]
+      }
+    },
+    {
+      "offer_number": 6,
+      "arabic_title": "مكرونة قودي منوعة 450 جم أو 500 جم",
+      "english_title": "Goody Pasta Assorted 450g / 500g",
+      "brand": "Goody",
+      "is_multi_brand_or_variant": true,
+      "size_value": "500g",
+      "unit_type": "Each / للحبة",
+      "promo_price": 4.95,
+      "original_price": 7.25,
+      "promo_condition": "STANDARD",
+      "confidence": 0.98,
+      "components": {
+        "product_graphic_box": [510, 45, 680, 460],
+        "promo_price_box": [640, 320, 705, 470],
+        "original_price_box": [615, 320, 642, 470],
+        "unit_and_size_badge_box": [580, 320, 615, 470],
+        "title_text_box": [685, 45, 725, 460]
+      }
+    },
+    {
+      "offer_number": 7,
+      "arabic_title": "تونة ألوها خفيفة في زيت نباتي 185 جم",
+      "english_title": "Aloha Light Meat Tuna in Vegetable Oil 185g",
+      "brand": "Aloha",
+      "is_multi_brand_or_variant": false,
+      "size_value": "185g",
+      "unit_type": "Each / للحبة",
+      "promo_price": 5.5,
+      "original_price": 8.5,
+      "promo_condition": "STANDARD",
+      "confidence": 0.98,
+      "components": {
+        "product_graphic_box": [510, 540, 680, 955],
+        "promo_price_box": [640, 810, 705, 960],
+        "original_price_box": [615, 810, 642, 960],
+        "unit_and_size_badge_box": [580, 810, 615, 960],
+        "title_text_box": [685, 540, 725, 955]
+      }
+    },
+    {
+      "offer_number": 8,
+      "arabic_title": "صابون تايد مركز أصلي 2.5 كجم",
+      "english_title": "Tide Concentrated Detergent Original 2.5kg",
+      "brand": "Tide",
+      "is_multi_brand_or_variant": false,
+      "size_value": "2.5kg",
+      "unit_type": "Each / للحبة",
+      "promo_price": "18-99",
+      "original_price": 31.95,
+      "promo_condition": "STANDARD",
+      "confidence": 0.99,
+      "components": {
+        "product_graphic_box": [740, 40, 890, 245],
+        "promo_price_box": [860, 150, 915, 250],
+        "original_price_box": [835, 150, 862, 250],
+        "unit_and_size_badge_box": [800, 150, 835, 250],
+        "title_text_box": [895, 40, 935, 245]
+      }
+    },
+    {
+      "offer_number": 9,
+      "arabic_title": "شامبو بانتين برو-في عناية ملكية 600 مل",
+      "english_title": "Pantene Pro-V Shampoo Milky Damage Repair 600ml",
+      "brand": "Pantene",
+      "is_multi_brand_or_variant": false,
+      "size_value": "600ml",
+      "unit_type": "Each / للحبة",
+      "promo_price": "16-99",
+      "original_price": 27.5,
+      "promo_condition": "STANDARD",
+      "confidence": 0.98,
+      "components": {
+        "product_graphic_box": [740, 275, 890, 480],
+        "promo_price_box": [860, 385, 915, 485],
+        "original_price_box": [835, 385, 862, 485],
+        "unit_and_size_badge_box": [800, 385, 835, 485],
+        "title_text_box": [895, 275, 935, 480]
+      }
+    },
+    {
+      "offer_number": 10,
+      "arabic_title": "حفاضات بامبرز مقاس 4 كبير 52 حفاضة",
+      "english_title": "Pampers Baby-Dry Diapers Size 4 Large 52s",
+      "brand": "Pampers",
+      "is_multi_brand_or_variant": false,
+      "size_value": "52s",
+      "unit_type": "Per Pack / للربطة",
+      "promo_price": "10-99",
+      "original_price": 19.95,
+      "promo_condition": "STANDARD",
+      "confidence": 0.97,
+      "components": {
+        "product_graphic_box": [740, 510, 890, 715],
+        "promo_price_box": [860, 620, 915, 720],
+        "original_price_box": [835, 620, 862, 720],
+        "unit_and_size_badge_box": [800, 620, 835, 720],
+        "title_text_box": [895, 510, 935, 715]
+      }
+    },
+    {
+      "offer_number": 11,
+      "arabic_title": "سائل جلي فيري ليمون 800 مل",
+      "english_title": "Fairy Lemon Dishwashing Liquid 800ml",
+      "brand": "Fairy",
+      "is_multi_brand_or_variant": false,
+      "size_value": "800ml",
+      "unit_type": "Each / للحبة",
+      "promo_price": "6-99",
+      "original_price": 12.5,
+      "promo_condition": "STANDARD",
+      "confidence": 0.99,
+      "components": {
+        "product_graphic_box": [740, 745, 890, 955],
+        "promo_price_box": [860, 855, 915, 960],
+        "original_price_box": [835, 855, 862, 960],
+        "unit_and_size_badge_box": [800, 855, 835, 960],
+        "title_text_box": [895, 745, 935, 955]
+      }
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+appId: com.wifran.offersextractor
+productName: Wifran Offers Extractor
+directories:
+  output: release
+files:
+  - "out/**"
+  - "!**/.env.local"
+  - "!**/.env.*.local"
+  - "!imports/**"
+  - "!logs/**"
+  - "!tmp/**"
+  - "!temp/**"
+  - "!debug/**"
+  - "!ocr-debug/**"
+  - "!pdf-debug/**"
+  - "!image-debug/**"
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true

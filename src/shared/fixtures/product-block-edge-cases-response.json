@@ -1,0 +1,60 @@
+{
+  "items": [
+    {
+      "row_id": "err1",
+      "page_number": 1,
+      "product_name_en": null,
+      "offer_price": 34.99,
+      "original_price": null,
+      "pack_size_value": null,
+      "is_loyalty_required": false,
+      "bounding_box": { "x": 10, "y": 20, "width": 50, "height": 30 }
+    },
+    {
+      "row_id": "err2",
+      "page_number": 1,
+      "product_name_en": null,
+      "offer_price": null,
+      "original_price": 43.95,
+      "pack_size_value": null,
+      "is_loyalty_required": false,
+      "bounding_box": { "x": 70, "y": 20, "width": 50, "height": 30 }
+    },
+    {
+      "row_id": "err3",
+      "page_number": 1,
+      "product_name_en": null,
+      "offer_price": null,
+      "discount_text": "1+2",
+      "is_loyalty_required": false,
+      "bounding_box": { "x": 130, "y": 20, "width": 50, "height": 30 }
+    },
+    {
+      "row_id": "err4",
+      "page_number": 1,
+      "product_name_en": null,
+      "offer_price": null,
+      "source_reference": "7092",
+      "is_loyalty_required": false,
+      "bounding_box": { "x": 190, "y": 20, "width": 50, "height": 30 }
+    },
+    {
+      "row_id": "err5",
+      "page_number": 1,
+      "product_name_en": null,
+      "offer_price": null,
+      "notes_en": "Selected Branches only",
+      "is_loyalty_required": false,
+      "bounding_box": { "x": 250, "y": 20, "width": 50, "height": 30 }
+    },
+    {
+      "row_id": "err6",
+      "page_number": 1,
+      "product_name_en": null,
+      "offer_price": null,
+      "notes_en": "Per Kg",
+      "is_loyalty_required": false,
+      "bounding_box": { "x": 310, "y": 20, "width": 50, "height": 30 }
+    }
+  ]
+}

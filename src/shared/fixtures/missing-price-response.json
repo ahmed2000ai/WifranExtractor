@@ -1,0 +1,11 @@
+{
+  "items": [
+    {
+      "row_id": "missing_price_001",
+      "product_name_en": "Missing Price Item",
+      "offer_price": null,
+      "original_price": 10.0,
+      "confidence": 0.95
+    }
+  ]
+}

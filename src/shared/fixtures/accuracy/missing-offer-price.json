@@ -1,0 +1,16 @@
+{
+  "name": "missing-offer-price",
+  "description": "Missing offer price blocks",
+  "raw_ocr_json": {
+    "title_en": "Product with no price",
+    "currency": "SAR"
+  },
+  "expected": {
+    "blocking_error_codes": [
+      "missing_offer_price"
+    ],
+    "warning_codes": [],
+    "comparison_eligible": false,
+    "publish_decision": "skip_or_quarantine"
+  }
+}

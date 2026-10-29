@@ -1,0 +1,17 @@
+{
+  "name": "valid-comparable-liter-offer",
+  "description": "Valid comparable liter offer",
+  "raw_ocr_json": {
+    "name_en": "Milk",
+    "offer_price": 5,
+    "original_price": 7,
+    "currency": "SAR",
+    "size": "1L"
+  },
+  "expected": {
+    "blocking_error_codes": [],
+    "warning_codes": [],
+    "comparison_eligible": true,
+    "publish_decision": "publish"
+  }
+}

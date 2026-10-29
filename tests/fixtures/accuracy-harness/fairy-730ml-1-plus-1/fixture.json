@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "id": "fairy-730ml-1-plus-1",
+  "description": "Fairy 730ml 1+1 bundle – valid BOGO offer with correct total content calculation",
+  "supermarket_slug": "othaim",
+
+  "source": {
+    "page_number": 2,
+    "item_number": "003",
+    "notes": ["730ml x 2 (1+1) = 1460ml = 1.46L total content"]
+  },
+
+  "trusted_context": {
+    "supermarket_id": "sm-othaim",
+    "supermarket_slug": "othaim",
+    "location_scope": "national",
+    "offer_start_date": "2026-06-01",
+    "offer_end_date": "2026-12-31"
+  },
+
+  "inputs": {
+    "raw_mistral_response": {
+      "name_en": "Fairy Dishwash",
+      "name_ar": "فيري سائل جلي",
+      "offer_price": 10,
+      "original_price": 21.99,
+      "currency": "SAR",
+      "size": "730ml",
+      "bundle_quantity": 2,
+      "price_condition": "1+1",
+      "brand": "Fairy"
+    }
+  },
+
+  "expected": {
+    "canonical": {
+      "title_en": "Fairy Dishwash",
+      "offer_price": 10,
+      "original_price": 21.99,
+      "size_text": "730ml",
+      "bundle_quantity": 2
+    },
+
+    "blocking_error_codes": [],
+
+    "comparison": {
+      "comparison_eligible": true,
+      "comparison_unit": "liter",
+      "comparison_unit_price": 6.85,
+      "tolerance": 0.05
+    },
+
+    "decision": {
+      "publish_decision": "publish",
+      "should_upsert_db": true,
+      "should_upload_image": true,
+      "status_for_db": "published"
+    },
+
+    "utilization": {
+      "included_in_search": true,
+      "included_in_best_unit_price_ranking": true,
+      "excluded_from_comparison": false
+    }
+  }
+}

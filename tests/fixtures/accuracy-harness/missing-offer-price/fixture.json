@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "id": "missing-offer-price",
+  "description": "Product with no offer price – must be blocked",
+  "supermarket_slug": "panda",
+
+  "source": {
+    "page_number": 9,
+    "item_number": "011",
+    "notes": ["Offer price is completely absent"]
+  },
+
+  "trusted_context": {
+    "supermarket_id": "sm-panda",
+    "supermarket_slug": "panda",
+    "location_scope": "national",
+    "offer_start_date": "2026-06-01",
+    "offer_end_date": "2026-12-31"
+  },
+
+  "inputs": {
+    "raw_mistral_response": {
+      "name_en": "Mystery Product",
+      "name_ar": "منتج غامض",
+      "currency": "SAR",
+      "size": "100g"
+    }
+  },
+
+  "expected": {
+    "blocking_error_codes": ["missing_offer_price"],
+
+    "comparison": {
+      "comparison_eligible": false
+    },
+
+    "decision": {
+      "publish_decision": "skip_or_quarantine",
+      "should_upsert_db": false,
+      "should_upload_image": false,
+      "status_for_db": "skipped"
+    },
+
+    "utilization": {
+      "included_in_search": false,
+      "included_in_best_unit_price_ranking": false,
+      "excluded_from_comparison": true
+    }
+  }
+}

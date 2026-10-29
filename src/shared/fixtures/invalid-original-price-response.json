@@ -1,0 +1,11 @@
+{
+  "items": [
+    {
+      "row_id": "invalid_original_price_001",
+      "product_name_en": "Invalid Original Price Item",
+      "offer_price": 20.0,
+      "original_price": 10.0,
+      "confidence": 0.95
+    }
+  ]
+}

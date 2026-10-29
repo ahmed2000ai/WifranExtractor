@@ -1,0 +1,17 @@
+{
+  "name": "tv-electronics-non-grocery",
+  "description": "TV electronics domain",
+  "raw_ocr_json": {
+    "title_en": "Samsung TV 55 inch",
+    "item_domain": "electronics",
+    "offer_price": 1500,
+    "currency": "SAR",
+    "size_text": "55 inch"
+  },
+  "expected": {
+    "blocking_error_codes": [],
+    "warning_codes": [],
+    "comparison_eligible": false,
+    "publish_decision": "publish_but_exclude_from_comparison"
+  }
+}

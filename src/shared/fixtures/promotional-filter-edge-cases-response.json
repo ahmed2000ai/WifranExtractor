@@ -1,0 +1,39 @@
+{
+  "items": [
+    {
+      "row_id": "real-product-1plus1",
+      "product_name_en": "Lurpak Butter 1+1 Free",
+      "offer_price": 20.0,
+      "original_price": 40.0,
+      "confidence": 0.95
+    },
+    {
+      "row_id": "real-product-lurpak",
+      "product_name_en": "Lurpak Unsalted Butter 200g",
+      "offer_price": 10.0,
+      "original_price": 15.0,
+      "confidence": 0.95
+    },
+    {
+      "row_id": "date-only-badge",
+      "description_en": "Valid from 1st Jan to 10th Jan",
+      "offer_price": null,
+      "original_price": null,
+      "confidence": 0.95
+    },
+    {
+      "row_id": "sponsor-only",
+      "description_en": "Sponsored by Lurpak",
+      "offer_price": null,
+      "original_price": null,
+      "confidence": 0.95
+    },
+    {
+      "row_id": "ambiguous-promo",
+      "product_name_en": "Mega Deals on all Dairy",
+      "offer_price": 1.0,
+      "original_price": null,
+      "confidence": 0.95
+    }
+  ]
+}

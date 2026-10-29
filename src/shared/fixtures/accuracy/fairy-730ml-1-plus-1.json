@@ -1,0 +1,18 @@
+{
+  "name": "fairy-730ml-1-plus-1",
+  "description": "730ml 1+1 bundle quantity correctly parsed",
+  "raw_ocr_json": {
+    "name_en": "Fairy Dishwash",
+    "offer_price": 25,
+    "currency": "SAR",
+    "size": "730ml",
+    "bundle_quantity": 2,
+    "price_condition": "1+1"
+  },
+  "expected": {
+    "blocking_error_codes": [],
+    "warning_codes": ["missing_original_price"],
+    "comparison_eligible": true,
+    "publish_decision": "publish"
+  }
+}

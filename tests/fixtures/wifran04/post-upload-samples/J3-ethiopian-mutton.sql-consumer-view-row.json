@@ -1,0 +1,356 @@
+{
+  "id": "5963aae9-7e18-4ac8-be61-070542b57eae",
+  "source_offer_id": "alwafa-city-jeddah-2026-10-20:p002:i002:s01",
+  "source_revision": 1,
+  "semantic_checksum": "6bf1bd37dd3348c9d0c0ed982fbcabb33dac8fee2413da561e0aa973e3d700ae",
+  "contract_version": "wifran.extractor.offer/2.0",
+  "compound_group_id": null,
+  "supersedes_source_offer_id": null,
+  "supermarket_id": "c2cc16c2-0008-4444-b000-c00000000008",
+  "supermarket_name_ar": "هايبر الوفاء",
+  "supermarket_name_en": "Hyper Alwafa",
+  "supermarket_slug": "alwafa",
+  "supermarket_code": "ALWF",
+  "supermarket_logo_url": "/images/supermarkets/alwafa.svg",
+  "location_scope": "city",
+  "city_id": "a6f7b140-0002-4444-a000-000000000002",
+  "city_name_ar": "جدة",
+  "city_name_en": "Jeddah",
+  "city_code": "JEDC",
+  "region_id": "b144b6c8-2222-4444-b000-000000000002",
+  "region_name_ar": "المنطقة الغربية",
+  "region_name_en": "Western Region",
+  "region_code": "WEST",
+  "product_id": null,
+  "exact_identity_status": "unresolved",
+  "category_id": null,
+  "category_name_ar": null,
+  "category_name_en": null,
+  "category_slug": "meat-chicken",
+  "derived_subcategory_slug": "fresh_mutton",
+  "commodity_tag": "fresh_mutton",
+  "item_domain": "grocery",
+  "brand_id": null,
+  "brand_name_ar": null,
+  "brand_name_en": null,
+  "brand_state": "unknown",
+  "brand_candidate_text": null,
+  "title_ar": "لحم الضأن الإثيوبي الطازج للكيلو",
+  "title_en": "Ethiopian Fresh Mutton Cuts Per KG",
+  "normalized_title_ar": "لحم الضأن الإثيوبي الطازج للكيلو",
+  "normalized_title_en": "Ethiopian Fresh Mutton Cuts Per KG",
+  "product_attributes": {
+    "model": {
+      "state": "not_applicable",
+      "value": null,
+      "provenance": null
+    },
+    "scent": {
+      "state": "not_applicable",
+      "value": null,
+      "provenance": null
+    },
+    "flavor": {
+      "state": "not_applicable",
+      "value": null,
+      "provenance": null
+    },
+    "origin": {
+      "state": "supported",
+      "value": "ethiopian",
+      "provenance": "title_heuristic"
+    },
+    "cut_type": {
+      "state": "supported",
+      "value": "cuts",
+      "provenance": "title_heuristic"
+    },
+    "fat_level": {
+      "state": "not_applicable",
+      "value": null,
+      "provenance": null
+    },
+    "freshness": {
+      "state": "supported",
+      "value": "fresh",
+      "provenance": "title_heuristic"
+    },
+    "dimensions": {
+      "state": "not_applicable",
+      "value": null,
+      "provenance": null
+    },
+    "bone_status": {
+      "state": "unknown",
+      "value": null,
+      "provenance": null
+    },
+    "power_watts": {
+      "state": "not_applicable",
+      "value": null,
+      "provenance": null
+    },
+    "meat_species": {
+      "state": "supported",
+      "value": "mutton",
+      "provenance": "title_heuristic"
+    },
+    "product_form": {
+      "state": "not_applicable",
+      "value": null,
+      "provenance": null
+    },
+    "milk_processing_type": {
+      "state": "not_applicable",
+      "value": null,
+      "provenance": null
+    }
+  },
+  "assortment_status": "single_product",
+  "known_options": [],
+  "sale_unit_type": "kg",
+  "inner_pack_count": null,
+  "each_size_value": "1.0000",
+  "each_size_unit": "kilogram",
+  "total_content_value": "1.0000",
+  "total_content_unit": "kilogram",
+  "is_indivisible_sale_unit": false,
+  "offer_price": "45.00",
+  "source_reported_original_price": "54.99",
+  "verified_non_member_price": null,
+  "currency": "SAR",
+  "price_basis": "per_kg",
+  "unit_price": "4.5000",
+  "unit_price_unit": "SAR 4.50 / 100g",
+  "discount_amount": null,
+  "discount_percentage": null,
+  "informational_inner_unit_price": null,
+  "display_unit_price_label_ar": "4.50 ر.س / 100 جم",
+  "display_unit_price_label_en": "SAR 4.50 / 100g",
+  "promo_mechanic": "markdown",
+  "bonus_wording": null,
+  "bonus_fulfillment": "not_applicable",
+  "is_loyalty_required": false,
+  "loyalty_requirement": "unknown",
+  "quantity_limit": null,
+  "quantity_limit_value": null,
+  "quantity_limit_unit": null,
+  "quantity_limit_scope": null,
+  "image_url": "https://cdn.wifran.com/leaflets/2026/Alwafa_Test_p002_002.webp",
+  "storage_path": "leaflets/2026/Alwafa_Test_p002_002.webp",
+  "thumbnail_url": "https://cdn.wifran.com/leaflets/2026/Alwafa_Test_p002_002-thumb.webp",
+  "thumbnail_storage_path": "leaflets/2026/Alwafa_Test_p002_002-thumb.webp",
+  "card_image_subject_scope": "offer_group",
+  "card_image_upload_state": "uploaded",
+  "thumbnail_subject_scope": "offer_group",
+  "thumbnail_upload_state": "uploaded",
+  "page_area_share_pct": null,
+  "is_front_page": false,
+  "is_hero_offer": false,
+  "deal_score": null,
+  "deal_label": null,
+  "offer_start_date": "2026-10-14T00:00:00.000Z",
+  "offer_end_date": "2026-10-20T00:00:00.000Z",
+  "valid_from": "2026-10-14T00:00:00.000Z",
+  "valid_to": "2026-10-20T00:00:00.000Z",
+  "publication_status": "published",
+  "temporal_lifecycle_state": "expired",
+  "scoped_assessments": {
+    "save_to_list": "supported",
+    "offer_display": "supported",
+    "unit_price_calculation": "supported",
+    "selected_offer_subtotal": "supported",
+    "exact_product_comparison": "needs_review",
+    "automatic_list_fulfillment": "conditional"
+  },
+  "reason_codes": [
+    "COORDINATE_SYSTEM_UNDECLARED",
+    "CHANNEL_UNKNOWN",
+    "PRICE_EVIDENCE_INCOMPLETE"
+  ],
+  "consumer_contract_v2": {
+    "assets": {
+      "offer_card": {
+        "delivery_url": "https://cdn.wifran.com/leaflets/2026/Alwafa_Test_p002_002.webp",
+        "upload_state": "uploaded",
+        "subject_scope": "offer_group",
+        "storage_bucket": "offer-crops",
+        "storage_object_path": "leaflets/2026/Alwafa_Test_p002_002.webp"
+      },
+      "product_thumbnail": {
+        "delivery_url": "https://cdn.wifran.com/leaflets/2026/Alwafa_Test_p002_002-thumb.webp",
+        "upload_state": "uploaded",
+        "subject_scope": "offer_group",
+        "storage_bucket": "offer-crops",
+        "storage_object_path": "leaflets/2026/Alwafa_Test_p002_002-thumb.webp"
+      }
+    },
+    "assortment": {
+      "status": "single_product",
+      "known_options": [],
+      "is_uniform_size": true,
+      "composition_type": "single",
+      "source_assertions": []
+    },
+    "assessments": {
+      "confidence": {
+        "identity_confidence": "medium",
+        "unit_math_confidence": "high",
+        "extraction_confidence": "high"
+      },
+      "capabilities": {
+        "save_to_list": "supported",
+        "offer_display": "supported",
+        "unit_price_calculation": "supported",
+        "selected_offer_subtotal": "supported",
+        "exact_product_comparison": "needs_review",
+        "automatic_list_fulfillment": "conditional"
+      },
+      "reason_codes": [
+        "COORDINATE_SYSTEM_UNDECLARED",
+        "CHANNEL_UNKNOWN",
+        "PRICE_EVIDENCE_INCOMPLETE"
+      ],
+      "structural_capabilities": {
+        "save_to_list": "supported",
+        "offer_display": "supported",
+        "unit_price_calculation": "supported",
+        "selected_offer_subtotal": "supported",
+        "exact_product_comparison": "needs_review",
+        "automatic_list_fulfillment": "conditional"
+      }
+    },
+    "eligibility": {
+      "loyalty": {
+        "program_id": null,
+        "requirement": "unknown",
+        "source_path": null,
+        "restriction_coverage": "not_stated_in_inspected_source"
+      },
+      "sales_channel": "unknown",
+      "quantity_limit": {
+        "unit": null,
+        "scope": null,
+        "value": null
+      }
+    },
+    "price_terms": {
+      "currency": "SAR",
+      "source_reported_offer_price": "45.00",
+      "source_reported_price_basis": "per_kg",
+      "source_reported_original_price": "54.99",
+      "verified_current_non_member_price": null
+    },
+    "product_facts": {
+      "gtin": null,
+      "attributes": {
+        "model": {
+          "state": "not_applicable",
+          "value": null,
+          "provenance": null
+        },
+        "scent": {
+          "state": "not_applicable",
+          "value": null,
+          "provenance": null
+        },
+        "flavor": {
+          "state": "not_applicable",
+          "value": null,
+          "provenance": null
+        },
+        "origin": {
+          "state": "supported",
+          "value": "ethiopian",
+          "provenance": "title_heuristic"
+        },
+        "cut_type": {
+          "state": "supported",
+          "value": "cuts",
+          "provenance": "title_heuristic"
+        },
+        "fat_level": {
+          "state": "not_applicable",
+          "value": null,
+          "provenance": null
+        },
+        "freshness": {
+          "state": "supported",
+          "value": "fresh",
+          "provenance": "title_heuristic"
+        },
+        "dimensions": {
+          "state": "not_applicable",
+          "value": null,
+          "provenance": null
+        },
+        "bone_status": {
+          "state": "unknown",
+          "value": null,
+          "provenance": null
+        },
+        "power_watts": {
+          "state": "not_applicable",
+          "value": null,
+          "provenance": null
+        },
+        "meat_species": {
+          "state": "supported",
+          "value": "mutton",
+          "provenance": "title_heuristic"
+        },
+        "product_form": {
+          "state": "not_applicable",
+          "value": null,
+          "provenance": null
+        },
+        "milk_processing_type": {
+          "state": "not_applicable",
+          "value": null,
+          "provenance": null
+        }
+      },
+      "brand_assertion": {
+        "state": "unknown",
+        "value": null,
+        "provenance": null,
+        "candidate_unverified": null
+      },
+      "verified_product_id": null,
+      "exact_identity_status": "unresolved",
+      "derived_subcategory_slug": "fresh_mutton"
+    },
+    "promotion_terms": {
+      "mechanic": "markdown",
+      "bonus_wording": null,
+      "bonus_fulfillment": "not_applicable",
+      "structured_checkout_rule": null,
+      "bonus_already_included_in_inner_count": false
+    },
+    "record_metadata": {
+      "producer_model": "wifran-extractor-2.0",
+      "schema_version": "wifran.extractor.offer/2.0",
+      "source_offer_id": "alwafa-city-jeddah-2026-10-20:p002:i002:s01",
+      "source_revision": 1,
+      "compound_group_id": null,
+      "semantic_checksum": "6bf1bd37dd3348c9d0c0ed982fbcabb33dac8fee2413da561e0aa973e3d700ae",
+      "supersedes_source_offer_id": null
+    },
+    "quantity_semantics": {
+      "sale_unit": "kg",
+      "inner_count": null,
+      "total_content": {
+        "unit": "kilogram",
+        "value": 1
+      },
+      "per_inner_content": {
+        "unit": "kilogram",
+        "value": 1
+      },
+      "is_indivisible_sale_unit": false
+    }
+  },
+  "published_at": null,
+  "created_at": "2026-10-28T11:56:08.549Z",
+  "updated_at": "2026-10-28T11:56:08.549Z"
+}

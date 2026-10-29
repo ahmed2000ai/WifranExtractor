@@ -1,0 +1,13 @@
+{
+  "items": [
+    {
+      "row_id": "loyalty_offer_001",
+      "product_name_en": "Loyalty Item",
+      "offer_price": 10.0,
+      "original_price": 15.0,
+      "is_loyalty_required": true,
+      "loyalty_notes_en": "Only for club members",
+      "confidence": 0.95
+    }
+  ]
+}

@@ -1,0 +1,1076 @@
+{
+  "schema_version": 1,
+  "run_at": "2026-10-13T10:20:54.862Z",
+  "metrics": {
+    "total_fixtures": 16,
+    "passed_fixtures": 16,
+    "failed_fixtures": 0,
+    "offer_price_accuracy": 1,
+    "original_price_accuracy": 1,
+    "size_content_accuracy": 1,
+    "pack_quantity_accuracy": 1,
+    "bundle_quantity_accuracy": 1,
+    "comparison_eligibility_accuracy": 1,
+    "unit_price_calculation_accuracy": 1,
+    "publish_decision_accuracy": 1,
+    "false_publish_count": 0,
+    "false_publish_wrong_price_count": 0,
+    "size_as_price_published_count": 0,
+    "old_price_as_offer_price_published_count": 0,
+    "comparison_error_for_eligible_count": 0,
+    "invalid_location_published_count": 0
+  },
+  "thresholds_passed": true,
+  "threshold_failures": [],
+  "fixture_results": [
+    {
+      "fixture_id": "30-pieces",
+      "passed": true,
+      "failures": [],
+      "actual": {
+        "canonical": {
+          "title_ar": "أكواب بلاستيك",
+          "title_en": "Plastic Cups",
+          "offer_price": 15,
+          "original_price": 20,
+          "size_text": "30pcs",
+          "pack_quantity": null,
+          "bundle_quantity": null,
+          "price_basis": "each",
+          "promotion_mechanic": "unknown",
+          "item_domain": "unknown"
+        },
+        "blocking_error_codes": [],
+        "warning_codes": [
+          "low_confidence_category"
+        ],
+        "comparison_exclusion_codes": [],
+        "comparison": {
+          "comparison_eligible": true,
+          "comparison_unit": "piece",
+          "comparison_unit_price": 0.5,
+          "comparison_exclusion_reason": null
+        },
+        "decision": {
+          "publish_decision": "publish",
+          "should_upsert_db": true,
+          "should_upload_image": true,
+          "status_for_db": "published"
+        },
+        "display": {
+          "show_display_unit_price": false,
+          "display_unit_price": null,
+          "display_unit_basis_value": null,
+          "display_unit_basis_unit": null,
+          "display_unit_price_label_ar": null,
+          "display_unit_price_label_en": null,
+          "hidden_reason": "missing_total_content"
+        },
+        "utilization": {
+          "appears_for_city_ids": [
+            "city-riyadh",
+            "city-jeddah",
+            "city-dammam",
+            "city-mecca",
+            "city-medina"
+          ],
+          "hidden_for_city_ids": [],
+          "included_in_search": true,
+          "included_in_best_unit_price_ranking": true,
+          "excluded_from_comparison": false,
+          "display_size_text_ar": "30pcs",
+          "display_unit_price_text": "0.5 SAR/piece"
+        },
+        "db_payload": null
+      }
+    },
+    {
+      "fixture_id": "bad-fairy-old-price-as-current",
+      "passed": true,
+      "failures": [],
+      "actual": {
+        "canonical": {
+          "title_ar": null,
+          "title_en": "Fairy Dishwash",
+          "offer_price": 21.99,
+          "original_price": null,
+          "size_text": "730ml",
+          "pack_quantity": null,
+          "bundle_quantity": null,
+          "price_basis": "each",
+          "promotion_mechanic": "bogo",
+          "item_domain": "unknown"
+        },
+        "blocking_error_codes": [
+          "original_price_misclassified_as_offer_price"
+        ],
+        "warning_codes": [
+          "missing_original_price",
+          "missing_brand",
+          "low_confidence_category"
+        ],
+        "comparison_exclusion_codes": [
+          "unclear_bundle_quantity"
+        ],
+        "comparison": {
+          "comparison_eligible": false,
+          "comparison_unit": null,
+          "comparison_unit_price": null,
+          "comparison_exclusion_reason": "comparison_blocked_by_quality_error"
+        },
+        "decision": {
+          "publish_decision": "skip_or_quarantine",
+          "should_upsert_db": false,
+          "should_upload_image": false,
+          "status_for_db": "skipped"
+        },
+        "display": {
+          "show_display_unit_price": false,
+          "display_unit_price": null,
+          "display_unit_basis_value": null,
+          "display_unit_basis_unit": null,
+          "display_unit_price_label_ar": null,
+          "display_unit_price_label_en": null,
+          "hidden_reason": "comparison_not_eligible"
+        },
+        "utilization": {
+          "appears_for_city_ids": [],
+          "hidden_for_city_ids": [
+            "city-riyadh",
+            "city-jeddah",
+            "city-dammam",
+            "city-mecca",
+            "city-medina"
+          ],
+          "included_in_search": false,
+          "included_in_best_unit_price_ranking": false,
+          "excluded_from_comparison": true,
+          "display_size_text_ar": null,
+          "display_unit_price_text": null
+        },
+        "db_payload": null
+      }
+    },
+    {
+      "fixture_id": "bad-oil-size-as-price",
+      "passed": true,
+      "failures": [],
+      "actual": {
+        "canonical": {
+          "title_ar": null,
+          "title_en": "Cooking Oil",
+          "offer_price": 1.5,
+          "original_price": null,
+          "size_text": "1.5L",
+          "pack_quantity": null,
+          "bundle_quantity": null,
+          "price_basis": "each",
+          "promotion_mechanic": "unknown",
+          "item_domain": "unknown"
+        },
+        "blocking_error_codes": [
+          "offer_price_matches_size_value"
+        ],
+        "warning_codes": [
+          "missing_original_price",
+          "missing_brand",
+          "low_confidence_category"
+        ],
+        "comparison_exclusion_codes": [],
+        "comparison": {
+          "comparison_eligible": false,
+          "comparison_unit": null,
+          "comparison_unit_price": null,
+          "comparison_exclusion_reason": "comparison_blocked_by_quality_error"
+        },
+        "decision": {
+          "publish_decision": "skip_or_quarantine",
+          "should_upsert_db": false,
+          "should_upload_image": false,
+          "status_for_db": "skipped"
+        },
+        "display": {
+          "show_display_unit_price": false,
+          "display_unit_price": null,
+          "display_unit_basis_value": null,
+          "display_unit_basis_unit": null,
+          "display_unit_price_label_ar": null,
+          "display_unit_price_label_en": null,
+          "hidden_reason": "comparison_not_eligible"
+        },
+        "utilization": {
+          "appears_for_city_ids": [],
+          "hidden_for_city_ids": [
+            "city-riyadh",
+            "city-jeddah",
+            "city-dammam",
+            "city-mecca",
+            "city-medina"
+          ],
+          "included_in_search": false,
+          "included_in_best_unit_price_ranking": false,
+          "excluded_from_comparison": true,
+          "display_size_text_ar": null,
+          "display_unit_price_text": null
+        },
+        "db_payload": null
+      }
+    },
+    {
+      "fixture_id": "city-scope-riyadh-offer",
+      "passed": true,
+      "failures": [],
+      "actual": {
+        "canonical": {
+          "title_ar": "خبز محلي",
+          "title_en": "Local Bread",
+          "offer_price": 5,
+          "original_price": 8,
+          "size_text": "500g",
+          "pack_quantity": null,
+          "bundle_quantity": null,
+          "price_basis": "each",
+          "promotion_mechanic": "unknown",
+          "item_domain": "unknown"
+        },
+        "blocking_error_codes": [],
+        "warning_codes": [
+          "low_confidence_category"
+        ],
+        "comparison_exclusion_codes": [],
+        "comparison": {
+          "comparison_eligible": true,
+          "comparison_unit": "kilogram",
+          "comparison_unit_price": 10,
+          "comparison_exclusion_reason": null
+        },
+        "decision": {
+          "publish_decision": "publish",
+          "should_upsert_db": true,
+          "should_upload_image": true,
+          "status_for_db": "published"
+        },
+        "display": {
+          "show_display_unit_price": false,
+          "display_unit_price": null,
+          "display_unit_basis_value": null,
+          "display_unit_basis_unit": null,
+          "display_unit_price_label_ar": null,
+          "display_unit_price_label_en": null,
+          "hidden_reason": "missing_total_content"
+        },
+        "utilization": {
+          "appears_for_city_ids": [
+            "city-riyadh"
+          ],
+          "hidden_for_city_ids": [
+            "city-jeddah",
+            "city-dammam",
+            "city-mecca",
+            "city-medina"
+          ],
+          "included_in_search": true,
+          "included_in_best_unit_price_ranking": true,
+          "excluded_from_comparison": false,
+          "display_size_text_ar": "500g",
+          "display_unit_price_text": "10 SAR/kilogram"
+        },
+        "db_payload": {
+          "product_id": null,
+          "supermarket_id": "sm-panda",
+          "location_scope": "city",
+          "city_id": "city-riyadh",
+          "region_id": null,
+          "category_id": null,
+          "brand_id": null,
+          "title_ar": "خبز محلي",
+          "title_en": "Local Bread",
+          "offer_price": 5,
+          "original_price": 8,
+          "discount_amount": null,
+          "discount_percentage": null,
+          "pack_size_value": null,
+          "pack_size_unit": null,
+          "pack_quantity": null,
+          "unit_price": 10,
+          "unit_price_unit": "kilogram",
+          "offer_start_date": "2026-06-01",
+          "offer_end_date": "2026-12-31",
+          "status": "published",
+          "image_url": null,
+          "image_path": null,
+          "image_bucket": null,
+          "image_source_type": "external_tool",
+          "source_id": null,
+          "source_page_number": 1,
+          "source_item_number": null,
+          "source_reference": null,
+          "external_image_id": null,
+          "offer_source_id": null,
+          "deal_score": null,
+          "deal_label": null,
+          "data_quality_score": 0,
+          "is_loyalty_required": false,
+          "loyalty_notes_ar": null,
+          "loyalty_notes_en": null,
+          "quantity_limit": null,
+          "notes_ar": null,
+          "notes_en": null,
+          "created_by": "00000000-0000-0000-0000-000000000000"
+        }
+      }
+    },
+    {
+      "fixture_id": "fairy-730ml-1-plus-1",
+      "passed": true,
+      "failures": [],
+      "actual": {
+        "canonical": {
+          "title_ar": "فيري سائل جلي",
+          "title_en": "Fairy Dishwash",
+          "offer_price": 10,
+          "original_price": 21.99,
+          "size_text": "730ml",
+          "pack_quantity": null,
+          "bundle_quantity": 2,
+          "price_basis": "each",
+          "promotion_mechanic": "bogo",
+          "item_domain": "unknown"
+        },
+        "blocking_error_codes": [],
+        "warning_codes": [
+          "low_confidence_category"
+        ],
+        "comparison_exclusion_codes": [],
+        "comparison": {
+          "comparison_eligible": true,
+          "comparison_unit": "liter",
+          "comparison_unit_price": 6.85,
+          "comparison_exclusion_reason": null
+        },
+        "decision": {
+          "publish_decision": "publish",
+          "should_upsert_db": true,
+          "should_upload_image": true,
+          "status_for_db": "published"
+        },
+        "display": {
+          "show_display_unit_price": false,
+          "display_unit_price": null,
+          "display_unit_basis_value": null,
+          "display_unit_basis_unit": null,
+          "display_unit_price_label_ar": null,
+          "display_unit_price_label_en": null,
+          "hidden_reason": "missing_total_content"
+        },
+        "utilization": {
+          "appears_for_city_ids": [
+            "city-riyadh",
+            "city-jeddah",
+            "city-dammam",
+            "city-mecca",
+            "city-medina"
+          ],
+          "hidden_for_city_ids": [],
+          "included_in_search": true,
+          "included_in_best_unit_price_ranking": true,
+          "excluded_from_comparison": false,
+          "display_size_text_ar": "730ml",
+          "display_unit_price_text": "6.85 SAR/liter"
+        },
+        "db_payload": null
+      }
+    },
+    {
+      "fixture_id": "invalid-location-city-scope-no-city",
+      "passed": true,
+      "failures": [],
+      "actual": {
+        "canonical": {
+          "title_ar": "منتج محلي",
+          "title_en": "Local Product",
+          "offer_price": 10,
+          "original_price": 15,
+          "size_text": "500g",
+          "pack_quantity": null,
+          "bundle_quantity": null,
+          "price_basis": "each",
+          "promotion_mechanic": "unknown",
+          "item_domain": "unknown"
+        },
+        "blocking_error_codes": [
+          "missing_city_for_city_scope"
+        ],
+        "warning_codes": [
+          "missing_brand",
+          "low_confidence_category"
+        ],
+        "comparison_exclusion_codes": [],
+        "comparison": {
+          "comparison_eligible": false,
+          "comparison_unit": null,
+          "comparison_unit_price": null,
+          "comparison_exclusion_reason": "comparison_blocked_by_quality_error"
+        },
+        "decision": {
+          "publish_decision": "skip_or_quarantine",
+          "should_upsert_db": false,
+          "should_upload_image": false,
+          "status_for_db": "skipped"
+        },
+        "display": {
+          "show_display_unit_price": false,
+          "display_unit_price": null,
+          "display_unit_basis_value": null,
+          "display_unit_basis_unit": null,
+          "display_unit_price_label_ar": null,
+          "display_unit_price_label_en": null,
+          "hidden_reason": "comparison_not_eligible"
+        },
+        "utilization": {
+          "appears_for_city_ids": [],
+          "hidden_for_city_ids": [
+            "city-riyadh",
+            "city-jeddah",
+            "city-dammam",
+            "city-mecca",
+            "city-medina"
+          ],
+          "included_in_search": false,
+          "included_in_best_unit_price_ranking": false,
+          "excluded_from_comparison": true,
+          "display_size_text_ar": null,
+          "display_unit_price_text": null
+        },
+        "db_payload": null
+      }
+    },
+    {
+      "fixture_id": "invalid-location-national-with-city",
+      "passed": true,
+      "failures": [],
+      "actual": {
+        "canonical": {
+          "title_ar": "منتج وطني",
+          "title_en": "National Product",
+          "offer_price": 20,
+          "original_price": 30,
+          "size_text": "1kg",
+          "pack_quantity": null,
+          "bundle_quantity": null,
+          "price_basis": "each",
+          "promotion_mechanic": "unknown",
+          "item_domain": "unknown"
+        },
+        "blocking_error_codes": [
+          "invalid_location_scope"
+        ],
+        "warning_codes": [
+          "missing_brand",
+          "low_confidence_category"
+        ],
+        "comparison_exclusion_codes": [],
+        "comparison": {
+          "comparison_eligible": false,
+          "comparison_unit": null,
+          "comparison_unit_price": null,
+          "comparison_exclusion_reason": "comparison_blocked_by_quality_error"
+        },
+        "decision": {
+          "publish_decision": "skip_or_quarantine",
+          "should_upsert_db": false,
+          "should_upload_image": false,
+          "status_for_db": "skipped"
+        },
+        "display": {
+          "show_display_unit_price": false,
+          "display_unit_price": null,
+          "display_unit_basis_value": null,
+          "display_unit_basis_unit": null,
+          "display_unit_price_label_ar": null,
+          "display_unit_price_label_en": null,
+          "hidden_reason": "comparison_not_eligible"
+        },
+        "utilization": {
+          "appears_for_city_ids": [],
+          "hidden_for_city_ids": [
+            "city-riyadh",
+            "city-jeddah",
+            "city-dammam",
+            "city-mecca",
+            "city-medina"
+          ],
+          "included_in_search": false,
+          "included_in_best_unit_price_ranking": false,
+          "excluded_from_comparison": true,
+          "display_size_text_ar": null,
+          "display_unit_price_text": null
+        },
+        "db_payload": null
+      }
+    },
+    {
+      "fixture_id": "invalid-location-region-scope-no-region",
+      "passed": true,
+      "failures": [],
+      "actual": {
+        "canonical": {
+          "title_ar": "منتج إقليمي",
+          "title_en": "Regional Product",
+          "offer_price": 8,
+          "original_price": 12,
+          "size_text": "250ml",
+          "pack_quantity": null,
+          "bundle_quantity": null,
+          "price_basis": "each",
+          "promotion_mechanic": "unknown",
+          "item_domain": "unknown"
+        },
+        "blocking_error_codes": [
+          "missing_region_for_region_scope"
+        ],
+        "warning_codes": [
+          "missing_brand",
+          "low_confidence_category"
+        ],
+        "comparison_exclusion_codes": [],
+        "comparison": {
+          "comparison_eligible": false,
+          "comparison_unit": null,
+          "comparison_unit_price": null,
+          "comparison_exclusion_reason": "comparison_blocked_by_quality_error"
+        },
+        "decision": {
+          "publish_decision": "skip_or_quarantine",
+          "should_upsert_db": false,
+          "should_upload_image": false,
+          "status_for_db": "skipped"
+        },
+        "display": {
+          "show_display_unit_price": false,
+          "display_unit_price": null,
+          "display_unit_basis_value": null,
+          "display_unit_basis_unit": null,
+          "display_unit_price_label_ar": null,
+          "display_unit_price_label_en": null,
+          "hidden_reason": "comparison_not_eligible"
+        },
+        "utilization": {
+          "appears_for_city_ids": [],
+          "hidden_for_city_ids": [
+            "city-riyadh",
+            "city-jeddah",
+            "city-dammam",
+            "city-mecca",
+            "city-medina"
+          ],
+          "included_in_search": false,
+          "included_in_best_unit_price_ranking": false,
+          "excluded_from_comparison": true,
+          "display_size_text_ar": null,
+          "display_unit_price_text": null
+        },
+        "db_payload": null
+      }
+    },
+    {
+      "fixture_id": "missing-offer-price",
+      "passed": true,
+      "failures": [],
+      "actual": {
+        "canonical": {
+          "title_ar": "منتج غامض",
+          "title_en": "Mystery Product",
+          "offer_price": null,
+          "original_price": null,
+          "size_text": "100g",
+          "pack_quantity": null,
+          "bundle_quantity": null,
+          "price_basis": "each",
+          "promotion_mechanic": "unknown",
+          "item_domain": "unknown"
+        },
+        "blocking_error_codes": [
+          "missing_offer_price"
+        ],
+        "warning_codes": [
+          "missing_original_price",
+          "missing_brand",
+          "low_confidence_category"
+        ],
+        "comparison_exclusion_codes": [],
+        "comparison": {
+          "comparison_eligible": false,
+          "comparison_unit": null,
+          "comparison_unit_price": null,
+          "comparison_exclusion_reason": "comparison_blocked_by_quality_error"
+        },
+        "decision": {
+          "publish_decision": "skip_or_quarantine",
+          "should_upsert_db": false,
+          "should_upload_image": false,
+          "status_for_db": "skipped"
+        },
+        "display": {
+          "show_display_unit_price": false,
+          "display_unit_price": null,
+          "display_unit_basis_value": null,
+          "display_unit_basis_unit": null,
+          "display_unit_price_label_ar": null,
+          "display_unit_price_label_en": null,
+          "hidden_reason": "comparison_not_eligible"
+        },
+        "utilization": {
+          "appears_for_city_ids": [],
+          "hidden_for_city_ids": [
+            "city-riyadh",
+            "city-jeddah",
+            "city-dammam",
+            "city-mecca",
+            "city-medina"
+          ],
+          "included_in_search": false,
+          "included_in_best_unit_price_ranking": false,
+          "excluded_from_comparison": true,
+          "display_size_text_ar": null,
+          "display_unit_price_text": null
+        },
+        "db_payload": null
+      }
+    },
+    {
+      "fixture_id": "missing-title",
+      "passed": true,
+      "failures": [],
+      "actual": {
+        "canonical": {
+          "title_ar": null,
+          "title_en": null,
+          "offer_price": 25,
+          "original_price": 35,
+          "size_text": "500g",
+          "pack_quantity": null,
+          "bundle_quantity": null,
+          "price_basis": "each",
+          "promotion_mechanic": "unknown",
+          "item_domain": "unknown"
+        },
+        "blocking_error_codes": [
+          "missing_product_title"
+        ],
+        "warning_codes": [
+          "missing_brand",
+          "low_confidence_category"
+        ],
+        "comparison_exclusion_codes": [],
+        "comparison": {
+          "comparison_eligible": false,
+          "comparison_unit": null,
+          "comparison_unit_price": null,
+          "comparison_exclusion_reason": "comparison_blocked_by_quality_error"
+        },
+        "decision": {
+          "publish_decision": "skip_or_quarantine",
+          "should_upsert_db": false,
+          "should_upload_image": false,
+          "status_for_db": "skipped"
+        },
+        "display": {
+          "show_display_unit_price": false,
+          "display_unit_price": null,
+          "display_unit_basis_value": null,
+          "display_unit_basis_unit": null,
+          "display_unit_price_label_ar": null,
+          "display_unit_price_label_en": null,
+          "hidden_reason": "comparison_not_eligible"
+        },
+        "utilization": {
+          "appears_for_city_ids": [],
+          "hidden_for_city_ids": [
+            "city-riyadh",
+            "city-jeddah",
+            "city-dammam",
+            "city-mecca",
+            "city-medina"
+          ],
+          "included_in_search": false,
+          "included_in_best_unit_price_ranking": false,
+          "excluded_from_comparison": true,
+          "display_size_text_ar": null,
+          "display_unit_price_text": null
+        },
+        "db_payload": null
+      }
+    },
+    {
+      "fixture_id": "national-scope-offer",
+      "passed": true,
+      "failures": [],
+      "actual": {
+        "canonical": {
+          "title_ar": "أرز",
+          "title_en": "Rice",
+          "offer_price": 25,
+          "original_price": 35,
+          "size_text": "5kg",
+          "pack_quantity": null,
+          "bundle_quantity": null,
+          "price_basis": "each",
+          "promotion_mechanic": "unknown",
+          "item_domain": "unknown"
+        },
+        "blocking_error_codes": [],
+        "warning_codes": [
+          "low_confidence_category"
+        ],
+        "comparison_exclusion_codes": [],
+        "comparison": {
+          "comparison_eligible": true,
+          "comparison_unit": "kilogram",
+          "comparison_unit_price": 5,
+          "comparison_exclusion_reason": null
+        },
+        "decision": {
+          "publish_decision": "publish",
+          "should_upsert_db": true,
+          "should_upload_image": true,
+          "status_for_db": "published"
+        },
+        "display": {
+          "show_display_unit_price": false,
+          "display_unit_price": null,
+          "display_unit_basis_value": null,
+          "display_unit_basis_unit": null,
+          "display_unit_price_label_ar": null,
+          "display_unit_price_label_en": null,
+          "hidden_reason": "missing_total_content"
+        },
+        "utilization": {
+          "appears_for_city_ids": [
+            "city-riyadh",
+            "city-jeddah",
+            "city-dammam",
+            "city-mecca",
+            "city-medina"
+          ],
+          "hidden_for_city_ids": [],
+          "included_in_search": true,
+          "included_in_best_unit_price_ranking": true,
+          "excluded_from_comparison": false,
+          "display_size_text_ar": "5kg",
+          "display_unit_price_text": "5 SAR/kilogram"
+        },
+        "db_payload": null
+      }
+    },
+    {
+      "fixture_id": "othaim-oil-1-5l",
+      "passed": true,
+      "failures": [],
+      "actual": {
+        "canonical": {
+          "title_ar": "زيت طبخ عثيم",
+          "title_en": "Othaim Cooking Oil",
+          "offer_price": 10,
+          "original_price": 15.99,
+          "size_text": "1.5L",
+          "pack_quantity": null,
+          "bundle_quantity": null,
+          "price_basis": "each",
+          "promotion_mechanic": "unknown",
+          "item_domain": "unknown"
+        },
+        "blocking_error_codes": [],
+        "warning_codes": [
+          "low_confidence_category"
+        ],
+        "comparison_exclusion_codes": [],
+        "comparison": {
+          "comparison_eligible": true,
+          "comparison_unit": "liter",
+          "comparison_unit_price": 6.67,
+          "comparison_exclusion_reason": null
+        },
+        "decision": {
+          "publish_decision": "publish",
+          "should_upsert_db": true,
+          "should_upload_image": true,
+          "status_for_db": "published"
+        },
+        "display": {
+          "show_display_unit_price": false,
+          "display_unit_price": null,
+          "display_unit_basis_value": null,
+          "display_unit_basis_unit": null,
+          "display_unit_price_label_ar": null,
+          "display_unit_price_label_en": null,
+          "hidden_reason": "missing_total_content"
+        },
+        "utilization": {
+          "appears_for_city_ids": [
+            "city-riyadh",
+            "city-jeddah",
+            "city-dammam",
+            "city-mecca",
+            "city-medina"
+          ],
+          "hidden_for_city_ids": [],
+          "included_in_search": true,
+          "included_in_best_unit_price_ranking": true,
+          "excluded_from_comparison": false,
+          "display_size_text_ar": "1.5L",
+          "display_unit_price_text": "6.67 SAR/liter"
+        },
+        "db_payload": null
+      }
+    },
+    {
+      "fixture_id": "pack-8x135g",
+      "passed": true,
+      "failures": [],
+      "actual": {
+        "canonical": {
+          "title_ar": "سناك باك",
+          "title_en": "Snack Pack",
+          "offer_price": 12,
+          "original_price": 18,
+          "size_text": "135g",
+          "pack_quantity": 8,
+          "bundle_quantity": null,
+          "price_basis": "each",
+          "promotion_mechanic": "unknown",
+          "item_domain": "unknown"
+        },
+        "blocking_error_codes": [],
+        "warning_codes": [
+          "low_confidence_category"
+        ],
+        "comparison_exclusion_codes": [],
+        "comparison": {
+          "comparison_eligible": true,
+          "comparison_unit": "kilogram",
+          "comparison_unit_price": 11.11,
+          "comparison_exclusion_reason": null
+        },
+        "decision": {
+          "publish_decision": "publish",
+          "should_upsert_db": true,
+          "should_upload_image": true,
+          "status_for_db": "published"
+        },
+        "display": {
+          "show_display_unit_price": false,
+          "display_unit_price": null,
+          "display_unit_basis_value": null,
+          "display_unit_basis_unit": null,
+          "display_unit_price_label_ar": null,
+          "display_unit_price_label_en": null,
+          "hidden_reason": "missing_total_content"
+        },
+        "utilization": {
+          "appears_for_city_ids": [
+            "city-riyadh",
+            "city-jeddah",
+            "city-dammam",
+            "city-mecca",
+            "city-medina"
+          ],
+          "hidden_for_city_ids": [],
+          "included_in_search": true,
+          "included_in_best_unit_price_ranking": true,
+          "excluded_from_comparison": false,
+          "display_size_text_ar": "135g",
+          "display_unit_price_text": "11.11 SAR/kilogram"
+        },
+        "db_payload": null
+      }
+    },
+    {
+      "fixture_id": "tv-electronics",
+      "passed": true,
+      "failures": [],
+      "actual": {
+        "canonical": {
+          "title_ar": "تلفزيون سامسونج 55 بوصة",
+          "title_en": "Samsung TV 55 inch 4K",
+          "offer_price": 1599,
+          "original_price": 2199,
+          "size_text": "55 inch",
+          "pack_quantity": null,
+          "bundle_quantity": null,
+          "price_basis": "each",
+          "promotion_mechanic": "unknown",
+          "item_domain": "electronics"
+        },
+        "blocking_error_codes": [],
+        "warning_codes": [
+          "low_confidence_category"
+        ],
+        "comparison_exclusion_codes": [
+          "non_grocery_item"
+        ],
+        "comparison": {
+          "comparison_eligible": false,
+          "comparison_unit": null,
+          "comparison_unit_price": null,
+          "comparison_exclusion_reason": "non_grocery_item"
+        },
+        "decision": {
+          "publish_decision": "publish_but_exclude_from_comparison",
+          "should_upsert_db": true,
+          "should_upload_image": true,
+          "status_for_db": "published"
+        },
+        "display": {
+          "show_display_unit_price": false,
+          "display_unit_price": null,
+          "display_unit_basis_value": null,
+          "display_unit_basis_unit": null,
+          "display_unit_price_label_ar": null,
+          "display_unit_price_label_en": null,
+          "hidden_reason": "comparison_not_eligible"
+        },
+        "utilization": {
+          "appears_for_city_ids": [
+            "city-riyadh",
+            "city-jeddah",
+            "city-dammam",
+            "city-mecca",
+            "city-medina"
+          ],
+          "hidden_for_city_ids": [],
+          "included_in_search": true,
+          "included_in_best_unit_price_ranking": false,
+          "excluded_from_comparison": true,
+          "display_size_text_ar": "55 inch",
+          "display_unit_price_text": null
+        },
+        "db_payload": null
+      }
+    },
+    {
+      "fixture_id": "unclear-pack-size",
+      "passed": true,
+      "failures": [],
+      "actual": {
+        "canonical": {
+          "title_ar": "بسكويت متنوع",
+          "title_en": "Assorted Biscuits",
+          "offer_price": 15,
+          "original_price": 20,
+          "size_text": null,
+          "pack_quantity": null,
+          "bundle_quantity": null,
+          "price_basis": "each",
+          "promotion_mechanic": "unknown",
+          "item_domain": "unknown"
+        },
+        "blocking_error_codes": [],
+        "warning_codes": [
+          "low_confidence_category"
+        ],
+        "comparison_exclusion_codes": [
+          "unclear_total_content"
+        ],
+        "comparison": {
+          "comparison_eligible": false,
+          "comparison_unit": null,
+          "comparison_unit_price": null,
+          "comparison_exclusion_reason": "missing_total_content"
+        },
+        "decision": {
+          "publish_decision": "publish_but_exclude_from_comparison",
+          "should_upsert_db": true,
+          "should_upload_image": true,
+          "status_for_db": "published"
+        },
+        "display": {
+          "show_display_unit_price": false,
+          "display_unit_price": null,
+          "display_unit_basis_value": null,
+          "display_unit_basis_unit": null,
+          "display_unit_price_label_ar": null,
+          "display_unit_price_label_en": null,
+          "hidden_reason": "comparison_not_eligible"
+        },
+        "utilization": {
+          "appears_for_city_ids": [
+            "city-riyadh",
+            "city-jeddah",
+            "city-dammam",
+            "city-mecca",
+            "city-medina"
+          ],
+          "hidden_for_city_ids": [],
+          "included_in_search": true,
+          "included_in_best_unit_price_ranking": false,
+          "excluded_from_comparison": true,
+          "display_size_text_ar": null,
+          "display_unit_price_text": null
+        },
+        "db_payload": null
+      }
+    },
+    {
+      "fixture_id": "watermelon-per-2kg",
+      "passed": true,
+      "failures": [],
+      "actual": {
+        "canonical": {
+          "title_ar": "بطيخ",
+          "title_en": "Watermelon",
+          "offer_price": 10,
+          "original_price": 14,
+          "size_text": "per 2kg",
+          "pack_quantity": null,
+          "bundle_quantity": null,
+          "price_basis": "per_2kg",
+          "promotion_mechanic": "unknown",
+          "item_domain": "unknown"
+        },
+        "blocking_error_codes": [],
+        "warning_codes": [
+          "low_confidence_category"
+        ],
+        "comparison_exclusion_codes": [],
+        "comparison": {
+          "comparison_eligible": true,
+          "comparison_unit": "kilogram",
+          "comparison_unit_price": 5,
+          "comparison_exclusion_reason": null
+        },
+        "decision": {
+          "publish_decision": "publish",
+          "should_upsert_db": true,
+          "should_upload_image": true,
+          "status_for_db": "published"
+        },
+        "display": {
+          "show_display_unit_price": false,
+          "display_unit_price": null,
+          "display_unit_basis_value": null,
+          "display_unit_basis_unit": null,
+          "display_unit_price_label_ar": null,
+          "display_unit_price_label_en": null,
+          "hidden_reason": "missing_total_content"
+        },
+        "utilization": {
+          "appears_for_city_ids": [
+            "city-riyadh",
+            "city-jeddah",
+            "city-dammam",
+            "city-mecca",
+            "city-medina"
+          ],
+          "hidden_for_city_ids": [],
+          "included_in_search": true,
+          "included_in_best_unit_price_ranking": true,
+          "excluded_from_comparison": false,
+          "display_size_text_ar": "per 2kg",
+          "display_unit_price_text": "5 SAR/kilogram"
+        },
+        "db_payload": null
+      }
+    }
+  ]
+}

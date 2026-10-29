@@ -1,0 +1,17 @@
+{
+  "name": "watermelon-per-2kg",
+  "description": "Watermelon per 2kg",
+  "raw_ocr_json": {
+    "name_en": "Watermelon",
+    "offer_price": 10,
+    "currency": "SAR",
+    "size": "per 2kg",
+    "price_basis": "per_2kg"
+  },
+  "expected": {
+    "blocking_error_codes": [],
+    "warning_codes": ["missing_original_price"],
+    "comparison_eligible": true,
+    "publish_decision": "publish"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "display-unit-milk",
+  "description": "Milk 1L chooses 100ml display basis",
+  "raw_ocr_json": {
+    "name_en": "Milk",
+    "offer_price": 5,
+    "currency": "SAR",
+    "size": "1L"
+  },
+  "expected": {
+    "publish_decision": "publish",
+    "display": {
+      "show_display_unit_price": true,
+      "display_unit_basis_value": 100,
+      "display_unit_basis_unit": "ml",
+      "display_unit_price": 0.50
+    }
+  }
+}

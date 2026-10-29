@@ -1,0 +1,24 @@
+{
+  "name": "display-unit-tuna",
+  "description": "Tuna 185g chooses 100g display basis",
+  "raw_ocr_json": {
+    "name_en": "Tuna",
+    "offer_price": 6.95,
+    "currency": "SAR",
+    "size": "185g"
+  },
+  "expected": {
+    "publish_decision": "publish",
+    "blocking_error_codes": [],
+    "comparison": {
+      "comparison_eligible": true
+    },
+    "display": {
+      "show_display_unit_price": true,
+      "display_unit_basis_value": 100,
+      "display_unit_basis_unit": "g",
+      "display_unit_price": 2.0,
+      "hidden_reason": null
+    }
+  }
+}

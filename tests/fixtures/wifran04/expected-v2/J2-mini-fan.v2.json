@@ -1,0 +1,368 @@
+{
+  "source": {
+    "leaflet_id": "alwafa-city-jeddah-2026-10-20",
+    "source_page_number": 3,
+    "source_item_number": "012",
+    "external_image_id": "Alwafa_Test_p003_012",
+    "crop_path": "F:\\Work\\AI Projects\\wifran-offers-extractor\\Extracts\\Alwafa_Test\\metadata\\rev1\\page-003\\crops\\offer-012\\offer_card_crop.webp",
+    "thumbnail_path": "F:\\Work\\AI Projects\\wifran-offers-extractor\\Extracts\\Alwafa_Test\\metadata\\rev1\\page-003\\crops\\offer-012\\product_thumb_crop.webp",
+    "page_area_share_pct": 2.57,
+    "json_path": ""
+  },
+  "trusted_context": {
+    "supermarket_id": "c2cc16c2-0008-4444-b000-c00000000008",
+    "supermarket_slug": "alwafa",
+    "location_scope": "city",
+    "city_id": "a6f7b140-0002-4444-a000-000000000002",
+    "region_id": "b144b6c8-2222-4444-b000-000000000002",
+    "offer_start_date": "2026-10-14",
+    "offer_end_date": "2026-10-20"
+  },
+  "product": {
+    "title_ar": "روكي مروحة ميني منوع",
+    "title_en": "Mini Fan Asstd.",
+    "normalized_title_ar": "روكي مروحة ميني",
+    "normalized_title_en": "Mini Fan Asstd.",
+    "commodity_tag": "non_grocery_item",
+    "brand_text": null,
+    "category_hint": "non-grocery",
+    "item_domain": "appliance",
+    "description_ar": null,
+    "description_en": null
+  },
+  "prices": {
+    "offer_price": 10,
+    "original_price": 29,
+    "currency": "SAR",
+    "discount_amount": null,
+    "discount_percentage": null,
+    "price_basis": "each",
+    "price_condition_text": null,
+    "all_price_candidates": [
+      {
+        "raw_text": "10",
+        "normalized_value": 10,
+        "currency": "SAR",
+        "visual_role": "current_offer_price",
+        "classified_as": "offer_price",
+        "confidence": "high",
+        "evidence": "10",
+        "visual_evidence": {}
+      }
+    ]
+  },
+  "content": {
+    "size_text": "1 PC",
+    "pack_quantity": 1,
+    "bundle_quantity": null,
+    "each_size_value": null,
+    "each_size_unit": null,
+    "total_content_value": null,
+    "total_content_unit": null
+  },
+  "promotion": {
+    "mechanic": "standard_price",
+    "special_offer": null,
+    "condition_text": null,
+    "quantity_limit": null,
+    "bundle_quantity": null
+  },
+  "comparison": {
+    "comparison_eligible": false,
+    "comparison_unit": null,
+    "comparison_unit_price": null,
+    "comparison_confidence": "low",
+    "comparison_exclusion_reason": "non_grocery_item"
+  },
+  "image": {
+    "image_bucket": null,
+    "image_path": "F:/Work/AI Projects/wifran-offers-extractor/Extracts/Alwafa_Test/metadata/rev1/page-003/crops/offer-012/offer_card_crop.webp",
+    "image_url": null,
+    "thumbnail_path": "F:/Work/AI Projects/wifran-offers-extractor/Extracts/Alwafa_Test/metadata/rev1/page-003/crops/offer-012/product_thumb_crop.webp",
+    "thumbnail_url": null,
+    "image_source_type": "leaflet_crop"
+  },
+  "display": {
+    "show_display_unit_price": false,
+    "display_unit_price": null,
+    "display_unit_basis_value": null,
+    "display_unit_basis_unit": null,
+    "display_unit_family": null,
+    "display_unit_price_label_ar": null,
+    "display_unit_price_label_en": null,
+    "below_min_display_price_threshold": false,
+    "min_display_unit_price_sar": 0.5,
+    "hidden_reason": "comparison_not_eligible"
+  },
+  "quality": {
+    "publish_decision": "publish_but_exclude_from_comparison",
+    "extraction_confidence": "high",
+    "validation_confidence": "high",
+    "comparison_confidence": "medium",
+    "blocking_errors": [],
+    "non_blocking_warnings": []
+  },
+  "style_validation": {
+    "validation_result": "pass",
+    "visual_evidence": {},
+    "corrected_fields": {},
+    "style_profile_scope": "page"
+  },
+  "pre_publish": {
+    "preview_eligible": true,
+    "preview_group": "publish_but_exclude_from_comparison",
+    "display_in_preview": true
+  },
+  "raw": {
+    "raw_ocr_json": {},
+    "raw_validation_json": null,
+    "raw_ocr_text": null,
+    "raw_attributes": {
+      "raw_offer_extraction": {
+        "offer_number": 12,
+        "arabic_title": "روكي مروحة ميني منوع",
+        "english_title": "Mini Fan Asstd.",
+        "is_multi_brand_or_variant": true,
+        "promo_price": 10,
+        "promo_condition": "STANDARD",
+        "confidence": 0.98,
+        "components": {
+          "product_graphic_box": [
+            605,
+            770,
+            734,
+            966
+          ],
+          "promo_price_box": [
+            668,
+            885,
+            715,
+            965
+          ],
+          "title_text_box": [
+            718,
+            866,
+            736,
+            963
+          ],
+          "original_price_box": [
+            661,
+            897,
+            672,
+            948
+          ],
+          "unit_and_size_badge_box": [
+            607,
+            858,
+            630,
+            897
+          ]
+        },
+        "brand": null,
+        "compound_group_id": null,
+        "each_size_unit": "pcs",
+        "each_size_value": 1,
+        "is_uniform_size_across_variants": true,
+        "item_domain": "appliance",
+        "original_price": 29,
+        "pack_quantity": 1,
+        "size_value": "1 PC",
+        "unit_type": "PC"
+      },
+      "spatial_prominence": {
+        "page_area_share_pct": 2.57,
+        "is_front_page": false,
+        "is_hero_offer": false,
+        "normalized_union_box": [
+          605,
+          770,
+          736,
+          966
+        ]
+      },
+      "completeness_status": "complete",
+      "evidence_linking_status": "linked",
+      "is_retry_pass": false,
+      "page_first": {
+        "current_price_anchor_block_id": "rev1_price_anchor_p003_012",
+        "evidence_link_confidence": 1,
+        "completeness_status": "pass",
+        "crop_confidence": 0.98,
+        "is_retry": false
+      }
+    }
+  },
+  "supersedes_source_offer_id": "tamimi-national-national-2026-10-20:p003:i012:s01",
+  "schema_version": "wifran.extractor.offer/2.0",
+  "contract_v2": {
+    "record_metadata": {
+      "schema_version": "wifran.extractor.offer/2.0",
+      "source_offer_id": "alwafa-city-jeddah-2026-10-20:p003:i012:s01",
+      "source_revision": 1,
+      "semantic_checksum": "07dc650da567439525865e4728d23d5c03d51364bb729adf26c6cb92d6530878",
+      "producer_model": "wifran-extractor-2.0",
+      "supersedes_source_offer_id": "tamimi-national-national-2026-10-20:p003:i012:s01"
+    },
+    "product_facts": {
+      "exact_identity_status": "unresolved",
+      "verified_product_id": null,
+      "gtin": null,
+      "brand_assertion": {
+        "value": null,
+        "state": "unknown",
+        "candidate_unverified": "روكي",
+        "provenance": "title_heuristic"
+      },
+      "derived_subcategory_slug": "mini_fan",
+      "attributes": {
+        "scent": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "flavor": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "fat_level": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "milk_processing_type": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "product_form": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "model": {
+          "value": null,
+          "state": "unknown",
+          "provenance": null
+        },
+        "power_watts": {
+          "value": null,
+          "state": "unknown",
+          "provenance": null
+        },
+        "dimensions": {
+          "value": null,
+          "state": "unknown",
+          "provenance": null
+        }
+      }
+    },
+    "assortment": {
+      "status": "assortment_indicated",
+      "composition_type": "alternatives",
+      "known_options": [],
+      "is_uniform_size": true,
+      "source_assertions": [
+        {
+          "source_path": "product.title",
+          "value": "Mini Fan Asstd. روكي مروحة ميني منوع"
+        }
+      ]
+    },
+    "quantity_semantics": {
+      "sale_unit": "each",
+      "inner_count": 1,
+      "per_inner_content": {
+        "value": null,
+        "unit": null
+      },
+      "total_content": {
+        "value": null,
+        "unit": null
+      },
+      "is_indivisible_sale_unit": true
+    },
+    "price_terms": {
+      "currency": "SAR",
+      "source_reported_offer_price": "10.00",
+      "source_reported_price_basis": "each",
+      "source_reported_original_price": "29.00",
+      "verified_current_non_member_price": null
+    },
+    "promotion_terms": {
+      "mechanic": "markdown",
+      "bonus_wording": null,
+      "bonus_fulfillment": "not_applicable",
+      "bonus_already_included_in_inner_count": false,
+      "structured_checkout_rule": null
+    },
+    "eligibility": {
+      "loyalty": {
+        "requirement": "unknown",
+        "program_id": null,
+        "source_path": null,
+        "restriction_coverage": "not_stated_in_inspected_source"
+      },
+      "sales_channel": "unknown",
+      "quantity_limit": {
+        "value": null,
+        "unit": null,
+        "scope": null
+      }
+    },
+    "evidence": {
+      "coordinate_system": "undeclared_legacy",
+      "offer_price_evidence_complete": true,
+      "original_price_evidence_complete": false
+    },
+    "assessments": {
+      "capabilities": {
+        "offer_display": "supported",
+        "save_to_list": "supported",
+        "selected_offer_subtotal": "supported",
+        "unit_price_calculation": "blocked",
+        "exact_product_comparison": "blocked",
+        "automatic_list_fulfillment": "needs_review"
+      },
+      "structural_capabilities": {
+        "offer_display": "supported",
+        "save_to_list": "supported",
+        "selected_offer_subtotal": "supported",
+        "unit_price_calculation": "blocked",
+        "exact_product_comparison": "blocked",
+        "automatic_list_fulfillment": "needs_review"
+      },
+      "confidence": {
+        "extraction_confidence": "high",
+        "unit_math_confidence": "low",
+        "identity_confidence": "medium"
+      },
+      "reason_codes": [
+        "COORDINATE_SYSTEM_UNDECLARED",
+        "ASSORTMENT_UNRESOLVED",
+        "EXACT_VARIANT_NOT_ESTABLISHED",
+        "CHANNEL_UNKNOWN",
+        "PRICE_EVIDENCE_INCOMPLETE",
+        "CONFIDENCE_SCOPE_CONFLICT",
+        "LEGACY_COMPARISON_RESTRICTION",
+        "MEDIA_UPLOAD_PENDING"
+      ]
+    },
+    "assets": {
+      "offer_card": {
+        "local_path_internal": "F:/Work/AI Projects/wifran-offers-extractor/Extracts/Alwafa_Test/metadata/rev1/page-003/crops/offer-012/offer_card_crop.webp",
+        "storage_bucket": null,
+        "storage_object_path": "F:/Work/AI Projects/wifran-offers-extractor/Extracts/Alwafa_Test/metadata/rev1/page-003/crops/offer-012/offer_card_crop.webp",
+        "subject_scope": "representative_assortment",
+        "upload_state": "pending"
+      },
+      "product_thumbnail": {
+        "local_path_internal": "F:/Work/AI Projects/wifran-offers-extractor/Extracts/Alwafa_Test/metadata/rev1/page-003/crops/offer-012/product_thumb_crop.webp",
+        "storage_bucket": null,
+        "storage_object_path": "F:/Work/AI Projects/wifran-offers-extractor/Extracts/Alwafa_Test/metadata/rev1/page-003/crops/offer-012/product_thumb_crop.webp",
+        "subject_scope": "representative_assortment",
+        "upload_state": "pending"
+      }
+    }
+  }
+}

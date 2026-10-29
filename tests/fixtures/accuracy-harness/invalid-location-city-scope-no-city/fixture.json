@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "id": "invalid-location-city-scope-no-city",
+  "description": "City scope without city_id – must be blocked as invalid location",
+  "supermarket_slug": "panda",
+
+  "source": {
+    "page_number": 10,
+    "item_number": "012a",
+    "notes": ["location_scope = city but city_id is null"]
+  },
+
+  "trusted_context": {
+    "supermarket_id": "sm-panda",
+    "supermarket_slug": "panda",
+    "location_scope": "city",
+    "city_id": null,
+    "region_id": null,
+    "offer_start_date": "2026-06-01",
+    "offer_end_date": "2026-12-31"
+  },
+
+  "inputs": {
+    "raw_mistral_response": {
+      "name_en": "Local Product",
+      "name_ar": "منتج محلي",
+      "offer_price": 10,
+      "original_price": 15,
+      "currency": "SAR",
+      "size": "500g"
+    }
+  },
+
+  "expected": {
+    "blocking_error_codes": ["missing_city_for_city_scope"],
+
+    "decision": {
+      "publish_decision": "skip_or_quarantine",
+      "should_upsert_db": false,
+      "should_upload_image": false,
+      "status_for_db": "skipped"
+    }
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "id": "watermelon-per-2kg",
+  "description": "Watermelon priced per 2kg – unit price = offer_price / 2",
+  "supermarket_slug": "danube",
+
+  "source": {
+    "page_number": 4,
+    "item_number": "006",
+    "notes": ["price_basis = per_2kg, comparison_unit_price = 10/2 = 5 SAR/kg"]
+  },
+
+  "trusted_context": {
+    "supermarket_id": "sm-danube",
+    "supermarket_slug": "danube",
+    "location_scope": "national",
+    "offer_start_date": "2026-06-01",
+    "offer_end_date": "2026-12-31"
+  },
+
+  "inputs": {
+    "raw_mistral_response": {
+      "name_en": "Watermelon",
+      "name_ar": "بطيخ",
+      "offer_price": 10,
+      "original_price": 14,
+      "currency": "SAR",
+      "size": "per 2kg",
+      "price_basis": "per_2kg",
+      "brand": "Fresh"
+    }
+  },
+
+  "expected": {
+    "canonical": {
+      "offer_price": 10,
+      "original_price": 14,
+      "price_basis": "per_2kg"
+    },
+
+    "blocking_error_codes": [],
+
+    "comparison": {
+      "comparison_eligible": true,
+      "comparison_unit": "kilogram",
+      "comparison_unit_price": 5.0,
+      "tolerance": 0.05
+    },
+
+    "decision": {
+      "publish_decision": "publish",
+      "should_upsert_db": true,
+      "should_upload_image": true,
+      "status_for_db": "published"
+    }
+  }
+}

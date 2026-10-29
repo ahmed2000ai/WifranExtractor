@@ -1,0 +1,17 @@
+{
+  "items": [
+    {
+      "row_id": "row_valid_01",
+      "page_number": 1,
+      "product_name_ar": "تفاح جالا",
+      "product_name_en": "Gala Apples",
+      "offer_price": "5.95",
+      "original_price": "7.95",
+      "pack_size_value": 1,
+      "pack_size_unit": "kg",
+      "bounding_box": { "x": 100, "y": 100, "width": 200, "height": 150 },
+      "confidence": 0.95,
+      "warnings": []
+    }
+  ]
+}

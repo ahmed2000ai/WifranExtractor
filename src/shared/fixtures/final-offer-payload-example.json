@@ -1,0 +1,14 @@
+{
+  "supermarket_id": "e0b0b3e5-827d-4b95-a246-8edc9c99026d",
+  "import_batch_id": "f5a013d2-8b4e-4f01-9a7c-17ad2e132c3f",
+  "title_ar": "تفاح جالا",
+  "title_en": "Gala Apples",
+  "price": 5.95,
+  "original_price": 7.95,
+  "pack_size_value": 1,
+  "pack_size_unit": "kg",
+  "start_date": "2026-06-07T00:00:00Z",
+  "end_date": "2026-06-14T00:00:00Z",
+  "status": "draft",
+  "data_quality_score": 90
+}
