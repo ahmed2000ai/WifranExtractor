@@ -5,7 +5,7 @@ export async function findDuplicateOffer(input: {
   supermarketId: string
   cityId: string | null
   regionId: string | null
-  productId: string | null
+  productId: string | number | null
   titleAr: string | null
   titleEn: string | null
   offerStartDate: string

@@ -26,7 +26,10 @@ describe('WIFRAN-07A Integration Acceptance Suite (INT-01 .. INT-36)', () => {
 
   const j1Raw: CanonicalOffer = JSON.parse(fs.readFileSync(path.join(fixturesDir, 'page-001-012.canonical.json'), 'utf8'));
   const j2Raw: CanonicalOffer = JSON.parse(fs.readFileSync(path.join(fixturesDir, 'page-003-012.canonical.json'), 'utf8'));
-  const j3Raw: CanonicalOffer = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), 'Extracts/Alwafa_Test/json/page-002-002.canonical.json'), 'utf8'));
+  const j3Path = fs.existsSync(path.resolve(process.cwd(), 'Extracts/Alwafa_Test/json/page-002-002.canonical.json'))
+    ? path.resolve(process.cwd(), 'Extracts/Alwafa_Test/json/page-002-002.canonical.json')
+    : path.join(fixturesDir, 'page-002-002.canonical.json');
+  const j3Raw: CanonicalOffer = JSON.parse(fs.readFileSync(j3Path, 'utf8'));
 
   // =========================================================================
   // Package 1: Security, Grants, RLS, and Sanitized Projection (INT-01..07)

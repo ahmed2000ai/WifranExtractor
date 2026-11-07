@@ -113,7 +113,7 @@ export function loadEnvConfig(): AppConfig {
 
   return {
     supabase: {
-      url: process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+      url: (process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || '').trim().replace(/\/rest\/v1\/?$/, '').replace(/\/+$/, ''),
       anonKey: process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
       serviceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY || '',
       storageBucket: process.env.SUPABASE_STORAGE_BUCKET || 'offer-images',
@@ -178,7 +178,7 @@ export function loadEnvConfig(): AppConfig {
       logLevel: (['debug', 'info', 'warn', 'error'].includes(process.env.LOG_LEVEL || '') ? process.env.LOG_LEVEL as any : 'info')
     },
     rehearsal: {
-      publishRehearsalMode: parseBoolean(process.env.PUBLISH_REHEARSAL_MODE, false),
+      publishRehearsalMode: parseBoolean(process.env.PUBLISH_REHEARSAL_MODE || process.env.REAL_PUBLISH_REHEARSAL_MODE || process.env.REHEARSAL_MODE, false),
       publishRehearsalMaxRows: parseNumber(process.env.PUBLISH_REHEARSAL_MAX_ROWS, 5)
     },
     cropSuggestions: {

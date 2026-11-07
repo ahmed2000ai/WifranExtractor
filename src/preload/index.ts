@@ -85,7 +85,7 @@ const api = {
   prePublishPreview: {
     load: (workspacePath: string): Promise<any> => ipcRenderer.invoke('prePublishPreview:load', workspacePath),
     markOpened: (workspacePath: string): Promise<any> => ipcRenderer.invoke('prePublishPreview:markOpened', workspacePath),
-    publishApproved: (workspacePath: string, summaryCounts: any): Promise<any> => ipcRenderer.invoke('prePublishPreview:publishApproved', workspacePath, summaryCounts),
+    publishApproved: (workspacePath: string, summaryCounts: any, options?: { forceRePublish?: boolean }): Promise<any> => ipcRenderer.invoke('prePublishPreview:publishApproved', workspacePath, summaryCounts, options),
     getStatus: (workspacePath: string): Promise<any> => ipcRenderer.invoke('prePublishPreview:getStatus', workspacePath),
     setDbStatus: (workspacePath: string, status: 'completed' | 'failed'): Promise<any> => ipcRenderer.invoke('prePublishPreview:setDbStatus', workspacePath, status),
     checkRehearsalGates: (workspacePath: string, typedConfirmation?: string): Promise<any> => ipcRenderer.invoke('prePublishPreview:checkRehearsalGates', workspacePath, typedConfirmation),
@@ -176,6 +176,59 @@ const api = {
         ipcRenderer.removeListener('pageFirst:quickTestLog', listener)
       }
     }
+  },
+  catalog: {
+    analyzeCandidates: (options?: any): Promise<any> => ipcRenderer.invoke('catalog:analyzeCandidates', options),
+    approveCandidates: (input: any): Promise<any> => ipcRenderer.invoke('catalog:approveCandidates', input),
+    exportImageCsv: (options?: any): Promise<any> => ipcRenderer.invoke('catalog:exportImageCsv', options),
+    saveExportedCsvDialog: (options: { defaultFileName?: string; csvContent: string }): Promise<any> =>
+      ipcRenderer.invoke('catalog:saveExportedCsvDialog', options),
+    validateImageCsv: (csvContent: string): Promise<any> => ipcRenderer.invoke('catalog:validateImageCsv', csvContent),
+    uploadProductImages: (input: any): Promise<any> => ipcRenderer.invoke('catalog:uploadProductImages', input),
+    onUploadProgress: (callback: (event: any) => void) => {
+      const listener = (_event: any, data: any) => callback(data)
+      ipcRenderer.on('catalog:uploadProgress', listener)
+      return () => {
+        ipcRenderer.removeListener('catalog:uploadProgress', listener)
+      }
+    },
+    publishStagedDraft: (jobDir: string, options?: any): Promise<any> =>
+      ipcRenderer.invoke('catalog:publishStagedDraft', jobDir, options)
+  },
+  productEnrichment: {
+    exportCsv: (options?: any): Promise<any> => ipcRenderer.invoke('productEnrichment:export-csv', options),
+    saveCsvDialog: (options: { defaultFileName?: string; csvContent: string }): Promise<any> =>
+      ipcRenderer.invoke('catalog:saveExportedCsvDialog', options),
+    validateCsv: (csvContent: string): Promise<any> => ipcRenderer.invoke('productEnrichment:validate-csv', csvContent),
+    uploadImages: (input: any): Promise<any> => ipcRenderer.invoke('productEnrichment:upload-images', input),
+    importStep2Csv: (jobDir: string, csvContent: string, options?: any): Promise<any> =>
+      ipcRenderer.invoke('productEnrichment:import-step2-csv', jobDir, csvContent, options),
+    updateHeader: (jobDir: string, headerPatch: any): Promise<any> =>
+      ipcRenderer.invoke('productEnrichment:update-header', jobDir, headerPatch),
+    updateOfferField: (jobDir: string, offerId: string, fieldUpdates: any): Promise<any> =>
+      ipcRenderer.invoke('productEnrichment:update-offer-field', jobDir, offerId, fieldUpdates),
+    revertOfferField: (jobDir: string, offerId: string, fieldName?: string): Promise<any> =>
+      ipcRenderer.invoke('productEnrichment:revert-offer-field', jobDir, offerId, fieldName),
+    replaceConsumerImage: (jobDir: string, offerId: string, replacement: any): Promise<any> =>
+      ipcRenderer.invoke('productEnrichment:replace-consumer-image', jobDir, offerId, replacement),
+    loadDraft: (jobDir: string): Promise<any> =>
+      ipcRenderer.invoke('productEnrichment:load-draft', jobDir),
+    initializeDraft: (jobDir: string, options?: any): Promise<any> =>
+      ipcRenderer.invoke('productEnrichment:initialize-draft', jobDir, options),
+    exportStep1Csv: (jobDir: string, options?: any): Promise<any> =>
+      ipcRenderer.invoke('productEnrichment:export-step1-csv', jobDir, options),
+    publishStagedDraft: (jobDir: string, options?: any): Promise<any> =>
+      ipcRenderer.invoke('productEnrichment:publish-staged-draft', jobDir, options),
+    selectCsvDialog: (): Promise<any> =>
+      ipcRenderer.invoke('productEnrichment:select-csv-dialog'),
+    selectImageDialog: (): Promise<any> =>
+      ipcRenderer.invoke('productEnrichment:select-image-dialog'),
+    getSupermarketsAndRegions: (): Promise<{ supermarkets: any[]; regions: any[] }> =>
+      ipcRenderer.invoke('catalog:getSupermarketsAndRegions'),
+    resolveSupermarket: (rawName: string): Promise<any> =>
+      ipcRenderer.invoke('productEnrichment:resolve-supermarket', rawName),
+    resolveRegion: (rawName: string): Promise<any> =>
+      ipcRenderer.invoke('productEnrichment:resolve-region', rawName)
   }
 }
 

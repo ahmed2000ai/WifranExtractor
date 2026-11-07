@@ -243,42 +243,100 @@ export class PageFirstPipelineService {
       const outputDir = join(packageDir, 'metadata', 'rev1', `page-${pagePadded}`);
 
       let rev1Result;
-      try {
-        rev1Result = await sharedRev1PipelineService.processPage({
-          imagePath: pageImagePath,
-          outputDir,
-          pageNumber,
-          overrideModel: overrideModel || 'gemini-3.8-flash',
-          onProgress: (stage, message) => {
-            const mappedStage: PageFirstProgressEvent['stage'] =
-              stage === 'stage_8_cropping' ? 'cropping' :
-              stage === 'stage_5_audit' ? 'validating' :
-              stage === 'stage_6_retry' ? 'retrying' : 'ocr_running';
-            emitProgress(mappedStage, pageNumber, message);
+      if (mockPageResponses && mockPageResponses.has(pageNumber)) {
+        const mockRaw = mockPageResponses.get(pageNumber);
+        const rawOffers = mockRaw.offers || (mockRaw.document_annotation?.offers || []).map((o: any, idx: number) => ({
+          offer_number: idx + 1,
+          original_price: o.selected_prices?.original_price ?? null,
+          promo_price: o.selected_prices?.offer_price ?? 0,
+          unit_type: o.price_basis?.raw_text || 'each',
+          english_title: o.product?.title_en || '',
+          arabic_title: o.product?.title_ar || '',
+          item_domain: o.product?.item_domain || 'grocery',
+          size_value: o.content?.size_text || null,
+          pack_quantity: o.content?.pack_quantity || null,
+          each_size_value: o.content?.each_size_value || null,
+          each_size_unit: o.content?.each_size_unit || null,
+          is_uniform_size_across_variants: null,
+          promo_condition: o.promotion?.mechanic === 'loyalty_required' ? 'LOYALTY_CARD_REQUIRED' : null,
+          quantity_limit: null,
+          components: {
+            product_visual_box: [100, 100, 300, 300],
+            promo_price_box: [100, 310, 200, 360]
           }
-        });
-      } catch (err: any) {
-        totalFailed++;
-        const errMsg = err.message || 'Gemini 3.8 Flash extraction failed';
-        emitProgress('failed', pageNumber, errMsg, 'GEMINI_EXTRACTION_FAILED');
-        reportPages.push({
-          page_number: pageNumber,
-          page_classification: 'unknown',
-          structured_offer_count: 0,
-          current_price_anchor_count: 0,
-          linked_offer_count: 0,
-          uncovered_anchor_count: 0,
-          uncovered_anchor_block_ids: [],
-          pass_status: 'failed',
-          completeness_status: 'failed',
-          crop_count: 0,
-          unresolved_reason: errMsg,
-          pages_processed_usage: 1,
-          estimated_cost_usd: 0.001,
-          warnings: [errMsg],
-          blocking_issues: ['FATAL_GEMINI_CALL_FAILURE']
-        });
-        throw err;
+        }));
+
+        const cropRectangles = (rawOffers || []).map((o: any) => ({
+          offer_number: o.offer_number,
+          union_box_px: { xmin: 50, ymin: 50, xmax: 350, ymax: 350, width: 300, height: 300 },
+          product_thumb_box_px: { xmin: 50, ymin: 50, xmax: 350, ymax: 350, width: 300, height: 300 },
+          offer_card_crop_path: null,
+          product_thumb_crop_path: null
+        }));
+
+        rev1Result = {
+          ok: true,
+          pageNumber,
+          pageMetadata: {
+            is_loyalty_page: false,
+            loyalty_program_name: null,
+            validity_start_date: null,
+            validity_end_date: null,
+            ignored_banners: []
+          },
+          nativeDimensions: { width: 400, height: 400 },
+          offers: rawOffers.map((o: any) => ({ ...o, confidence: o.confidence ?? 0.95 })),
+          cropRectangles,
+          auditResult: {
+            passed: true,
+            page_confidence: 0.95,
+            issues: [],
+            total_offers: rawOffers.length,
+            unresolved_retries: 0,
+            suspect_regions: []
+          },
+          retryExecuted: false,
+          exportedToActiveLearning: false,
+          enqueuedExceptionsCount: 0
+        };
+      } else {
+        try {
+          rev1Result = await sharedRev1PipelineService.processPage({
+            imagePath: pageImagePath,
+            outputDir,
+            pageNumber,
+            overrideModel: overrideModel || 'gemini-3.8-flash',
+            onProgress: (stage, message) => {
+              const mappedStage: PageFirstProgressEvent['stage'] =
+                stage === 'stage_8_cropping' ? 'cropping' :
+                stage === 'stage_5_audit' ? 'validating' :
+                stage === 'stage_6_retry' ? 'retrying' : 'ocr_running';
+              emitProgress(mappedStage, pageNumber, message);
+            }
+          });
+        } catch (err: any) {
+          totalFailed++;
+          const errMsg = err.message || 'Gemini 3.8 Flash extraction failed';
+          emitProgress('failed', pageNumber, errMsg, 'GEMINI_EXTRACTION_FAILED');
+          reportPages.push({
+            page_number: pageNumber,
+            page_classification: 'unknown',
+            structured_offer_count: 0,
+            current_price_anchor_count: 0,
+            linked_offer_count: 0,
+            uncovered_anchor_count: 0,
+            uncovered_anchor_block_ids: [],
+            pass_status: 'failed',
+            completeness_status: 'failed',
+            crop_count: 0,
+            unresolved_reason: errMsg,
+            pages_processed_usage: 1,
+            estimated_cost_usd: 0.001,
+            warnings: [errMsg],
+            blocking_issues: ['FATAL_GEMINI_CALL_FAILURE']
+          });
+          throw err;
+        }
       }
 
       primaryCompleted++;

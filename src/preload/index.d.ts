@@ -89,8 +89,8 @@ declare global {
       prePublishPreview: {
         load: (workspacePath: string) => Promise<{ ok: boolean; summary?: import('../../shared/types/prePublishPreview').PrePublishPreviewSummary; error?: string }>
         markOpened: (workspacePath: string) => Promise<{ ok: boolean; error?: string }>
-        publishApproved: (workspacePath: string, summaryCounts: any) => Promise<{ ok: boolean; error?: string }>
-        getStatus: (workspacePath: string) => Promise<{ ok: boolean; status?: string; db_update_status?: string; error?: string }>
+        publishApproved: (workspacePath: string, summaryCounts: any, options?: { forceRePublish?: boolean }) => Promise<{ ok: boolean; result?: import('../../shared/types/offerSync').OfferSyncResult; error?: string }>
+        getStatus: (workspacePath: string) => Promise<{ ok: boolean; status?: string; db_update_status?: string; published_at?: string | null; folder_name?: string | null; error?: string }>
         setDbStatus: (workspacePath: string, status: 'completed' | 'failed') => Promise<{ ok: boolean; error?: string }>
         checkRehearsalGates: (workspacePath: string, typedConfirmation?: string) => Promise<any>
         getRehearsalConfig: () => Promise<any>
@@ -103,6 +103,36 @@ declare global {
         getStatus: (packageDir: string) => Promise<any>
         onProgress: (callback: (event: any) => void) => () => void
         onLog: (callback: (event: any) => void) => () => void
+      }
+      catalog: {
+        analyzeCandidates: (options?: any) => Promise<import('../shared/types/catalogResolution').AnalyzeOfferCatalogCandidatesResult>
+        approveCandidates: (input: import('../shared/types/catalogResolution').ApproveCatalogCandidatesInput) => Promise<import('../shared/types/catalogResolution').ApproveCatalogCandidatesResult>
+        exportImageCsv: (options?: any) => Promise<import('../shared/types/productImageEnrichment').ExportHybridImageRefsResult>
+        saveExportedCsvDialog: (options: { defaultFileName?: string; csvContent: string }) => Promise<{ canceled: boolean; filePath?: string }>
+        validateImageCsv: (csvContent: string) => Promise<import('../shared/types/productImageEnrichment').CsvValidationSummary>
+        uploadProductImages: (input: import('../shared/types/productImageEnrichment').UploadProductImagesInput) => Promise<import('../shared/types/productImageEnrichment').UploadProductImagesResult>
+        onUploadProgress: (callback: (event: any) => void) => () => void
+        publishStagedDraft: (jobDir: string, options?: import('../shared/types/productImageEnrichment').PublishStagedLeafletOptions) => Promise<import('../shared/types/productImageEnrichment').PublishStagedLeafletResult>
+      }
+      productEnrichment: {
+        exportCsv: (options?: any) => Promise<import('../shared/types/productImageEnrichment').ExportHybridImageRefsResult>
+        saveCsvDialog: (options: { defaultFileName?: string; csvContent: string }) => Promise<{ canceled: boolean; filePath?: string }>
+        validateCsv: (csvContent: string) => Promise<import('../shared/types/productImageEnrichment').CsvValidationSummary>
+        uploadImages: (input: import('../shared/types/productImageEnrichment').UploadProductImagesInput) => Promise<import('../shared/types/productImageEnrichment').UploadProductImagesResult>
+        importStep2Csv: (jobDir: string, csvContent: string, options?: any) => Promise<import('../shared/types/productImageEnrichment').ImportStep2CsvResult>
+        updateHeader: (jobDir: string, headerPatch: any) => Promise<import('../shared/types/productImageEnrichment').StagedLeafletDraft>
+        updateOfferField: (jobDir: string, offerId: string, fieldUpdates: any) => Promise<import('../shared/types/productImageEnrichment').StagedLeafletDraft>
+        revertOfferField: (jobDir: string, offerId: string, fieldName?: string) => Promise<import('../shared/types/productImageEnrichment').StagedLeafletDraft>
+        replaceConsumerImage: (jobDir: string, offerId: string, replacement: any) => Promise<import('../shared/types/productImageEnrichment').StagedLeafletDraft>
+        loadDraft: (jobDir: string) => Promise<import('../shared/types/productImageEnrichment').StagedLeafletDraft | null>
+        initializeDraft: (jobDir: string, options?: { metadataPageNumber?: number | null; pdfFileName?: string | null; pdfFilePath?: string | null; [key: string]: any }) => Promise<import('../shared/types/productImageEnrichment').StagedLeafletDraft>
+        exportStep1Csv: (jobDir: string, options?: any) => Promise<import('../shared/types/productImageEnrichment').ExportStagedLeafletResult>
+        publishStagedDraft: (jobDir: string, options?: import('../shared/types/productImageEnrichment').PublishStagedLeafletOptions) => Promise<import('../shared/types/productImageEnrichment').PublishStagedLeafletResult>
+        selectCsvDialog: () => Promise<{ canceled: boolean; filePath?: string; content?: string }>
+        selectImageDialog: () => Promise<{ canceled: boolean; filePath?: string }>
+        getSupermarketsAndRegions: () => Promise<{ supermarkets: any[]; regions: any[] }>
+        resolveSupermarket: (rawName: string) => Promise<import('../shared/types/productImageEnrichment').ResolvedEntity>
+        resolveRegion: (rawName: string) => Promise<import('../shared/types/productImageEnrichment').ResolvedEntity>
       }
     }
   }

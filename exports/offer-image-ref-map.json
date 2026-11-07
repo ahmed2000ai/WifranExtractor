@@ -1,0 +1,11 @@
+{
+  "nextSeq": 7,
+  "shortToUuid": {
+    "O4": "offer-incompatible-size",
+    "O5": "offer-net-new-soda"
+  },
+  "uuidToShort": {
+    "offer-incompatible-size": "O4",
+    "offer-net-new-soda": "O5"
+  }
+}

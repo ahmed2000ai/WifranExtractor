@@ -374,6 +374,7 @@ export function mapSqlConsumerViewRowToConsumerDto(
     leaflet_id: sqlViewRow.leaflet_id ?? null,
     supermarket_id: sqlViewRow.supermarket_id ?? null,
     supermarket_slug: sqlViewRow.supermarket_slug ?? null,
+    product_id: sqlViewRow.product_id != null ? Number(sqlViewRow.product_id) : null,
     location_scope: sqlViewRow.location_scope ?? null,
     city_id: sqlViewRow.city_id ?? null,
     region_id: sqlViewRow.region_id ?? null,

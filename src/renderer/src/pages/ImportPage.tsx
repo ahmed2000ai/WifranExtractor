@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { PageHeader } from '../components/PageHeader'
 import { useReferenceData } from '../hooks/useReferenceData'
 import { StatusBadge } from '../components/StatusBadge'
@@ -8,22 +8,26 @@ import { usePipelineContext } from '../context/PipelineContext'
 import { usePipelineSummary } from '../hooks/usePipelineSummary'
 import { ProgressTimeline } from '../components/ProgressTimeline'
 import { OcrProgressBar } from '../components/OcrProgressBar'
-import { buildLeafletId } from '../../../shared/utils/leafletId'
 
 import { ManualCropEditor } from '../components/manual-crop/ManualCropEditor'
 import { PreDbReviewSummary } from '../components/review/PreDbReviewSummary'
 import { PrePublishPreview } from '../components/prepublish/PrePublishPreview'
 import { PreviousExtractionsView } from '../components/extraction/PreviousExtractionsView'
+import { CatalogEnrichmentPanel } from '../components/catalog/CatalogEnrichmentPanel'
+import { StagedLeafletPreviewPanel } from '../components/catalog/StagedLeafletPreviewPanel'
 import { ExtractionManifest, ExtractionPackageValidationResult } from '../../../shared/types/extractionManifest'
 
 export function ImportPage(): JSX.Element {
   const [showManualCropEditor, setShowManualCropEditor] = useState(false)
+  const [showCatalogEnrichment, setShowCatalogEnrichment] = useState(false)
+  const [showStagedPreview, setShowStagedPreview] = useState(false)
   const [loadedManifest, setLoadedManifest] = useState<ExtractionManifest | null>(null)
   const [packageValidation, setPackageValidation] = useState<ExtractionPackageValidationResult | null>(null)
   const [showPreviousExtractions, setShowPreviousExtractions] = useState(false)
   const [previewWorkspacePath, setPreviewWorkspacePath] = useState<string | null>(null)
   const [previewOrigin, setPreviewOrigin] = useState<'import' | 'previous_extractions'>('import')
   const [showPrePublishPreview, setShowPrePublishPreview] = useState(false)
+  const [extractionsRefreshTrigger, setExtractionsRefreshTrigger] = useState<number>(0)
   const [selectedPageNumber, setSelectedPageNumber] = useState<number>(1)
   const [quickTestPageNumber, setQuickTestPageNumber] = useState<number>(1)
   const [quickTestMaxOffers, setQuickTestMaxOffers] = useState<number>(2)
@@ -37,7 +41,6 @@ export function ImportPage(): JSX.Element {
     formState, 
     validation, 
     setSupermarketId, 
-    setLocation, 
     setOfferStartDate, 
     setOfferEndDate, 
     selectPdf, 
@@ -107,222 +110,32 @@ export function ImportPage(): JSX.Element {
     latestProgress: syncProgress
   } = ctx.offerSync
 
-  const locationOptions = useMemo(() => {
-    if (!data || !formState.supermarketId) return []
-
-    const options: any[] = [
-      {
-        id: 'hc-national-national',
-        locationScope: 'national',
-        locationSlug: 'national',
-        coverageLabel: 'National Coverage',
-        cityId: null,
-        regionId: null,
-        value: 'national-national',
-        label: 'National Coverage'
-      }
-    ]
-
-    data.regions.forEach(r => {
-      options.push({
-        id: `hc-region-${r.slug}`,
-        locationScope: 'region',
-        locationSlug: r.slug,
-        coverageLabel: `Region: ${r.name_en || r.name_ar}`,
-        cityId: null,
-        regionId: r.id,
-        value: `region-${r.slug}`,
-        label: `Region: ${r.name_en || r.name_ar}`
-      })
-    })
-
-    data.cities.forEach(c => {
-      const mapping = data.supermarketRegions.find(sr => sr.city_id === c.id)
-      options.push({
-        id: `hc-city-${c.slug}`,
-        locationScope: 'city',
-        locationSlug: c.slug,
-        coverageLabel: `City: ${c.name_en || c.name_ar}`,
-        cityId: c.id,
-        regionId: mapping?.region_id || null,
-        value: `city-${c.slug}`,
-        label: `City: ${c.name_en || c.name_ar}`
-      })
-    })
-
-    return options
-  }, [data, formState.supermarketId])
-
-  const selectedLocationValue = formState.location 
-    ? `${formState.location.locationScope}-${formState.location.locationSlug}`
-    : ''
-
-  // Auto-select National Coverage by default when a supermarket is chosen
-  useEffect(() => {
-    if (formState.supermarketId && !formState.location && locationOptions.length > 0) {
-      const nationalOpt = locationOptions.find(o => o.locationScope === 'national')
-      if (nationalOpt) {
-        const smSlug = data?.supermarkets.find(s => s.id === formState.supermarketId)?.slug || 'unknown'
-        const lId = buildLeafletId({
-          supermarketSlug: smSlug,
-          coverageScope: 'national',
-          locationSlug: nationalOpt.locationSlug,
-          validTo: formState.offerEndDate
-        })
-        setLocation({
-          locationScope: 'national',
-          locationSlug: nationalOpt.locationSlug,
-          coverageLabel: nationalOpt.coverageLabel,
-          cityId: nationalOpt.cityId,
-          regionId: nationalOpt.regionId,
-          label: nationalOpt.label,
-          leafletId: lId
-        })
-      }
-    }
-  }, [formState.supermarketId, formState.location, locationOptions, data, formState.offerEndDate, setLocation])
-
   const [autoRun, setAutoRun] = useState(false)
+  const [hasAutoOpenedStagedPreview, setHasAutoOpenedStagedPreview] = useState(false)
+  const [isInitializingDraft, setIsInitializingDraft] = useState(false)
+  const [metadataPageNumber, setMetadataPageNumber] = useState<number | null>(null)
   const [extractionMode, setExtractionMode] = useState<import('../../../shared/types/pageFirstExtractionMode').ExtractionMode>('page_first_annotated_ocr')
   const [showAdvancedLegacy, setShowAdvancedLegacy] = useState(false)
-  
-  // Reset pipeline states when the selected PDF changes so the user can start a new extraction
-  useEffect(() => {
-    // Determine if file actually changed to a new file (not just on initial load unless we want to reset anyway)
-    // A simple reset on pdfFile change is fine since they just picked it.
-    if (formState.pdfFile) {
-      ctx.streamingPdfRender.reset()
-      ctx.ocrPipeline.reset()
-      ctx.imageCropping.reset()
-      ctx.importTracking.reset()
-      ctx.entityMatching.reset()
-      ctx.offerPreparation.reset()
-      ctx.offerSync.reset()
-      ctx.cropAndItemOcr.reset()
-      ctx.pageFirstPipeline.reset()
-      setAutoRun(false)
-    }
-  }, [formState.pdfFile?.path]) // only reset when path changes
 
-  useEffect(() => {
-    if (firstPageReady && extractionMode === 'legacy_crop_first') {
-      setShowManualCropEditor(true)
-    }
-  }, [firstPageReady, extractionMode])
-
-  useEffect(() => {
-    if (!autoRun) return
-
-    // 1. Preprocess -> OCR Pipeline
-    if ((streamingState?.status === 'completed' || streamingState?.status === 'partially_completed') && !ocrRunning && !ocrResult && !ocrError && !pipelineRunning && !pipelineResult && !pipelineError && configStatus?.mistral.apiKey.configured) {
-      if (streamingState.chunks && streamingState.chunks.length > 0) {
-        runPipeline({
-          workspacePath: streamingState.workspacePath!,
-          chunks: streamingState.chunks!,
-          renderedPages: streamingPages
+  const handleOpenStagedPreview = async () => {
+    const ws = previewWorkspacePath || streamingState?.workspacePath || loadedManifest?.extraction_folder_path
+    if (ws) {
+      setPreviewWorkspacePath(ws)
+      try {
+        setIsInitializingDraft(true)
+        await window.wifranExtractor.productEnrichment.initializeDraft(ws, {
+          metadataPageNumber,
+          pdfFileName: formState.pdfFile?.name,
+          pdfFilePath: formState.pdfFile?.path
         })
+      } catch (err) {
+        console.warn('Manual init staged draft warning:', err)
+      } finally {
+        setIsInitializingDraft(false)
       }
     }
-    
-    // 2. OCR Pipeline -> Crop Images
-    else if (pipelineResult && !cropRunning && !cropResult && !cropError) {
-      const rows = pipelineResult.normalizedRows.map((r: any) => ({
-        rowId: r.source.row_id,
-        pageNumber: r.source.page_number,
-        status: r.status,
-        skipReason: r.skip_reason,
-        productNameAr: r.offer?.title_ar || r.original?.product_name_ar,
-        productNameEn: r.offer?.title_en || r.original?.product_name_en,
-        offerPrice: r.offer?.offer_price || r.original?.offer_price,
-        boundingBox: r.bounding_box || r.original?.bounding_box
-      }))
-      
-      cropRows({
-        workspacePath: streamingState!.workspacePath!,
-        renderedPages: streamingPages,
-        rows,
-        paddingPercent: 8,
-        outputFormat: 'jpg',
-        outputQuality: 85
-      })
-    }
-
-    // 3. Crop Images -> DB Save is now manual via Pre-Publish Preview
-    else if (cropResult && !dbSaving && !dbResult && !dbError) {
-      setAutoRun(false)
-      // We don't automatically persist to DB anymore. 
-      // The user must open the Pre-Publish Preview and approve.
-    }
-
-    // 4. DB Save -> Match Entities (This runs after user approves and DB sync is triggered manually)
-    else if (dbResult && !matchRunning && !matchResult && !matchError) {
-      const inputRows = pipelineResult!.normalizedRows.map((r: any, index: number) => ({
-        importRowId: dbResult.insertedImportRowCount ? `mock-row-${index}` : undefined,
-        rowNumber: index + 1,
-        rowId: r.source.row_id,
-        pageNumber: r.source.page_number,
-        status: r.status,
-        skipReason: r.skip_reason,
-        normalizedData: r
-      }))
-
-      matchRows({
-        importBatchId: dbResult.importBatchId || null,
-        rows: inputRows,
-        options: {
-          autoCreateBrands: !!configStatus?.importBehavior.autoCreateBrands,
-          autoCreateProducts: !!configStatus?.importBehavior.autoCreateProducts,
-          autoCreateCategories: !!configStatus?.importBehavior.autoCreateCategories
-        }
-      })
-    }
-
-    // 5. Match Entities -> Prepare Offers
-    else if (matchResult && !prepRunning && !prepResult && !prepError) {
-      const prepRows = matchResult.results.map(mr => ({
-        importRowId: mr.importRowId,
-        rowNumber: mr.rowNumber,
-        rowId: mr.rowId,
-        pageNumber: mr.updatedNormalizedData?.source?.page_number || 1,
-        status: mr.status as any,
-        skipReason: mr.status === 'skipped' ? 'Skipped in previous steps' : null,
-        normalizedData: mr.updatedNormalizedData
-      }))
-
-      prepareOffers({
-        importBatchId: dbResult?.importBatchId || null,
-        sourceId: dbResult?.sourceId || null,
-        leafletId: formState.location?.leafletId || null,
-        supermarketId: formState.supermarketId!,
-        locationScope: formState.location?.locationScope || 'national',
-        cityId: formState.location?.cityId || null,
-        regionId: formState.location?.regionId || null,
-        offerStartDate: formState.offerStartDate,
-        offerEndDate: formState.offerEndDate,
-        rows: prepRows,
-        options: {
-          skipDuplicateOffers: !!configStatus?.importBehavior.skipDuplicateOffers,
-          defaultOfferStatus: configStatus?.importBehavior.defaultOfferStatus || 'published',
-          importDefaultStatus: configStatus?.importBehavior.importDefaultStatus || 'published',
-          allowNeedsReviewFallback: configStatus?.importBehavior.allowNeedsReviewFallback !== false,
-          publishWarningsAllowed: configStatus?.importBehavior.publishWarningsAllowed !== false,
-          dataQualityNeedsReviewThreshold: configStatus?.importBehavior.dataQualityNeedsReviewThreshold || 80,
-          requireImageForDraft: !!configStatus?.importBehavior.requireImageForDraft
-        }
-      })
-    }
-
-    // 6. Extraction complete -> Database publishing is strictly manual only.
-    // Automatic DB sync invocation is removed; publishing requires explicit operator approval in Pre-Publish Preview.
-    else if (prepResult && autoRun) {
-      setAutoRun(false)
-    }
-
-    // Stop auto-run if an error occurs anywhere
-    if (streamingError || ocrError || pipelineError || cropError || dbError || matchError || prepError || syncError) {
-      setAutoRun(false)
-    }
-  }, [autoRun, streamingState, ocrResult, pipelineResult, cropResult, dbResult, matchResult, prepResult, syncResult, streamingError, ocrError, pipelineError, cropError, dbError, matchError, prepError, syncError, pipelineRunning, ocrRunning, configStatus])
+    setShowStagedPreview(true)
+  }
 
   const getTrustedContext = () => ({
     supermarketId: formState.supermarketId,
@@ -389,6 +202,132 @@ export function ImportPage(): JSX.Element {
       maxOffers: quickTestMaxOffers
     })
   }
+  
+  // Reset pipeline states when the selected PDF changes so the user can start a new extraction
+  useEffect(() => {
+    // Determine if file actually changed to a new file (not just on initial load unless we want to reset anyway)
+    // A simple reset on pdfFile change is fine since they just picked it.
+    if (formState.pdfFile) {
+      ctx.streamingPdfRender.reset()
+      ctx.ocrPipeline.reset()
+      ctx.imageCropping.reset()
+      ctx.importTracking.reset()
+      ctx.entityMatching.reset()
+      ctx.offerPreparation.reset()
+      ctx.offerSync.reset()
+      ctx.cropAndItemOcr.reset()
+      ctx.pageFirstPipeline.reset()
+      setAutoRun(false)
+      setHasAutoOpenedStagedPreview(false)
+      setIsInitializingDraft(false)
+      setMetadataPageNumber(null)
+      setShowStagedPreview(false)
+    }
+  }, [formState.pdfFile?.path]) // only reset when path changes
+
+  useEffect(() => {
+    if (firstPageReady && extractionMode === 'legacy_crop_first') {
+      setShowManualCropEditor(true)
+    }
+  }, [firstPageReady, extractionMode])
+
+  // Automatically initialize the StagedLeafletDraft and open StagedLeafletPreviewPanel when extraction completes
+  useEffect(() => {
+    const wsPath = streamingState?.workspacePath || loadedManifest?.extraction_folder_path || previewWorkspacePath
+    if (wsPath && (ctx.pageFirstPipeline.result || cropResult) && !hasAutoOpenedStagedPreview && !isInitializingDraft) {
+      setPreviewWorkspacePath(wsPath)
+      setIsInitializingDraft(true)
+      window.wifranExtractor.productEnrichment.initializeDraft(wsPath, {
+        metadataPageNumber,
+        pdfFileName: formState.pdfFile?.name,
+        pdfFilePath: formState.pdfFile?.path
+      })
+        .then(() => {
+          setHasAutoOpenedStagedPreview(true)
+          setShowStagedPreview(true)
+        })
+        .catch((err: any) => {
+          console.warn('Auto-init staged draft failed:', err)
+          setHasAutoOpenedStagedPreview(true)
+          setShowStagedPreview(true)
+        })
+        .finally(() => {
+          setIsInitializingDraft(false)
+        })
+    }
+  }, [
+    ctx.pageFirstPipeline.result,
+    cropResult,
+    streamingState?.workspacePath,
+    loadedManifest?.extraction_folder_path,
+    previewWorkspacePath,
+    hasAutoOpenedStagedPreview,
+    isInitializingDraft,
+    metadataPageNumber,
+    formState.pdfFile?.name,
+    formState.pdfFile?.path
+  ])
+
+  useEffect(() => {
+    if (!autoRun) return
+
+    // 1. Preprocess -> Page-First or Legacy Pipeline
+    if ((streamingState?.status === 'completed' || streamingState?.status === 'partially_completed') && configStatus?.mistral.apiKey.configured) {
+      if (extractionMode === 'page_first_annotated_ocr') {
+        if (!ctx.pageFirstPipeline.running && !ctx.pageFirstPipeline.result && !ctx.pageFirstPipeline.error) {
+          handleStartPageFirstExtraction()
+        }
+      } else if (!ocrRunning && !ocrResult && !ocrError && !pipelineRunning && !pipelineResult && !pipelineError) {
+        if (streamingState.chunks && streamingState.chunks.length > 0) {
+          runPipeline({
+            workspacePath: streamingState.workspacePath!,
+            chunks: streamingState.chunks!,
+            renderedPages: streamingPages
+          })
+        }
+      }
+    }
+    
+    // 2. OCR Pipeline -> Crop Images (Legacy)
+    else if (pipelineResult && !cropRunning && !cropResult && !cropError) {
+      const rows = pipelineResult.normalizedRows.map((r: any) => ({
+        rowId: r.source.row_id,
+        pageNumber: r.source.page_number,
+        status: r.status,
+        skipReason: r.skip_reason,
+        productNameAr: r.offer?.title_ar || r.original?.product_name_ar,
+        productNameEn: r.offer?.title_en || r.original?.product_name_en,
+        offerPrice: r.offer?.offer_price || r.original?.offer_price,
+        boundingBox: r.bounding_box || r.original?.bounding_box
+      }))
+      
+      cropRows({
+        workspacePath: streamingState!.workspacePath!,
+        renderedPages: streamingPages,
+        rows,
+        paddingPercent: 8,
+        outputFormat: 'jpg',
+        outputQuality: 85
+      })
+    }
+
+    // 3. Crop Images -> DB Save is now manual via Pre-Publish Preview
+    else if (cropResult && !dbSaving && !dbResult && !dbError) {
+      setAutoRun(false)
+      // We don't automatically persist to DB anymore. 
+      // The user must open the Pre-Publish Preview and approve.
+    }
+
+    // Stop auto-run when pageFirstPipeline finishes
+    else if (ctx.pageFirstPipeline.result && autoRun) {
+      setAutoRun(false)
+    }
+
+    // Stop auto-run if an error occurs anywhere
+    if (streamingError || ocrError || pipelineError || cropError || dbError || matchError || prepError || syncError || ctx.pageFirstPipeline.error) {
+      setAutoRun(false)
+    }
+  }, [autoRun, streamingState, ocrResult, pipelineResult, cropResult, dbResult, matchResult, prepResult, syncResult, streamingError, ocrError, pipelineError, cropError, dbError, matchError, prepError, syncError, pipelineRunning, ocrRunning, configStatus, extractionMode, ctx.pageFirstPipeline.running, ctx.pageFirstPipeline.result, ctx.pageFirstPipeline.error])
 
   if (showPreviousExtractions) {
     return (
@@ -396,6 +335,7 @@ export function ImportPage(): JSX.Element {
         <PreviousExtractionsView
           onBack={() => setShowPreviousExtractions(false)}
           supermarkets={data?.supermarkets || []}
+          refreshTrigger={extractionsRefreshTrigger}
           onSelectForPreview={async (folderPath) => {
             const result = await window.wifranExtractor.extractionPackage.open(folderPath)
             if (result.ok && result.manifest) {
@@ -443,9 +383,10 @@ export function ImportPage(): JSX.Element {
             backButtonText="Back to Extractions"
             onClose={() => {
               setShowPrePublishPreview(false)
+              setExtractionsRefreshTrigger(t => t + 1)
             }}
             onPublishStarted={() => {
-              setShowPrePublishPreview(false)
+              setExtractionsRefreshTrigger(t => t + 1)
             }}
           />
         )}
@@ -457,7 +398,7 @@ export function ImportPage(): JSX.Element {
     <div className="page-container">
       <PageHeader 
         title="Import Leaflet" 
-        description="Select a PDF leaflet and define its metadata to begin extraction." 
+        description="Select a PDF leaflet to begin local extraction and staging." 
       />
 
       {error && (
@@ -497,137 +438,47 @@ export function ImportPage(): JSX.Element {
               )}
             </div>
           </FormField>
-        </div>
 
-        <div className="form-section">
-          <h3>2. Supermarket</h3>
           <FormField 
-            label="Supermarket" 
-            fieldKey="supermarketId" 
-            errors={validation.errors}
+            label="Metadata Page Number (Optional)" 
+            fieldKey="metadataPageNumber" 
+            errors={[]}
+            helperText="Leave blank to auto-upload 1st & last pages"
           >
-            <select 
-              className="form-control"
-              value={formState.supermarketId || ''}
-              onChange={(e) => setSupermarketId(e.target.value || null)}
-              disabled={loading || !!error || !data || data.supermarkets.length === 0}
-            >
-              <option value="">
-                {!data || loading ? 'Loading supermarkets...' : 'Select a supermarket...'}
-              </option>
-              {data?.supermarkets.map(sm => (
-                <option key={sm.id} value={sm.id}>{sm.name_en || sm.name_ar || sm.slug}</option>
-              ))}
-            </select>
-            {data && data.supermarkets.length === 0 && !loading && (
-              <p className="help-text" style={{ color: 'red' }}>No active supermarkets found in database.</p>
-            )}
-          </FormField>
-        </div>
-
-        <div className="form-section">
-          <h3>3. Location</h3>
-          <FormField 
-            label="City / Region" 
-            fieldKey="location" 
-            errors={validation.errors}
-          >
-            <select 
-              className="form-control"
-              value={selectedLocationValue}
+            <input
+              type="number"
+              id="metadata-page-number-input"
+              min={1}
+              placeholder="Leave blank to auto-upload 1st & last pages"
+              value={metadataPageNumber ?? ''}
               onChange={(e) => {
-                const val = e.target.value
+                const val = e.target.value.trim()
                 if (!val) {
-                  setLocation(null)
+                  setMetadataPageNumber(null)
                 } else {
-                  const opt = locationOptions.find(o => o.value === val)
-                  if (opt) {
-                    // Generate leafletId right here since we have all data
-                    const smSlug = data?.supermarkets.find(s => s.id === formState.supermarketId)?.slug || 'unknown'
-                    const lId = buildLeafletId({
-                      supermarketSlug: smSlug,
-                      coverageScope: opt.locationScope as any,
-                      locationSlug: opt.locationSlug,
-                      validTo: formState.offerEndDate
-                    })
-                    
-                    setLocation({ 
-                      locationScope: opt.locationScope as any,
-                      locationSlug: opt.locationSlug,
-                      coverageLabel: opt.coverageLabel,
-                      cityId: opt.cityId, 
-                      regionId: opt.regionId, 
-                      label: opt.label,
-                      leafletId: lId
-                    })
-                  }
+                  const num = parseInt(val, 10)
+                  setMetadataPageNumber(!isNaN(num) && num > 0 ? num : null)
                 }
               }}
-              disabled={!formState.supermarketId || locationOptions.length === 0}
-            >
-              <option value="">
-                {!formState.supermarketId 
-                  ? 'Select a supermarket first' 
-                  : locationOptions.length === 0 
-                    ? 'No locations available for this supermarket' 
-                    : 'Select city/region...'}
-              </option>
-              {locationOptions.map(opt => (
-                <option key={opt.id} value={opt.value}>{opt.label}</option>
-              ))}
-            </select>
-            {formState.supermarketId && locationOptions.length === 0 && (
-              <p className="help-text" style={{ color: 'orange' }}>Warning: The selected supermarket has no mapped locations in the database.</p>
-            )}
+              style={{
+                width: '100%',
+                maxWidth: '320px',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                border: '1px solid #cbd5e1',
+                fontSize: '0.9rem'
+              }}
+            />
           </FormField>
         </div>
 
-        <div className="form-section">
-          <h3>4. Offer Dates</h3>
-          <div className="form-row">
-            <FormField label="Start Date" fieldKey="offerStartDate" errors={validation.errors}>
-              <input 
-                type="date" 
-                className="form-control" 
-                value={formState.offerStartDate}
-                onChange={(e) => setOfferStartDate(e.target.value)}
-              />
-            </FormField>
-            <FormField label="End Date" fieldKey="offerEndDate" errors={validation.errors}>
-              <input 
-                type="date" 
-                className="form-control" 
-                value={formState.offerEndDate}
-                onChange={(e) => setOfferEndDate(e.target.value)}
-              />
-            </FormField>
-          </div>
-          <p className="help-text">These dates will be applied to all offers extracted from this leaflet.</p>
-        </div>
-
-
-
         <div className="form-section actions-section" style={{ borderTop: '1px solid #e2e8f0', paddingTop: '20px' }}>
-          <h3>6. Processing Readiness</h3>
+          <h3>Processing Readiness</h3>
           
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginBottom: '20px', fontSize: '0.9rem' }}>
             <div className="status-row">
               <strong style={{display: 'block', marginBottom: '4px'}}>PDF:</strong> 
               {formState.pdfFile ? <StatusBadge variant="success">Selected</StatusBadge> : <StatusBadge variant="warning">Missing</StatusBadge>}
-            </div>
-            <div className="status-row">
-              <strong style={{display: 'block', marginBottom: '4px'}}>Supermarket:</strong> 
-              {formState.supermarketId ? <StatusBadge variant="success">Selected</StatusBadge> : <StatusBadge variant="warning">Missing</StatusBadge>}
-            </div>
-            <div className="status-row">
-              <strong style={{display: 'block', marginBottom: '4px'}}>Location:</strong> 
-              {formState.location ? <StatusBadge variant="success">Selected</StatusBadge> : <StatusBadge variant="warning">Missing</StatusBadge>}
-            </div>
-            <div className="status-row">
-              <strong style={{display: 'block', marginBottom: '4px'}}>Dates:</strong> 
-              {!validation.errors.find(e => e.field === 'offerStartDate' || e.field === 'offerEndDate') 
-                ? <StatusBadge variant="success">Valid</StatusBadge> 
-                : <StatusBadge variant="error">Invalid</StatusBadge>}
             </div>
             
             <div className="status-row">
@@ -755,6 +606,18 @@ export function ImportPage(): JSX.Element {
                   >
                     Rebuild Crops From Existing OCR
                   </button>
+
+                  {ctx.pageFirstPipeline.result && (
+                    <button
+                      id="open-staged-preview-btn-result"
+                      className="btn btn-primary"
+                      style={{ backgroundColor: '#0284c7', borderColor: '#0284c7', color: '#ffffff', fontWeight: 600 }}
+                      onClick={handleOpenStagedPreview}
+                      disabled={isInitializingDraft}
+                    >
+                      {isInitializingDraft ? '⏳ Initializing Staging Draft...' : '📋 Open Staging Preview & Step 1 Export (07J)'}
+                    </button>
+                  )}
 
                   {ctx.pageFirstPipeline.result && (
                     <button
@@ -1520,10 +1383,11 @@ export function ImportPage(): JSX.Element {
             <button 
               className="btn btn-primary btn-large"
               style={{ width: '100%', marginBottom: '12px' }}
-              disabled={!canStart || streamingRunning} 
+              disabled={!canStart || streamingRunning || ctx.pageFirstPipeline.running || isInitializingDraft} 
               onClick={() => {
                 if (formState.pdfFile && configStatus) {
-                  setAutoRun(false)
+                  setAutoRun(true)
+                  setHasAutoOpenedStagedPreview(false)
                   startStreamingRender({
                     pdfPath: formState.pdfFile.path,
                     originalFileName: formState.pdfFile.name,
@@ -1542,7 +1406,7 @@ export function ImportPage(): JSX.Element {
                 }
               }}
             >
-              {streamingRunning ? 'Extracting...' : 'Start Extraction'}
+              {streamingRunning ? 'Rendering Pages...' : ctx.pageFirstPipeline.running ? 'Extracting Offers...' : isInitializingDraft ? 'Initializing Staged Draft...' : 'Start Extraction'}
             </button>
           ) : (
             <button 
@@ -1597,6 +1461,25 @@ export function ImportPage(): JSX.Element {
             onClick={() => setShowPreviousExtractions(true)}
           >
             Open Existing Extraction Folder...
+          </button>
+
+          <button 
+            id="open-staged-leaflet-preview-btn"
+            className="btn btn-secondary btn-large"
+            style={{ width: '100%', marginBottom: '12px', borderColor: '#0284c7', color: '#0284c7', fontWeight: 600 }}
+            disabled={(!streamingState?.workspacePath && !loadedManifest?.extraction_folder_path && !previewWorkspacePath) || isInitializingDraft}
+            onClick={handleOpenStagedPreview}
+          >
+            {isInitializingDraft ? '⏳ Initializing Staged Draft...' : '📋 Staged Leaflet Preview (WIFRAN-07J)...'}
+          </button>
+
+          <button 
+            id="open-catalog-enrichment-btn"
+            className="btn btn-secondary btn-large"
+            style={{ width: '100%', marginBottom: '12px', borderColor: '#6366f1', color: '#818cf8', fontWeight: 600 }}
+            onClick={() => setShowCatalogEnrichment(true)}
+          >
+            🖼️ Hybrid Image Enrichment &amp; Catalog Resolution (07J/07G)...
           </button>
           
           {packageValidation && !packageValidation.dbEligible && (
@@ -1704,6 +1587,40 @@ export function ImportPage(): JSX.Element {
         />
       )}
       
+      {showCatalogEnrichment && (
+        <CatalogEnrichmentPanel onClose={() => setShowCatalogEnrichment(false)} />
+      )}
+
+      {showStagedPreview && (previewWorkspacePath || loadedManifest?.extraction_folder_path || streamingState?.workspacePath) && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto"
+          style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999, backgroundColor: 'rgba(15, 23, 42, 0.75)', backdropFilter: 'blur(4px)', display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '24px' }}
+        >
+          <div 
+            className="card"
+            style={{ 
+              width: '100%', 
+              maxWidth: '1360px', 
+              maxHeight: '94vh', 
+              overflowY: 'auto', 
+              backgroundColor: '#f8fafc', 
+              borderRadius: '12px', 
+              padding: '24px',
+              border: '1px solid #cbd5e1',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+            }}
+          >
+            <StagedLeafletPreviewPanel 
+              jobDir={(previewWorkspacePath || loadedManifest?.extraction_folder_path || streamingState?.workspacePath)!}
+              onClose={() => setShowStagedPreview(false)}
+              onPublishStarted={() => {
+                setShowStagedPreview(false)
+              }}
+            />
+          </div>
+        </div>
+      )}
+
       {data && (
         <div style={{ marginTop: '20px', fontSize: '0.85rem', color: '#64748b' }}>
           <strong>Reference Data Loaded:</strong>{' '}

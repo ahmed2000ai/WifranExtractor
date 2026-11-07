@@ -57,7 +57,7 @@ export type PipelineResultRow = {
 
   skipReason?: string | null
 
-  productId?: string | null
+  productId?: string | number | null
   brandId?: string | null
   categoryId?: string | null
 

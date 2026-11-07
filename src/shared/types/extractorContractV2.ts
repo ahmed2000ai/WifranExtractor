@@ -155,7 +155,7 @@ export interface ExtractorOfferContractV2 {
   // 2. Product Facts
   product_facts: {
     exact_identity_status: ExactIdentityStatusV2;
-    verified_product_id: string | null;
+    verified_product_id: string | number | null;
     gtin: string | null;
     brand_assertion: BrandAssertionV2;
     derived_subcategory_slug: string | null;
@@ -261,6 +261,7 @@ export type ConsumerOfferProjection = {
   supermarket_id: string | null;
   supermarket_slug: string | null;
   location_scope: string | null;
+  product_id?: number | string | null;
   city_id: string | null;
   region_id: string | null;
   valid_from: string | null;

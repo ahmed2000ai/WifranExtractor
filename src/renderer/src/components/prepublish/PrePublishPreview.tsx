@@ -26,7 +26,18 @@ export function PrePublishPreview({
   const [summary, setSummary] = useState<PrePublishPreviewSummary | null>(null);
   const [publishing, setPublishing] = useState(false);
   const [filter, setFilter] = useState<string>('all');
-  const [showConfirm, setShowConfirm] = useState(false);
+  const [dbStatus, setDbStatus] = useState<string>('not_started');
+  const [publishedAt, setPublishedAt] = useState<string | null>(null);
+  const [allowRepublish, setAllowRepublish] = useState(false);
+  const [modalMode, setModalMode] = useState<'idle' | 'confirm' | 'publishing' | 'success' | 'error'>('idle');
+  const [publishProgress, setPublishProgress] = useState<{
+    stage?: string;
+    message?: string;
+    current?: number;
+    total?: number;
+  } | null>(null);
+  const [publishResult, setPublishResult] = useState<any | null>(null);
+  const [publishError, setPublishError] = useState<string | null>(null);
 
   // Rehearsal Mode states
   const [rehearsalMode, setRehearsalMode] = useState(false);
@@ -43,9 +54,31 @@ export function PrePublishPreview({
         const res = await window.wifranExtractor.prePublishPreview.load(workspacePath);
         if (res.ok && res.summary) {
           setSummary(res.summary);
+          if (res.summary.db_update_status) {
+            setDbStatus(res.summary.db_update_status);
+          }
+          if (res.summary.published_at) {
+            setPublishedAt(res.summary.published_at);
+          }
           await window.wifranExtractor.prePublishPreview.markOpened(workspacePath);
         } else {
           setError(res.error || 'Failed to load preview');
+        }
+
+        if (window.wifranExtractor?.prePublishPreview?.getStatus) {
+          try {
+            const statusRes = await window.wifranExtractor.prePublishPreview.getStatus(workspacePath);
+            if (statusRes.ok) {
+              if (statusRes.db_update_status) {
+                setDbStatus(statusRes.db_update_status);
+              }
+              if (statusRes.published_at) {
+                setPublishedAt(statusRes.published_at);
+              }
+            }
+          } catch {
+            // Non-fatal
+          }
         }
       } catch (e: any) {
         setError(e.message);
@@ -78,22 +111,57 @@ export function PrePublishPreview({
     }
   }, [workspacePath, loading, typedConfirmation]);
 
+  useEffect(() => {
+    if (window.wifranExtractor?.offerSync?.onProgress) {
+      const unsub = window.wifranExtractor.offerSync.onProgress((ev: any) => {
+        setPublishProgress({
+          stage: ev.stage,
+          message: ev.message,
+          current: ev.current,
+          total: ev.total
+        });
+      });
+      return () => {
+        unsub();
+      };
+    }
+    return undefined;
+  }, []);
+
   const handlePublishClick = () => {
-    setShowConfirm(true);
+    setPublishError(null);
+    setModalMode('confirm');
   };
 
   const handleConfirmPublish = async () => {
     if (!summary) return;
     setPublishing(true);
-    try {
-      // 1. Mark approved in manifest
-      const res = await window.wifranExtractor.prePublishPreview.publishApproved(workspacePath, summary.counts);
-      if (!res.ok) throw new Error(res.error || 'Failed to mark approved');
+    setModalMode('publishing');
+    setPublishError(null);
+    const eligibleCount = summary.counts.publish + summary.counts.publish_but_exclude_from_comparison;
+    setPublishProgress({
+      stage: 'sync_starting',
+      message: 'Connecting to Supabase and initializing publish batch...',
+      current: 0,
+      total: eligibleCount
+    });
 
-      // Trigger DB Sync via callback
+    try {
+      const res = allowRepublish
+        ? await window.wifranExtractor.prePublishPreview.publishApproved(workspacePath, summary.counts, { forceRePublish: true })
+        : await window.wifranExtractor.prePublishPreview.publishApproved(workspacePath, summary.counts);
+      if (!res.ok) throw new Error(res.error || 'Failed to complete database publish');
+
+      setPublishResult(res.result || res);
+      setDbStatus('completed');
+      setModalMode('success');
+      setPublishing(false);
+
+      // Trigger DB Sync callback
       onPublishStarted?.(isDryRun);
     } catch (e: any) {
-      setError(e.message);
+      setPublishError(e.message || 'An unexpected error occurred during database publish.');
+      setModalMode('error');
       setPublishing(false);
     }
   };
@@ -110,7 +178,8 @@ export function PrePublishPreview({
     i => (i.publish_decision === 'publish' || i.publish_decision === 'publish_but_exclude_from_comparison') &&
          i.blocking_errors && i.blocking_errors.length > 0
   );
-  const canPublish = dbConfigReady && eligibleCount > 0 && !publishing && !harnessBlocked && !hasBlockingErrorsOnEligible;
+  const isAlreadyPublished = dbStatus === 'completed' || summary.db_update_status === 'completed';
+  const canPublish = dbConfigReady && eligibleCount > 0 && !publishing && !harnessBlocked && !hasBlockingErrorsOnEligible && (!isAlreadyPublished || allowRepublish);
 
   let filteredItems = summary.items;
   if (filter === 'publish') filteredItems = summary.items.filter(i => i.publish_decision === 'publish');
@@ -146,6 +215,7 @@ export function PrePublishPreview({
             {isDryRun && !rehearsalMode && <span style={{ padding: '2px 6px', fontSize: '0.75rem', fontWeight: 600, backgroundColor: '#fef08a', color: '#854d0e', borderRadius: '4px', border: '1px solid #fde047' }}>DRY RUN MODE</span>}
             {qaMode && <span style={{ padding: '2px 6px', fontSize: '0.75rem', fontWeight: 600, backgroundColor: '#e0e7ff', color: '#3730a3', borderRadius: '4px', border: '1px solid #c7d2fe' }}>QA PACKAGE</span>}
             {rehearsalMode && <span style={{ padding: '2px 6px', fontSize: '0.75rem', fontWeight: 600, backgroundColor: '#fecaca', color: '#991b1b', borderRadius: '4px', border: '1px solid #f87171' }}>REAL PUBLISH REHEARSAL MODE</span>}
+            {isAlreadyPublished && <span id="already-published-badge" style={{ padding: '2px 6px', fontSize: '0.75rem', fontWeight: 600, backgroundColor: '#dcfce7', color: '#166534', borderRadius: '4px', border: '1px solid #bbf7d0' }}>ALREADY PUBLISHED</span>}
           </div>
           <div style={{ fontSize: '0.9rem', color: '#64748b' }}>
             {summary.supermarket_name} | {summary.location_label} | {summary.offer_start_date} to {summary.offer_end_date}
@@ -185,6 +255,41 @@ export function PrePublishPreview({
               {rehearsalGates?.warning && <span style={{ marginLeft: 8, color: '#ca8a04' }}>{rehearsalGates.warning}</span>}
             </div>
           )}
+          {isAlreadyPublished && (
+            <div 
+              id="already-published-banner"
+              style={{ 
+                marginTop: '10px', 
+                padding: '10px 14px', 
+                borderRadius: '8px', 
+                border: '1px solid #86efac', 
+                backgroundColor: '#f0fdf4', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'space-between',
+                flexWrap: 'wrap',
+                gap: '12px'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '1.2rem' }}>🚀</span>
+                <span style={{ fontSize: '0.85rem', color: '#166534' }}>
+                  <strong>This extraction was previously published to the database</strong>
+                  {publishedAt ? ` (${new Date(publishedAt).toLocaleString()})` : ''}.
+                  All offers are already live in Supabase. Republishing is blocked by default to prevent duplicate actions.
+                </span>
+              </div>
+              <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', color: '#166534', fontWeight: 600, cursor: 'pointer' }}>
+                <input 
+                  type="checkbox" 
+                  id="enable-force-republish-checkbox"
+                  checked={allowRepublish} 
+                  onChange={e => setAllowRepublish(e.target.checked)} 
+                />
+                Enable Force Re-publish
+              </label>
+            </div>
+          )}
         </div>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
           <button 
@@ -204,9 +309,31 @@ export function PrePublishPreview({
             className="btn btn-primary" 
             onClick={handlePublishClick}
             disabled={(!canPublish && !isDryRun) || (rehearsalMode && isDryRun) || (rehearsalMode && !rehearsalGates?.ok) || harnessBlocked}
-            style={{ fontWeight: 'bold', padding: '10px 24px', backgroundColor: isDryRun ? '#eab308' : (rehearsalMode ? '#ef4444' : undefined), color: (isDryRun || rehearsalMode) ? 'white' : undefined }}
+            style={{ 
+              fontWeight: 'bold', 
+              padding: '10px 24px', 
+              backgroundColor: isDryRun 
+                ? '#eab308' 
+                : rehearsalMode 
+                  ? '#ef4444' 
+                  : (isAlreadyPublished && !allowRepublish)
+                    ? '#94a3b8'
+                    : (isAlreadyPublished && allowRepublish)
+                      ? '#d97706'
+                      : undefined, 
+              color: (isDryRun || rehearsalMode || isAlreadyPublished) ? 'white' : undefined,
+              cursor: (isAlreadyPublished && !allowRepublish && !isDryRun) ? 'not-allowed' : undefined
+            }}
           >
-            {publishing ? 'Publishing...' : (isDryRun ? 'Dry Run Publish' : (rehearsalMode ? 'Run Real Publish Rehearsal' : 'Publish to Database'))}
+            {publishing 
+              ? 'Publishing...' 
+              : isDryRun 
+                ? 'Dry Run Publish' 
+                : rehearsalMode 
+                  ? 'Run Real Publish Rehearsal' 
+                  : isAlreadyPublished 
+                    ? (allowRepublish ? 'Force Re-publish to DB' : '✓ Already Published to DB') 
+                    : 'Publish to Database'}
           </button>
         </div>
       </div>
@@ -244,100 +371,374 @@ export function PrePublishPreview({
         </div>
       </div>
 
-      {/* Confirm Modal */}
-      {showConfirm && (
+      {/* Modals for Publish: Confirm, In-Progress, Success, Error */}
+      {modalMode !== 'idle' && (
         <div 
-          id="publish-confirmation-modal"
-          style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 10000, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          id="publish-modal-backdrop"
+          style={{ 
+            position: 'fixed', 
+            inset: 0, 
+            backgroundColor: 'rgba(15, 23, 42, 0.65)', 
+            backdropFilter: 'blur(3px)',
+            zIndex: 10000, 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            padding: '20px'
+          }}
         >
-          <div className="card" style={{ width: '540px', padding: '28px', backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' }}>
-            <h3 style={{ margin: '0 0 16px 0', fontSize: '1.25rem', color: '#0f172a' }}>
-              {rehearsalMode 
-                ? 'Confirm Real Publish Rehearsal' 
-                : (isDryRun ? 'Confirm Dry Run Publish' : 'Confirm Publish to Database')}
-            </h3>
+          {/* 1. Confirmation Modal */}
+          {modalMode === 'confirm' && (
+            <div 
+              id="publish-confirmation-modal"
+              className="card" 
+              style={{ width: '560px', maxWidth: '100%', padding: '28px', backgroundColor: 'white', borderRadius: '12px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}
+            >
+              <h3 style={{ margin: '0 0 16px 0', fontSize: '1.25rem', color: '#0f172a' }}>
+                {rehearsalMode 
+                  ? 'Confirm Real Publish Rehearsal' 
+                  : (isDryRun ? 'Confirm Dry Run Publish' : (isAlreadyPublished ? 'Confirm Force Re-publish to Database' : 'Confirm Publish to Database'))}
+              </h3>
 
-            <div style={{ padding: '16px', backgroundColor: '#f8fafc', borderRadius: '6px', border: '1px solid #e2e8f0', marginBottom: '20px' }}>
-              <div style={{ marginBottom: '10px' }}>
-                <span style={{ color: '#64748b', fontSize: '0.85rem', display: 'block' }}>Supermarket</span>
-                <strong style={{ color: '#0f172a', fontSize: '1rem' }}>{summary.supermarket_name || 'N/A'}</strong>
-              </div>
-              <div style={{ marginBottom: '10px' }}>
-                <span style={{ color: '#64748b', fontSize: '0.85rem', display: 'block' }}>Location</span>
-                <strong style={{ color: '#0f172a', fontSize: '1rem' }}>{summary.location_label || 'National'}</strong>
-              </div>
-              <div style={{ marginBottom: '10px' }}>
-                <span style={{ color: '#64748b', fontSize: '0.85rem', display: 'block' }}>Leaflet / Validity</span>
-                <strong style={{ color: '#0f172a', fontSize: '1rem' }}>
-                  {summary.leaflet_id ? `${summary.leaflet_id} (${summary.offer_start_date} to ${summary.offer_end_date})` : `${summary.offer_start_date} to ${summary.offer_end_date}`}
-                </strong>
-              </div>
-              <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '10px', marginTop: '10px' }}>
-                <span style={{ color: '#64748b', fontSize: '0.85rem', display: 'block' }}>Offers to be Published</span>
-                <strong style={{ color: '#16a34a', fontSize: '1.2rem' }}>{eligibleCount} offers</strong>
-                <span style={{ color: '#64748b', fontSize: '0.85rem', marginLeft: '8px' }}>
-                  ({summary.counts.publish} comparison-eligible, {summary.counts.publish_but_exclude_from_comparison} excluded from comparison)
-                </span>
-              </div>
-              {summary.counts.skip_or_quarantine > 0 && (
-                <div style={{ marginTop: '6px' }}>
-                  <span style={{ color: '#64748b', fontSize: '0.85rem' }}>Skipped / Quarantined: </span>
-                  <strong style={{ color: '#dc2626', fontSize: '0.85rem' }}>{summary.counts.skip_or_quarantine} offers</strong>
+              {isAlreadyPublished && !isDryRun && (
+                <div style={{ padding: '12px 14px', backgroundColor: '#fffbeb', border: '1px solid #fde68a', borderRadius: '6px', marginBottom: '16px', color: '#92400e', fontSize: '0.85rem' }}>
+                  ⚠️ <strong>Republish Notice:</strong> This extraction package was already published to the database. Identical offers will be skipped as strict no-ops by the database dedup gate and will not create duplicate rows.
                 </div>
               )}
-            </div>
 
-            <p style={{ fontSize: '0.9rem', color: '#475569', marginBottom: '20px', lineHeight: 1.5 }}>
-              {isDryRun && !rehearsalMode ? (
-                <>No images will be uploaded and no offers will be written to Supabase in dry run mode.</>
-              ) : (
-                <>
-                  Publishing will upload crop images and write <strong>{eligibleCount}</strong> offers to the production Wifran database.
-                  This action is manual and cannot be undone. Are you sure you want to proceed?
-                </>
+              <div style={{ padding: '16px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '20px' }}>
+                <div style={{ marginBottom: '10px' }}>
+                  <span style={{ color: '#64748b', fontSize: '0.85rem', display: 'block' }}>Supermarket</span>
+                  <strong style={{ color: '#0f172a', fontSize: '1rem' }}>{summary.supermarket_name || 'N/A'}</strong>
+                </div>
+                <div style={{ marginBottom: '10px' }}>
+                  <span style={{ color: '#64748b', fontSize: '0.85rem', display: 'block' }}>Location</span>
+                  <strong style={{ color: '#0f172a', fontSize: '1rem' }}>{summary.location_label || 'National'}</strong>
+                </div>
+                <div style={{ marginBottom: '10px' }}>
+                  <span style={{ color: '#64748b', fontSize: '0.85rem', display: 'block' }}>Leaflet / Validity</span>
+                  <strong style={{ color: '#0f172a', fontSize: '1rem' }}>
+                    {summary.leaflet_id ? `${summary.leaflet_id} (${summary.offer_start_date} to ${summary.offer_end_date})` : `${summary.offer_start_date} to ${summary.offer_end_date}`}
+                  </strong>
+                </div>
+                <div style={{ borderTop: '1px solid #e2e8f0', paddingTop: '10px', marginTop: '10px' }}>
+                  <span style={{ color: '#64748b', fontSize: '0.85rem', display: 'block' }}>Offers to be Published</span>
+                  <strong style={{ color: '#16a34a', fontSize: '1.2rem' }}>{eligibleCount} offers</strong>
+                  <span style={{ color: '#64748b', fontSize: '0.85rem', marginLeft: '8px' }}>
+                    ({summary.counts.publish} comparison-eligible, {summary.counts.publish_but_exclude_from_comparison} excluded from comparison)
+                  </span>
+                </div>
+                {summary.counts.skip_or_quarantine > 0 && (
+                  <div style={{ marginTop: '6px' }}>
+                    <span style={{ color: '#64748b', fontSize: '0.85rem' }}>Skipped / Quarantined: </span>
+                    <strong style={{ color: '#dc2626', fontSize: '0.85rem' }}>{summary.counts.skip_or_quarantine} offers</strong>
+                  </div>
+                )}
+              </div>
+
+              <p style={{ fontSize: '0.9rem', color: '#475569', marginBottom: '20px', lineHeight: 1.5 }}>
+                {isDryRun && !rehearsalMode ? (
+                  <>No images will be uploaded and no offers will be written to Supabase in dry run mode.</>
+                ) : (
+                  <>
+                    Publishing will upload crop images and write <strong>{eligibleCount}</strong> offers to the production Wifran database.
+                    This action is manual and cannot be undone. Are you sure you want to proceed?
+                  </>
+                )}
+              </p>
+
+              {rehearsalMode && (
+                <div style={{ marginBottom: '20px' }}>
+                  <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '8px', color: '#334155' }}>
+                    Type PUBLISH VERIFIED REHEARSAL to continue
+                  </label>
+                  <input 
+                    type="text" 
+                    value={typedConfirmation}
+                    onChange={e => setTypedConfirmation(e.target.value)}
+                    style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px' }}
+                    placeholder="PUBLISH VERIFIED REHEARSAL"
+                  />
+                </div>
               )}
-            </p>
 
-            {rehearsalMode && (
+              <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+                <button 
+                  id="cancel-publish-button"
+                  className="btn" 
+                  onClick={() => setModalMode('idle')}
+                  style={{ padding: '8px 18px' }}
+                >
+                  Cancel
+                </button>
+                <button 
+                  id="confirm-publish-button"
+                  className="btn btn-primary" 
+                  onClick={handleConfirmPublish}
+                  disabled={rehearsalMode && typedConfirmation !== 'PUBLISH VERIFIED REHEARSAL'}
+                  style={{ 
+                    padding: '8px 22px', 
+                    fontWeight: 600, 
+                    backgroundColor: isDryRun ? '#eab308' : (rehearsalMode ? '#ef4444' : '#16a34a'),
+                    color: 'white'
+                  }}
+                >
+                  {isDryRun && !rehearsalMode ? 'Confirm Dry Run' : 'Approve & Publish'}
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* 2. In-Progress Modal */}
+          {modalMode === 'publishing' && (
+            <div 
+              id="publish-progress-modal"
+              className="card" 
+              style={{ width: '540px', maxWidth: '100%', padding: '32px', backgroundColor: 'white', borderRadius: '12px', textAlign: 'center', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}
+            >
               <div style={{ marginBottom: '20px' }}>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '8px', color: '#334155' }}>
-                  Type PUBLISH VERIFIED REHEARSAL to continue
-                </label>
-                <input 
-                  type="text" 
-                  value={typedConfirmation}
-                  onChange={e => setTypedConfirmation(e.target.value)}
-                  style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px' }}
-                  placeholder="PUBLISH VERIFIED REHEARSAL"
+                <div style={{ 
+                  display: 'inline-flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  width: '56px', 
+                  height: '56px', 
+                  borderRadius: '50%', 
+                  backgroundColor: '#eff6ff', 
+                  color: '#2563eb', 
+                  fontSize: '1.75rem'
+                }}>
+                  ⏳
+                </div>
+              </div>
+
+              <h3 style={{ margin: '0 0 8px 0', fontSize: '1.3rem', color: '#0f172a' }}>
+                Publishing to Supabase...
+              </h3>
+              <p style={{ margin: '0 0 24px 0', color: '#64748b', fontSize: '0.9rem' }}>
+                Uploading images to Supabase Storage and inserting offers into the database.
+              </p>
+
+              {/* Progress Bar */}
+              <div style={{ backgroundColor: '#e2e8f0', borderRadius: '10px', height: '12px', overflow: 'hidden', marginBottom: '16px', position: 'relative' }}>
+                <div 
+                  style={{ 
+                    height: '100%', 
+                    backgroundColor: '#2563eb', 
+                    borderRadius: '10px',
+                    width: `${publishProgress?.total ? Math.min(100, Math.max(5, Math.round(((publishProgress.current || 0) / publishProgress.total) * 100))) : 20}%`,
+                    transition: 'width 0.3s ease-in-out'
+                  }}
                 />
               </div>
-            )}
 
-            <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-              <button 
-                id="cancel-publish-button"
-                className="btn" 
-                onClick={() => setShowConfirm(false)}
-                style={{ padding: '8px 18px' }}
-              >
-                Cancel
-              </button>
-              <button 
-                id="confirm-publish-button"
-                className="btn btn-primary" 
-                onClick={() => { setShowConfirm(false); handleConfirmPublish(); }}
-                disabled={rehearsalMode && typedConfirmation !== 'PUBLISH VERIFIED REHEARSAL'}
-                style={{ 
-                  padding: '8px 22px', 
-                  fontWeight: 600, 
-                  backgroundColor: isDryRun ? '#eab308' : (rehearsalMode ? '#ef4444' : '#16a34a'),
-                  color: 'white'
-                }}
-              >
-                {isDryRun && !rehearsalMode ? 'Confirm Dry Run' : 'Approve & Publish'}
-              </button>
+              {/* Status details */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem', color: '#475569', marginBottom: '8px' }}>
+                <span style={{ fontWeight: 600 }}>
+                  {publishProgress?.stage ? `[${publishProgress.stage}]` : 'Processing...'}
+                </span>
+                <span>
+                  {publishProgress?.current !== undefined && publishProgress?.total
+                    ? `${publishProgress.current} / ${publishProgress.total} offers`
+                    : `${eligibleCount} offers`}
+                </span>
+              </div>
+
+              <div style={{ 
+                padding: '10px 14px', 
+                backgroundColor: '#f8fafc', 
+                borderRadius: '6px', 
+                border: '1px solid #e2e8f0',
+                fontSize: '0.85rem', 
+                color: '#334155',
+                textAlign: 'left',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap'
+              }}>
+                💬 {publishProgress?.message || 'Initializing publish...'}
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* 3. Success Modal */}
+          {modalMode === 'success' && (() => {
+            const replayedCount = publishResult?.replayedNoopRows || 0;
+            const publishedCount = publishResult?.publishedRows ?? eligibleCount;
+            const isAllReplayed = replayedCount > 0 && (publishResult?.publishedRows || 0) === 0 && (publishResult?.importedRows || 0) === 0;
+
+            return (
+              <div 
+                id="publish-success-modal"
+                className="card" 
+                style={{ width: '580px', maxWidth: '100%', padding: '32px', backgroundColor: 'white', borderRadius: '12px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}
+              >
+                <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+                  <div style={{ 
+                    display: 'inline-flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    width: '64px', 
+                    height: '64px', 
+                    borderRadius: '50%', 
+                    backgroundColor: isAllReplayed ? '#e0f2fe' : '#dcfce7', 
+                    color: isAllReplayed ? '#0284c7' : '#16a34a', 
+                    fontSize: '2rem',
+                    marginBottom: '12px'
+                  }}>
+                    {isAllReplayed ? 'ℹ️' : '✓'}
+                  </div>
+                  <h3 style={{ margin: '0 0 6px 0', fontSize: '1.4rem', color: '#0f172a' }}>
+                    {isAllReplayed ? 'Database Re-sync Completed' : 'Database Publish Complete!'}
+                  </h3>
+                  <p style={{ margin: 0, color: isAllReplayed ? '#0284c7' : '#16a34a', fontWeight: 600, fontSize: '0.95rem' }}>
+                    {isAllReplayed
+                      ? `All ${replayedCount} offers already exist and match database records (0 new records added).`
+                      : `Successfully published ${publishedCount} offers to Supabase.`}
+                  </p>
+                </div>
+
+                {/* Statistics Grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', backgroundColor: '#f8fafc', padding: '16px', borderRadius: '8px', border: '1px solid #e2e8f0', marginBottom: '20px' }}>
+                  <div>
+                    <span style={{ fontSize: '0.8rem', color: '#64748b', display: 'block' }}>New Offers Written</span>
+                    <strong style={{ fontSize: '1.1rem', color: isAllReplayed ? '#64748b' : '#16a34a' }}>
+                      {publishResult?.publishedRows ?? (isAllReplayed ? 0 : eligibleCount)} offers
+                    </strong>
+                  </div>
+                  <div>
+                    <span style={{ fontSize: '0.8rem', color: '#64748b', display: 'block' }}>Already Up to Date (No-Op)</span>
+                    <strong style={{ fontSize: '1.1rem', color: '#0284c7' }}>
+                      {replayedCount} items
+                    </strong>
+                  </div>
+                  <div>
+                    <span style={{ fontSize: '0.8rem', color: '#64748b', display: 'block' }}>Supermarket</span>
+                    <strong style={{ fontSize: '0.9rem', color: '#0f172a' }}>
+                      {summary.supermarket_name || 'N/A'}
+                    </strong>
+                  </div>
+                  <div>
+                    <span style={{ fontSize: '0.8rem', color: '#64748b', display: 'block' }}>Coverage</span>
+                    <strong style={{ fontSize: '0.9rem', color: '#0f172a' }}>
+                      {summary.location_label || 'National'}
+                    </strong>
+                  </div>
+                  <div>
+                    <span style={{ fontSize: '0.8rem', color: '#64748b', display: 'block' }}>Valid Period</span>
+                    <span style={{ fontSize: '0.85rem', color: '#334155' }}>
+                      {summary.offer_start_date} to {summary.offer_end_date}
+                    </span>
+                  </div>
+                  <div>
+                    <span style={{ fontSize: '0.8rem', color: '#64748b', display: 'block' }}>Errors / Skipped</span>
+                    <span style={{ fontSize: '0.85rem', color: (publishResult?.errorRows || 0) > 0 ? '#dc2626' : '#16a34a', fontWeight: 600 }}>
+                      {publishResult?.errorRows ?? 0} errors | {publishResult?.skippedRows ?? 0} skipped
+                    </span>
+                  </div>
+                </div>
+
+                <div style={{ backgroundColor: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '6px', padding: '12px 14px', marginBottom: '24px', fontSize: '0.85rem', color: '#166534' }}>
+                  🎉 <strong>Now Live:</strong> All published offers are immediately queryable in the Supabase database (tables <code>public.offers</code> and view <code>public.v_consumer_offers</code>).
+                </div>
+
+                <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+                  <button 
+                    id="view-logs-after-publish-btn"
+                    className="btn btn-secondary" 
+                    onClick={() => {
+                      setModalMode('idle');
+                      onClose();
+                      window.dispatchEvent(new CustomEvent('app:switch-tab', { detail: 'logs' }));
+                    }}
+                    style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '10px 18px', fontWeight: 600 }}
+                  >
+                    📋 View Extraction Logs
+                  </button>
+                  <button 
+                    id="done-publish-btn"
+                    className="btn btn-primary" 
+                    onClick={() => {
+                      setModalMode('idle');
+                      onClose();
+                    }}
+                    style={{ padding: '10px 24px', fontWeight: 600, backgroundColor: '#16a34a' }}
+                  >
+                    ✓ Done
+                  </button>
+                </div>
+              </div>
+            );
+          })()}
+
+          {/* 4. Error Modal */}
+          {modalMode === 'error' && (
+            <div 
+              id="publish-error-modal"
+              className="card" 
+              style={{ width: '540px', maxWidth: '100%', padding: '32px', backgroundColor: 'white', borderRadius: '12px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}
+            >
+              <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+                <div style={{ 
+                  display: 'inline-flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  width: '56px', 
+                  height: '56px', 
+                  borderRadius: '50%', 
+                  backgroundColor: '#fee2e2', 
+                  color: '#dc2626', 
+                  fontSize: '1.75rem',
+                  marginBottom: '10px'
+                }}>
+                  ⚠️
+                </div>
+                <h3 style={{ margin: '0 0 6px 0', fontSize: '1.3rem', color: '#0f172a' }}>
+                  Database Publish Failed
+                </h3>
+              </div>
+
+              <div style={{ 
+                padding: '14px', 
+                backgroundColor: '#fef2f2', 
+                border: '1px solid #fecaca', 
+                borderRadius: '8px', 
+                color: '#991b1b', 
+                fontSize: '0.9rem',
+                marginBottom: '24px',
+                wordBreak: 'break-word',
+                lineHeight: 1.5
+              }}>
+                <strong>Error:</strong> {publishError || 'Unknown error occurred.'}
+              </div>
+
+              <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
+                <button 
+                  className="btn btn-secondary" 
+                  onClick={() => {
+                    setModalMode('idle');
+                    onClose();
+                    window.dispatchEvent(new CustomEvent('app:switch-tab', { detail: 'logs' }));
+                  }}
+                >
+                  📋 View Logs
+                </button>
+                <button 
+                  className="btn btn-secondary" 
+                  onClick={() => setModalMode('idle')}
+                >
+                  Cancel
+                </button>
+                <button 
+                  className="btn btn-primary" 
+                  onClick={() => setModalMode('confirm')}
+                  style={{ backgroundColor: '#dc2626' }}
+                >
+                  Retry
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

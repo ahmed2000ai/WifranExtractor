@@ -37,6 +37,10 @@ export async function buildPrePublishSummary(
             }
           }
         }
+        existingSummary.db_update_status = manifest.db_update_status || 'not_started';
+        existingSummary.published_at = (manifest.db_update_status === 'completed' || manifest.stages?.db_update === 'completed')
+          ? (manifest.updated_at || manifest.pre_publish_preview?.approved_at || null)
+          : null;
         return existingSummary;
       }
     } catch {
@@ -228,6 +232,10 @@ export async function buildPrePublishSummary(
     location_label: manifest.location?.display_name || (manifest.location as any)?.label || null,
     offer_start_date: manifest.offer_dates?.valid_from || (manifest as any)?.validity?.start_date || null,
     offer_end_date: manifest.offer_dates?.valid_to || (manifest as any)?.validity?.end_date || null,
+    db_update_status: manifest.db_update_status || 'not_started',
+    published_at: (manifest.db_update_status === 'completed' || manifest.stages?.db_update === 'completed')
+      ? (manifest.updated_at || manifest.pre_publish_preview?.approved_at || null)
+      : null,
     counts,
     page_style_profile_status: manifest.page_style_profiles ? {
       mode: manifest.page_style_profiles.mode as 'all_pages' | 'disabled',
@@ -288,9 +296,20 @@ export async function markPrePublishOpened(workspacePath: string): Promise<void>
   await saveExtractionManifest(workspacePath, manifest);
 }
 
-export async function markPrePublishApproved(workspacePath: string, summaryCounts: any): Promise<void> {
+export async function markPrePublishApproved(
+  workspacePath: string,
+  summaryCounts: any,
+  options?: { forceRePublish?: boolean }
+): Promise<void> {
   const manifest = await loadExtractionManifest(workspacePath);
   if (!manifest) return;
+
+  const isAlreadyPublished = manifest.db_update_status === 'completed' || manifest.stages?.db_update === 'completed';
+  if (isAlreadyPublished && !options?.forceRePublish) {
+    throw new Error(
+      `Pre-publish approval blocked: Extraction '${manifest.extraction_folder_name || path.basename(workspacePath)}' was already published to the database. Re-publishing is blocked.`
+    );
+  }
 
   if (!manifest.pre_publish_preview) {
     manifest.pre_publish_preview = {

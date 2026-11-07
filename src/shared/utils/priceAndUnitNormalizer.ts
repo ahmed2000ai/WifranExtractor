@@ -1,5 +1,8 @@
 import type { ExtractedOfferRev1, CanonicalExtractionUnit } from '../types/leafletExtraction';
 
+export const PROMO_MECHANIC_REGEX =
+  /(?:buy\s*\d+\s*(?:get\s*\d+\s*free|pcs|pc|items|حبات|قطع)?|\b\d+\s*\+\s*\d+\s*free|\b\d+\s*for\s*(?:sar\s*)?\d+|\bاشتري\s*\d+\s*(?:واحصل\s*على\s*\d+|حبات|قطع)?|\b\d+\s*حبات\s*بسعر\s*\d+|\b\d+\s*pc(?:s)?\s*per\s*customer)/i;
+
 export type ParseQuantityInput = {
   size_text?: string | null;
   title_en?: string | null;
@@ -13,10 +16,14 @@ export type ParseQuantityInput = {
   offer_price?: number | null;
   price_basis?: string | null;
   bundle_quantity?: number | null;
+  condition_text?: string | null;
+  promotion_mechanic?: string | null;
+  promo_notes?: string | null;
 };
 
 export type ParseQuantityOutput = {
   pack_quantity: number;
+  bundle_quantity?: number | null;
   each_size_value: number | null;
   each_size_unit: CanonicalExtractionUnit | null;
   total_content_value: number | null;
@@ -256,8 +263,29 @@ export function parseAndNormalizeQuantity(input: ParseQuantityInput): ParseQuant
     is_uniform_size_across_variants,
     offer_price,
     price_basis,
-    bundle_quantity
+    bundle_quantity,
+    condition_text,
+    promotion_mechanic,
+    promo_notes
   } = input;
+
+  const promoText = [
+    condition_text,
+    promotion_mechanic,
+    promo_notes,
+    title_en,
+    title_ar,
+    size_text
+  ].filter(Boolean).join(' ');
+  const isPromoMechanic =
+    PROMO_MECHANIC_REGEX.test(promoText) ||
+    promotion_mechanic === 'multi_buy' ||
+    promotion_mechanic === 'bonus_pack';
+
+  let bundleQty: number | null = bundle_quantity || null;
+  if (isPromoMechanic && !bundleQty && ai_pack_quantity && ai_pack_quantity > 1) {
+    bundleQty = ai_pack_quantity;
+  }
 
   let packQuantity = 1;
   let eachSizeValue: number | null = null;
@@ -367,7 +395,7 @@ export function parseAndNormalizeQuantity(input: ParseQuantityInput): ParseQuant
     if (standaloneRange) {
       const rangeRes = parseNumericRange(standaloneRange[1], standaloneRange[2]);
       if (rangeRes) {
-        packQuantity = (ai_pack_quantity && ai_pack_quantity > 0) ? ai_pack_quantity : 1;
+        packQuantity = (!isPromoMechanic && ai_pack_quantity && ai_pack_quantity > 0) ? ai_pack_quantity : 1;
         eachSizeValue = rangeRes.sizeValue;
         eachSizeUnit = rangeRes.unit;
         isNarrowVariantRange = rangeRes.isNarrowRange;
@@ -384,7 +412,7 @@ export function parseAndNormalizeQuantity(input: ParseQuantityInput): ParseQuant
       }
       const u = canonicalizeUnit(singleUnit[2]);
       if (u) {
-        packQuantity = (ai_pack_quantity && ai_pack_quantity > 0) ? ai_pack_quantity : 1;
+        packQuantity = (!isPromoMechanic && ai_pack_quantity && ai_pack_quantity > 0) ? ai_pack_quantity : 1;
         eachSizeValue = parseFloat(singleUnit[1]);
         eachSizeUnit = u;
         return true;
@@ -445,7 +473,7 @@ export function parseAndNormalizeQuantity(input: ParseQuantityInput): ParseQuant
     if (!isTechOrCellularToken(rawStr) && !isTechOrCellularToken(ai_each_size_unit) && !isElectronicsOrAppliance) {
       const canonAiUnit = canonicalizeUnit(ai_each_size_unit);
       if (canonAiUnit) {
-        packQuantity = ai_pack_quantity && ai_pack_quantity > 0 ? ai_pack_quantity : 1;
+        packQuantity = (!isPromoMechanic && ai_pack_quantity && ai_pack_quantity > 0) ? ai_pack_quantity : 1;
         eachSizeValue = ai_each_size_value;
         eachSizeUnit = canonAiUnit;
         parsedFromText = true;
@@ -515,6 +543,7 @@ export function parseAndNormalizeQuantity(input: ParseQuantityInput): ParseQuant
 
   return {
     pack_quantity: packQuantity,
+    bundle_quantity: bundleQty,
     each_size_value: eachSizeValue,
     each_size_unit: eachSizeUnit,
     total_content_value: totalContentValue,

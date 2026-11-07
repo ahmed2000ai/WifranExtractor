@@ -73,7 +73,10 @@ describe('WIFRAN-07B PostgreSQL Real Execution Verification Suite', () => {
 
   const j1Raw: CanonicalOffer = JSON.parse(fs.readFileSync(path.join(fixturesDir, 'page-001-012.canonical.json'), 'utf8'));
   const j2Raw: CanonicalOffer = JSON.parse(fs.readFileSync(path.join(fixturesDir, 'page-003-012.canonical.json'), 'utf8'));
-  const j3Raw: CanonicalOffer = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), 'Extracts/Alwafa_Test/json/page-002-002.canonical.json'), 'utf8'));
+  const j3Path = fs.existsSync(path.resolve(process.cwd(), 'Extracts/Alwafa_Test/json/page-002-002.canonical.json'))
+    ? path.resolve(process.cwd(), 'Extracts/Alwafa_Test/json/page-002-002.canonical.json')
+    : path.join(fixturesDir, 'page-002-002.canonical.json');
+  const j3Raw: CanonicalOffer = JSON.parse(fs.readFileSync(j3Path, 'utf8'));
 
   let db: PGlite;
 
@@ -88,6 +91,7 @@ describe('WIFRAN-07B PostgreSQL Real Execution Verification Suite', () => {
     const sql004 = loadMigration('004_offer_image_ingestion_metadata.sql');
     const sql005 = loadMigration('005_wifran_v2_offer_contract.sql');
     const sql006 = loadMigration('006_wifran_07a_security_and_contract_reconciliation.sql');
+    const sql007 = loadMigration('007_wifran_07g_07h_catalog_resolution_and_product_images.sql');
 
     await db.exec(sql001);
     await db.exec(sql001Seed);
@@ -95,6 +99,7 @@ describe('WIFRAN-07B PostgreSQL Real Execution Verification Suite', () => {
     await db.exec(sql004);
     await db.exec(sql005);
     await db.exec(sql006);
+    await db.exec(sql007);
   });
 
   // =========================================================================

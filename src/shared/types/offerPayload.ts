@@ -9,7 +9,7 @@ export type OfferPayloadInputRow = {
 }
 
 export type PreparedOfferPayload = {
-  product_id: string | null
+  product_id: string | number | null
   supermarket_id: string
   location_scope: string
   city_id: string | null

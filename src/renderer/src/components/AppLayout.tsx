@@ -4,11 +4,11 @@ import { useAppHealth } from '../hooks/useAppHealth'
 import { StatusBadge } from './StatusBadge'
 
 type AppLayoutProps = {
-  children: (activeTab: 'import' | 'results' | 'settings' | 'logs') => React.ReactNode
+  children: (activeTab: 'import' | 'enrichment' | 'results' | 'settings' | 'logs') => React.ReactNode
 }
 
 export function AppLayout({ children }: AppLayoutProps): JSX.Element {
-  const [activeTab, setActiveTab] = useState<'import' | 'results' | 'settings' | 'logs'>('import')
+  const [activeTab, setActiveTab] = useState<'import' | 'enrichment' | 'results' | 'settings' | 'logs'>('import')
   const { health } = useAppHealth()
 
   return (

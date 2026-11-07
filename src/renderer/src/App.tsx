@@ -1,12 +1,24 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ImportPage } from './pages/ImportPage'
 import { ResultsPage } from './pages/ResultsPage'
 import { SettingsPage } from './pages/SettingsPage'
 import { LogsPage } from './pages/LogsPage'
+import { ImageEnrichmentPage } from './pages/ImageEnrichmentPage'
 import { PipelineProvider } from './context/PipelineContext'
 
 function App(): JSX.Element {
   const [activeTab, setActiveTab] = useState('import')
+
+  useEffect(() => {
+    const handleSwitchTab = (e: any) => {
+      const target = e.detail
+      if (typeof target === 'string' && ['import', 'enrichment', 'results', 'logs', 'settings'].includes(target)) {
+        setActiveTab(target)
+      }
+    }
+    window.addEventListener('app:switch-tab', handleSwitchTab)
+    return () => window.removeEventListener('app:switch-tab', handleSwitchTab)
+  }, [])
 
   return (
     <PipelineProvider>
@@ -18,6 +30,7 @@ function App(): JSX.Element {
         </header>
         <nav className="main-nav">
           <button className={`nav-button ${activeTab === 'import' ? 'active' : ''}`} onClick={() => setActiveTab('import')}>Import</button>
+          <button className={`nav-button ${activeTab === 'enrichment' ? 'active' : ''}`} onClick={() => setActiveTab('enrichment')}>Image Enrichment</button>
           <button className={`nav-button ${activeTab === 'results' ? 'active' : ''}`} onClick={() => setActiveTab('results')}>Results</button>
           <button className={`nav-button ${activeTab === 'logs' ? 'active' : ''}`} onClick={() => setActiveTab('logs')}>Logs</button>
           <button className={`nav-button ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>Settings</button>
@@ -25,6 +38,7 @@ function App(): JSX.Element {
 
         <main className="app-content">
           {activeTab === 'import' && <ImportPage />}
+          {activeTab === 'enrichment' && <ImageEnrichmentPage />}
           {activeTab === 'results' && <ResultsPage />}
           {activeTab === 'logs' && <LogsPage />}
           {activeTab === 'settings' && <SettingsPage />}

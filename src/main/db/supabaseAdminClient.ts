@@ -9,21 +9,30 @@ if (typeof global.WebSocket === 'undefined') {
 
 let supabaseAdminClient: SupabaseClient | null = null
 
+export function resetSupabaseAdminClient(): void {
+  supabaseAdminClient = null
+}
+
+export function setSupabaseAdminClient(client: SupabaseClient | null | any): void {
+  supabaseAdminClient = client
+}
+
 export function getSupabaseAdminClient(): SupabaseClient {
   if (supabaseAdminClient) {
     return supabaseAdminClient
   }
 
   const config = loadEnvConfig()
+  const cleanUrl = config.supabase.url.trim().replace(/\/rest\/v1\/?$/, '').replace(/\/+$/, '')
   
-  if (!config.supabase.url || !config.supabase.serviceRoleKey) {
+  if (!cleanUrl || !config.supabase.serviceRoleKey) {
     const errorMsg = 'Supabase URL or Service Role Key is missing in environment variables. Database operations will fail.'
     logError(errorMsg)
     throw new Error(errorMsg)
   }
 
   supabaseAdminClient = createClient(
-    config.supabase.url,
+    cleanUrl,
     config.supabase.serviceRoleKey,
     {
       auth: {

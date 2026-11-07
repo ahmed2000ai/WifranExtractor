@@ -7,13 +7,15 @@ interface PreviousExtractionsViewProps {
   onSelectForPreview: (folderPath: string) => void
   onSelectForLoad?: (folderPath: string) => void
   supermarkets?: SupermarketReference[]
+  refreshTrigger?: number
 }
 
 export function PreviousExtractionsView({
   onBack,
   onSelectForPreview,
   onSelectForLoad,
-  supermarkets = []
+  supermarkets = [],
+  refreshTrigger
 }: PreviousExtractionsViewProps): JSX.Element {
   const [extractions, setExtractions] = useState<AvailableExtractionItem[]>([])
   const [loading, setLoading] = useState(true)
@@ -41,7 +43,7 @@ export function PreviousExtractionsView({
 
   useEffect(() => {
     loadExtractions()
-  }, [])
+  }, [refreshTrigger])
 
   // Resolve supermarket name helper
   const getSupermarketName = (item: AvailableExtractionItem): string => {
@@ -256,19 +258,36 @@ export function PreviousExtractionsView({
                       🛒 {smName}
                     </span>
 
-                    <span
-                      style={{
-                        padding: '3px 10px',
-                        borderRadius: '12px',
-                        fontSize: '0.75rem',
-                        fontWeight: 600,
-                        backgroundColor: item.canPreview ? '#f0fdf4' : '#fffbeb',
-                        color: item.canPreview ? '#166534' : '#b45309',
-                        border: `1px solid ${item.canPreview ? '#bbf7d0' : '#fde68a'}`
-                      }}
-                    >
-                      {item.canPreview ? '✓ Preview Ready' : '⏳ In Progress'}
-                    </span>
+                    <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                      {item.dbUpdateStatus === 'completed' && (
+                        <span
+                          style={{
+                            padding: '3px 8px',
+                            borderRadius: '12px',
+                            fontSize: '0.75rem',
+                            fontWeight: 700,
+                            backgroundColor: '#ecfdf5',
+                            color: '#047857',
+                            border: '1px solid #a7f3d0'
+                          }}
+                        >
+                          🚀 Published to DB
+                        </span>
+                      )}
+                      <span
+                        style={{
+                          padding: '3px 10px',
+                          borderRadius: '12px',
+                          fontSize: '0.75rem',
+                          fontWeight: 600,
+                          backgroundColor: item.canPreview ? '#f0fdf4' : '#fffbeb',
+                          color: item.canPreview ? '#166534' : '#b45309',
+                          border: `1px solid ${item.canPreview ? '#bbf7d0' : '#fde68a'}`
+                        }}
+                      >
+                        {item.canPreview ? '✓ Preview Ready' : '⏳ In Progress'}
+                      </span>
+                    </div>
                   </div>
 
                   {/* Folder Name */}

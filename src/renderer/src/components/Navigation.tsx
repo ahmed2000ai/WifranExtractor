@@ -1,6 +1,6 @@
 
 
-type TabId = 'import' | 'results' | 'settings' | 'logs'
+type TabId = 'import' | 'enrichment' | 'results' | 'settings' | 'logs'
 
 type NavigationProps = {
   activeTab: TabId
@@ -10,6 +10,7 @@ type NavigationProps = {
 export function Navigation({ activeTab, onTabChange }: NavigationProps): JSX.Element {
   const tabs: { id: TabId; label: string }[] = [
     { id: 'import', label: 'Import' },
+    { id: 'enrichment', label: 'Image Enrichment' },
     { id: 'results', label: 'Results' },
     { id: 'settings', label: 'Settings' },
     { id: 'logs', label: 'Logs' }

@@ -3,6 +3,7 @@
 .env.local
 .env.*.local
 keys/
+Supabase.txt
 
 # Local Processing, Leaflets & Large Extracts
 Extracts/

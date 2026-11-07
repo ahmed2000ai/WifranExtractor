@@ -1,23 +1,27 @@
 import { getSupabaseAdminClient } from './supabaseAdminClient'
-import { normalizeArabicText, normalizeEnglishText, isMeaningfulText } from '../../shared/utils/textNormalization'
+import { isMeaningfulText } from '../../shared/utils/textNormalization'
 import { ensureSlugFallback } from '../../shared/utils/slugify'
 import type { EntityMatchIssue } from '../../shared/types/entityMatching'
+import { executeTwoStageProductMatch } from './twoStageCandidateRetrievalService'
 
-export async function matchOrCreateProduct(input: {
-  productNameAr: string | null
-  productNameEn: string | null
-  descriptionAr?: string | null
-  descriptionEn?: string | null
-  brandId: string | null
-  categoryId: string | null
-  packSizeValue?: number | null
-  packSizeUnit?: string | null
-  autoCreate: boolean
-  contractV2?: any
-  assortmentStatus?: string | null
-  exactIdentityStatus?: string | null
-}): Promise<{
-  productId: string | null
+export async function matchOrCreateProduct(
+  input: {
+    productNameAr: string | null
+    productNameEn: string | null
+    descriptionAr?: string | null
+    descriptionEn?: string | null
+    brandId?: string | null
+    categoryId?: string | null
+    packSizeValue?: number | null
+    packSizeUnit?: string | null
+    autoCreate?: boolean
+    contractV2?: any
+    assortmentStatus?: string | null
+    exactIdentityStatus?: string | null
+  },
+  options?: { supabaseClient?: any }
+): Promise<{
+  productId: string | number | null
   created: boolean
   issues: EntityMatchIssue[]
 }> {
@@ -61,77 +65,57 @@ export async function matchOrCreateProduct(input: {
     return { productId: null, created: false, issues }
   }
 
-  const supabase = getSupabaseAdminClient()
-  const normAr = normalizeArabicText(input.productNameAr)
-  const normEn = normalizeEnglishText(input.productNameEn)
+  const supabase = options?.supabaseClient || getSupabaseAdminClient()
 
-  // 1. Try alias match first
-  if (normAr) {
-    const { data } = await supabase
-      .from('product_aliases')
-      .select('product_id')
-      .ilike('alias_text', normAr)
-      .limit(1)
-      .maybeSingle()
-    if (data?.product_id) return { productId: data.product_id, created: false, issues }
+  // Execute Two-Stage Candidate Retrieval, Validation, and Deterministic Ranking
+  const twoStageRes = await executeTwoStageProductMatch(
+    {
+      titleEn: input.productNameEn,
+      titleAr: input.productNameAr,
+      brandId: input.brandId,
+      eachSizeValue: input.packSizeValue,
+      eachSizeUnit: input.packSizeUnit,
+      contractV2: input.contractV2,
+      assortmentStatus: input.assortmentStatus,
+      exactIdentityStatus: input.exactIdentityStatus
+    },
+    { supabaseClient: supabase }
+  )
+
+  if (twoStageRes.retrievalDiagnostics.hasLookupFailure) {
+    issues.push({
+      severity: 'error',
+      code: 'PRODUCT_LOOKUP_FAILED',
+      fieldName: 'product_id',
+      message: 'Database query error during candidate retrieval. Auto-match blocked.'
+    })
+    return { productId: null, created: false, issues }
   }
 
-  if (normEn) {
-    const { data } = await supabase
-      .from('product_aliases')
-      .select('product_id')
-      .ilike('alias_text', normEn)
-      .limit(1)
-      .maybeSingle()
-    if (data?.product_id) return { productId: data.product_id, created: false, issues }
+  if (twoStageRes.retrievalDiagnostics.isTruncated) {
+    issues.push({
+      severity: 'warning',
+      code: 'PRODUCT_CANDIDATE_SEARCH_INCOMPLETE',
+      fieldName: 'product_id',
+      message: 'Candidate search exceeded limit of 25 products (results truncated). Auto-match blocked.'
+    })
+    return { productId: null, created: false, issues }
   }
 
-  // 2. Exact name match
-  if (normEn) {
-    const { data } = await supabase
-      .from('products')
-      .select('id')
-      .ilike('name_en', normEn)
-      .limit(1)
-      .maybeSingle()
-    if (data) return { productId: data.id, created: false, issues }
+  if (twoStageRes.matchedProduct) {
+    return { productId: twoStageRes.matchedProduct.id, created: false, issues }
   }
 
-  if (normAr) {
-    const { data } = await supabase
-      .from('products')
-      .select('id')
-      .ilike('name_ar', normAr)
-      .limit(1)
-      .maybeSingle()
-    if (data) return { productId: data.id, created: false, issues }
-  }
-
-  // 3. Slug match
-  const slug = ensureSlugFallback({
-    preferred: input.productNameEn,
-    fallback: input.productNameAr,
-    prefix: 'product'
-  })
-
-  if (slug && slug !== 'product') {
-    const { data } = await supabase
-      .from('products')
-      .select('id')
-      .eq('slug', slug)
-      .limit(1)
-      .maybeSingle()
-    if (data) return { productId: data.id, created: false, issues }
-  }
-
-  // 4. Match by brand + name
-  if (input.brandId && (normAr || normEn)) {
-    let query = supabase.from('products').select('id').eq('brand_id', input.brandId)
-    if (normAr) query = query.ilike('name_ar', normAr)
-    else query = query.ilike('name_en', normEn!)
-
-    const { data } = await query.limit(1).maybeSingle()
-    if (data) return { productId: data.id, created: false, issues }
+  if (
+    twoStageRes.result.status !== 'verified_compatible' &&
+    twoStageRes.result.status !== 'no_eligible_candidate'
+  ) {
+    issues.push({
+      severity: 'info',
+      code: 'PRODUCT_MATCH_REJECTED',
+      fieldName: 'product_id',
+      message: twoStageRes.result.reason
+    })
   }
 
   // 5. Auto create
@@ -146,12 +130,17 @@ export async function matchOrCreateProduct(input: {
   }
 
   // Generate unique slug
-  let uniqueSlug = slug
+  const baseSlug = ensureSlugFallback({
+    preferred: input.productNameEn,
+    fallback: input.productNameAr,
+    prefix: 'product'
+  })
+  let uniqueSlug = baseSlug
   let counter = 1
   while (true) {
     const { count } = await supabase.from('products').select('*', { count: 'exact', head: true }).eq('slug', uniqueSlug)
     if (!count || count === 0) break
-    uniqueSlug = `${slug}-${counter}`
+    uniqueSlug = `${baseSlug}-${counter}`
     counter++
   }
 

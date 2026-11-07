@@ -61,6 +61,8 @@ export type PrePublishPreviewSummary = {
   location_label: string | null;
   offer_start_date: string | null;
   offer_end_date: string | null;
+  db_update_status?: 'not_started' | 'in_progress' | 'completed' | 'failed';
+  published_at?: string | null;
 
   counts: {
     total_items: number;

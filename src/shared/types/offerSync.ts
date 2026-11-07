@@ -26,6 +26,7 @@ export type OfferSyncOptions = {
   requirePrePublishApproval?: boolean
   extractionPackagePath?: string
   dryRun?: boolean
+  forceRePublish?: boolean
 }
 
 export type OfferSyncInput = {
@@ -57,6 +58,8 @@ export type OfferSyncRowResult = {
   importRowId?: string | null
   rowNumber?: number | null
   status: 'imported' | 'needs_review_imported' | 'published' | 'skipped' | 'duplicate' | 'error'
+  isReplayNoop?: boolean
+  isRevisionUpdate?: boolean
   createdOfferId: string | null
   duplicateOfferId: string | null
   imageUrl: string | null
@@ -102,6 +105,8 @@ export type OfferSyncResult = {
   errorRows: number
   imageUploadedRows: number
   imageFailedRows: number
+  replayedNoopRows?: number
+  updatedRevisionRows?: number
   results: OfferSyncRowResult[]
   startedAt: string
   completedAt: string

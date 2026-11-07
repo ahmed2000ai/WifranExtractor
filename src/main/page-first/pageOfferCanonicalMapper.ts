@@ -115,7 +115,10 @@ export function mapPageOfferToCanonical(input: MapPageOfferToCanonicalInput): Ca
     ai_each_size_value: offer.content?.each_size_value,
     ai_each_size_unit: offer.content?.each_size_unit,
     offer_price: offerPrice,
-    price_basis: offer.price_basis?.basis
+    price_basis: offer.price_basis?.basis,
+    condition_text: offer.promotion?.condition_text || offer.price_basis?.raw_text,
+    promotion_mechanic: offer.promotion?.mechanic,
+    bundle_quantity: offer.content?.bundle_quantity
   });
 
   // Build canonical offer structure
@@ -162,8 +165,8 @@ export function mapPageOfferToCanonical(input: MapPageOfferToCanonicalInput): Ca
 
     content: {
       size_text: pageQtyNorm.raw_size_text || offer.content?.size_text || null,
-      pack_quantity: pageQtyNorm.pack_quantity || offer.content?.pack_quantity || 1,
-      bundle_quantity: offer.content?.bundle_quantity ?? null,
+      pack_quantity: pageQtyNorm.pack_quantity || 1,
+      bundle_quantity: pageQtyNorm.bundle_quantity ?? offer.content?.bundle_quantity ?? null,
       each_size_value: pageQtyNorm.each_size_value ?? offer.content?.each_size_value ?? null,
       each_size_unit: (pageQtyNorm.each_size_unit ? toCanonicalOfferUnit(pageQtyNorm.each_size_unit) : (offer.content?.each_size_unit === 'inch' ? 'other' : offer.content?.each_size_unit)) ?? null,
       total_content_value: pageQtyNorm.total_content_value ?? offer.content?.total_content_value ?? null,
@@ -174,7 +177,7 @@ export function mapPageOfferToCanonical(input: MapPageOfferToCanonicalInput): Ca
       mechanic: offer.promotion?.mechanic ?? 'standard_price',
       special_offer: offer.promotion?.raw_text ?? null,
       condition_text: offer.promotion?.condition_text ?? null,
-      bundle_quantity: offer.content?.bundle_quantity ?? null
+      bundle_quantity: pageQtyNorm.bundle_quantity ?? offer.content?.bundle_quantity ?? null
     },
 
     comparison: {
@@ -598,6 +601,21 @@ export function mapRev1OfferToCanonical(input: MapRev1OfferToCanonicalInput): Ca
     offer.item_domain
   );
 
+  const resolvedCategorySlug = inferCategorySlug(offer, resolvedDomain);
+  const normalizedInfo = inferNormalizedTitlesAndCommodityTag(offer, resolvedCategorySlug);
+  const specialOfferTag = extractSpecialOfferTag(offer);
+
+  const conditionText = offer.promo_condition === 'LOYALTY_CARD_REQUIRED'
+    ? (offer.quantity_limit ? `Loyalty Card Required - ${offer.quantity_limit}` : 'Loyalty Card Required')
+    : (offer.quantity_limit || null);
+
+  const promoMechanic =
+    offer.promo_condition === 'LOYALTY_CARD_REQUIRED'
+      ? 'loyalty_required'
+      : offer.promo_condition === 'MULTI_BUY'
+        ? 'multi_buy'
+        : 'standard_price';
+
   const quantityNorm = parseAndNormalizeQuantity({
     size_text: offer.size_value,
     title_en: offer.english_title,
@@ -609,16 +627,11 @@ export function mapRev1OfferToCanonical(input: MapRev1OfferToCanonicalInput): Ca
     ai_each_size_unit: offer.each_size_unit,
     is_uniform_size_across_variants: offer.is_uniform_size_across_variants,
     offer_price: offer.promo_price,
-    price_basis: priceBasis
+    price_basis: priceBasis,
+    condition_text: conditionText,
+    promotion_mechanic: promoMechanic,
+    bundle_quantity: offer.promo_condition === 'MULTI_BUY' && offer.pack_quantity && offer.pack_quantity > 1 ? offer.pack_quantity : null
   });
-
-  const resolvedCategorySlug = inferCategorySlug(offer, resolvedDomain);
-  const normalizedInfo = inferNormalizedTitlesAndCommodityTag(offer, resolvedCategorySlug);
-  const specialOfferTag = extractSpecialOfferTag(offer);
-
-  const conditionText = offer.promo_condition === 'LOYALTY_CARD_REQUIRED'
-    ? (offer.quantity_limit ? `Loyalty Card Required - ${offer.quantity_limit}` : 'Loyalty Card Required')
-    : (offer.quantity_limit || null);
 
   // Compute spatial prominence metrics on 0..1000 scale
   const comp = offer.components;
@@ -706,23 +719,18 @@ export function mapRev1OfferToCanonical(input: MapRev1OfferToCanonicalInput): Ca
     content: {
       size_text: quantityNorm.raw_size_text || offer.size_value,
       pack_quantity: quantityNorm.pack_quantity,
-      bundle_quantity: null,
+      bundle_quantity: quantityNorm.bundle_quantity ?? null,
       each_size_value: quantityNorm.each_size_value,
       each_size_unit: toCanonicalOfferUnit(quantityNorm.each_size_unit),
       total_content_value: quantityNorm.total_content_value,
       total_content_unit: toCanonicalOfferUnit(quantityNorm.total_content_unit)
     },
     promotion: {
-      mechanic:
-        offer.promo_condition === 'LOYALTY_CARD_REQUIRED'
-          ? 'loyalty_required'
-          : offer.promo_condition === 'MULTI_BUY'
-            ? 'multi_buy'
-            : 'standard_price',
+      mechanic: promoMechanic,
       special_offer: specialOfferTag,
       condition_text: conditionText,
       quantity_limit: offer.quantity_limit || null,
-      bundle_quantity: null
+      bundle_quantity: quantityNorm.bundle_quantity ?? (offer.promo_condition === 'MULTI_BUY' && offer.pack_quantity && offer.pack_quantity > 1 ? offer.pack_quantity : null)
     },
     comparison: {
       comparison_eligible: false,

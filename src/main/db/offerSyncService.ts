@@ -10,10 +10,11 @@ import { uploadOfferImage } from '../storage/offerImageStorageService'
 import { mapPreparedPayloadToOffersInsert } from '../../shared/utils/offerSyncMapper'
 import * as fs from 'fs'
 import * as path from 'path'
-import { loadExtractionManifest } from '../extraction/extractionManifestService'
+import { loadExtractionManifest, saveExtractionManifest } from '../extraction/extractionManifestService'
 import { loadEnvConfig } from '../config/env'
 import { checkRealPublishRehearsalGates, writeRealPublishRehearsalReport } from '../prepublish/realPublishRehearsalService'
 import { ensureCoreCatalogSeeded } from './referenceDataService'
+import { validateProductIdentityCompatibility } from './productIdentityCompatibilityValidator'
 
 export async function syncPreparedOffers(
   input: OfferSyncInput,
@@ -32,13 +33,15 @@ export async function syncPreparedOffers(
     errorRows: 0,
     imageUploadedRows: 0,
     imageFailedRows: 0,
+    replayedNoopRows: 0,
+    updatedRevisionRows: 0,
     results: [],
     startedAt: new Date(startTime).toISOString(),
     completedAt: '',
     durationMs: 0
   }
 
-  const supabase = getSupabaseAdminClient()
+  const supabase = (input.options as any)?.supabaseClient || getSupabaseAdminClient()
   onProgress?.({ stage: 'started', message: 'Starting final offer sync.' })
 
   // Safe default: publishing is always manual only and blocked until the operator explicitly presses Publish and approves.
@@ -53,6 +56,12 @@ export async function syncPreparedOffers(
     }
     if (manifest.pre_publish_preview?.status !== 'approved') {
       throw new Error('DB publish blocked: Pre-Publish Preview approval is required.')
+    }
+
+    if (manifest.db_update_status === 'completed' && !input.options.forceRePublish) {
+      throw new Error(
+        `DB publish blocked: Extraction package '${manifest.extraction_folder_name || path.basename(input.options.extractionPackagePath)}' was already published to the database. Re-publishing is blocked unless forceRePublish is enabled.`
+      )
     }
 
     // Check Rehearsal Gates if not dry run and mode is on
@@ -131,12 +140,16 @@ export async function syncPreparedOffers(
           const extMatch = path.extname(localCardPath).toLowerCase().replace('.', '')
           const ext = ['jpg', 'png', 'webp'].includes(extMatch) ? extMatch as any : 'webp'
           
+          const rawItemNum = row.preparedPayload?.source?.source_item_number || row.preparedPayload?.source_item_number || row.rowNumber || '001'
+          const pageNum = row.pageNumber || row.preparedPayload?.source?.source_page_number || row.preparedPayload?.source_page_number
+          const itemNumber = pageNum ? `p${String(pageNum).padStart(3, '0')}_${String(rawItemNum).padStart(3, '0')}` : String(rawItemNum)
+
           const storagePath = buildOfferImageStoragePath({
             supermarketSlug: input.supermarketSlug,
             coverageScope: input.locationScope,
             locationSlug: input.locationSlug,
             leafletId: input.leafletId || 'unknown-leaflet',
-            itemNumber: row.preparedPayload?.source_item_number || 'unknown-item',
+            itemNumber,
             extension: ext,
             imageType: 'offer_card'
           })
@@ -217,12 +230,16 @@ export async function syncPreparedOffers(
         } else {
           const extMatch = path.extname(localThumbPath).toLowerCase().replace('.', '')
           const ext = ['jpg', 'png', 'webp'].includes(extMatch) ? extMatch as any : 'webp'
+          const rawThumbItemNum = row.preparedPayload?.source?.source_item_number || row.preparedPayload?.source_item_number || row.rowNumber || '001'
+          const thumbPageNum = row.pageNumber || row.preparedPayload?.source?.source_page_number || row.preparedPayload?.source_page_number
+          const thumbItemNumber = thumbPageNum ? `p${String(thumbPageNum).padStart(3, '0')}_${String(rawThumbItemNum).padStart(3, '0')}` : String(rawThumbItemNum)
+
           const thumbStoragePath = buildOfferImageStoragePath({
             supermarketSlug: input.supermarketSlug,
             coverageScope: input.locationScope,
             locationSlug: input.locationSlug,
             leafletId: input.leafletId || 'unknown-leaflet',
-            itemNumber: row.preparedPayload?.source_item_number || 'unknown-item',
+            itemNumber: thumbItemNumber,
             extension: ext,
             imageType: 'product_thumb'
           })
@@ -280,6 +297,8 @@ export async function syncPreparedOffers(
     
     let insertedData: any = null
     let insertError: any = null
+    let isReplayNoop = false
+    let isRevisionUpdate = false
 
     if (input.options.dryRun) {
       insertedData = { id: `dry-run-${row.rowId}` }
@@ -289,10 +308,15 @@ export async function syncPreparedOffers(
       let existingChecksum: string | null = null
       let existingContractV2: any = null
 
+      // WIFRAN-07H §3 & WIFRAN-EXTRACTOR-IDENTITY-001/001B/001C/001D: Re-Sync Protection & Fail-Closed Contradiction Check
+      // An existing conflict_needs_review association strictly remains disputed across synchronization cycles.
+      // Untrusted payload flags or options cannot independently authorize resolution; conflict clearing via sync
+      // is disabled pending a dedicated authenticated operator resolution workflow.
+
       if (payload.source_offer_id) {
         const { data: existingRows } = await supabase
           .from('offers')
-          .select('id, source_revision, semantic_checksum, contract_v2')
+          .select('id, source_revision, semantic_checksum, contract_v2, product_id, catalog_match_status, catalog_verification_basis, catalog_verified_by, catalog_verified_at')
           .eq('source_offer_id', payload.source_offer_id)
           .limit(1)
 
@@ -301,6 +325,104 @@ export async function syncPreparedOffers(
           existingRevision = existingRows[0].source_revision || 1
           existingChecksum = existingRows[0].semantic_checksum || null
           existingContractV2 = existingRows[0].contract_v2 || null
+
+          if (
+            existingRows[0].product_id &&
+            (existingRows[0].catalog_match_status === 'verified_linked' || existingRows[0].catalog_match_status === 'conflict_needs_review')
+          ) {
+            if (existingRows[0].catalog_match_status === 'conflict_needs_review') {
+              // Multi-cycle sync preservation: strictly remains in conflict_needs_review.
+              // Untrusted incoming sync payloads (whether carrying a boolean, null product_id, same product_id, or different product_id) cannot clear the dispute.
+              payload.product_id = existingRows[0].product_id
+              payload.catalog_match_status = 'conflict_needs_review'
+              payload.catalog_verification_basis = existingRows[0].catalog_verification_basis || 'identity_contradiction_on_resync'
+              payload.catalog_verified_by = existingRows[0].catalog_verified_by
+              payload.catalog_verified_at = existingRows[0].catalog_verified_at
+              res.issues.push({
+                severity: 'warning',
+                code: 'IDENTITY_CONFLICT_PRESERVED',
+                fieldName: 'product_id',
+                message: `Offer remains in conflict_needs_review for product #${existingRows[0].product_id}. Unauthorized reassignment or clearance blocked without operator resolution.`
+              })
+            } else {
+              // Existing status is 'verified_linked'
+              // Case A: Incoming sync specifies a different product ID -> unauthorized reassignment intercepted!
+              if (payload.product_id && String(payload.product_id) !== String(existingRows[0].product_id)) {
+                payload.product_id = existingRows[0].product_id
+                payload.catalog_match_status = 'conflict_needs_review'
+                payload.catalog_verification_basis = 'unauthorized_reassignment_on_resync'
+                payload.catalog_verified_by = existingRows[0].catalog_verified_by
+                payload.catalog_verified_at = existingRows[0].catalog_verified_at
+                res.issues.push({
+                  severity: 'warning',
+                  code: 'UNAUTHORIZED_REASSIGNMENT_BLOCKED',
+                  fieldName: 'product_id',
+                  message: `Re-sync attempted to reassign verified product #${existingRows[0].product_id} to #${payload.product_id}. Flagged as conflict_needs_review.`
+                })
+              } else {
+                // Case B: payload.product_id is null or matches existing product_id -> fail-closed validation
+                const { data: linkedProduct, error: prodLookupErr } = await supabase
+                  .from('products')
+                  .select('id, name_en, name_ar, item_name_complete, canonical_product_key, brand_id, brand_name, variant_or_flavor, each_size_value, each_size_unit, inner_pack_count, sale_unit_type, verification_status')
+                  .eq('id', existingRows[0].product_id)
+                  .maybeSingle()
+
+                if (prodLookupErr) {
+                  res.issues.push({
+                    severity: 'error',
+                    code: 'DATABASE_LOOKUP_FAILURE',
+                    fieldName: 'product_id',
+                    message: `Database lookup failure during identity verification for product #${existingRows[0].product_id}: ${prodLookupErr.message}. Offer sync aborted for row ${row.rowId}.`
+                  })
+                  res.status = 'error'
+                  result.errorRows++
+                  onProgress?.({ stage: 'row_failed', message: `Database lookup failure for row ${row.rowId}.`, rowId: row.rowId, current: currentCount, total: input.rows.length })
+                  result.results.push(res)
+                  if (!input.options.dryRun) {
+                    await updateRowErrors(supabase, res, input.importBatchId)
+                  }
+                  continue
+                }
+
+                if (!linkedProduct) {
+                  // Linked product record does not exist in catalog -> fail closed, quarantine to conflict_needs_review
+                  payload.product_id = existingRows[0].product_id
+                  payload.catalog_match_status = 'conflict_needs_review'
+                  payload.catalog_verification_basis = 'product_record_missing'
+                  payload.catalog_verified_by = existingRows[0].catalog_verified_by
+                  payload.catalog_verified_at = existingRows[0].catalog_verified_at
+                  res.issues.push({
+                    severity: 'warning',
+                    code: 'VERIFIED_PRODUCT_NOT_FOUND',
+                    fieldName: 'product_id',
+                    message: `Verified product #${existingRows[0].product_id} no longer exists in catalog. Quarantined to conflict_needs_review.`
+                  })
+                } else {
+                  const compat = validateProductIdentityCompatibility(payload, linkedProduct)
+                  if (!compat.isCompatible) {
+                    payload.product_id = existingRows[0].product_id
+                    payload.catalog_match_status = 'conflict_needs_review'
+                    payload.catalog_verification_basis = 'identity_contradiction_on_resync'
+                    payload.catalog_verified_by = existingRows[0].catalog_verified_by
+                    payload.catalog_verified_at = existingRows[0].catalog_verified_at
+                    res.issues.push({
+                      severity: 'warning',
+                      code: 'IDENTITY_CONTRADICTION_ON_RESYNC',
+                      fieldName: 'product_id',
+                      message: `Re-synced offer contradicts existing verified product #${linkedProduct.id}: ${compat.reason}. Flagged as conflict_needs_review.`
+                    })
+                  } else {
+                    // Validated compatible: preserve verified_linked status and provenance
+                    payload.product_id = existingRows[0].product_id
+                    payload.catalog_match_status = existingRows[0].catalog_match_status
+                    payload.catalog_verification_basis = existingRows[0].catalog_verification_basis
+                    payload.catalog_verified_by = existingRows[0].catalog_verified_by
+                    payload.catalog_verified_at = existingRows[0].catalog_verified_at
+                  }
+                }
+              }
+            }
+          }
         }
       }
 
@@ -309,6 +431,7 @@ export async function syncPreparedOffers(
         if (existingChecksum && payload.semantic_checksum && existingChecksum === payload.semantic_checksum) {
           payload.source_revision = existingRevision
           insertedData = { id: existingOfferId }
+          isReplayNoop = true
           res.issues.push({ severity: 'info', code: 'REVISION_REPLAY_NOOP', message: `Identical checksum ${payload.semantic_checksum} for ${payload.source_offer_id}; strict no-op.` })
         } else if (payload.source_revision && payload.source_revision < existingRevision) {
           // INT-29: Reject incoming older revisions with logged conflict
@@ -329,6 +452,7 @@ export async function syncPreparedOffers(
           // INT-29, INT-32: Changed checksum / price correction -> archive prior snapshot, increment revision
           const newRevision = existingRevision + 1
           payload.source_revision = newRevision
+          isRevisionUpdate = true
 
           // Archive immutable snapshot of prior revision
           try {
@@ -361,6 +485,105 @@ export async function syncPreparedOffers(
           const { data: existingRow } = await supabase.from('import_rows').select('created_offer_id').eq('id', row.importRowId).single()
           if (existingRow && existingRow.created_offer_id) {
             alreadyExistsId = existingRow.created_offer_id
+            const { data: existingOffer } = await supabase
+              .from('offers')
+              .select('product_id, catalog_match_status, catalog_verification_basis, catalog_verified_by, catalog_verified_at')
+              .eq('id', alreadyExistsId)
+              .single()
+            if (
+              existingOffer?.product_id &&
+              (existingOffer?.catalog_match_status === 'verified_linked' || existingOffer?.catalog_match_status === 'conflict_needs_review')
+            ) {
+              if (existingOffer.catalog_match_status === 'conflict_needs_review') {
+                // Multi-cycle sync preservation: strictly remains in conflict_needs_review
+                payload.product_id = existingOffer.product_id
+                payload.catalog_match_status = 'conflict_needs_review'
+                payload.catalog_verification_basis = existingOffer.catalog_verification_basis || 'identity_contradiction_on_resync'
+                payload.catalog_verified_by = existingOffer.catalog_verified_by
+                payload.catalog_verified_at = existingOffer.catalog_verified_at
+                res.issues.push({
+                  severity: 'warning',
+                  code: 'IDENTITY_CONFLICT_PRESERVED',
+                  fieldName: 'product_id',
+                  message: `Offer remains in conflict_needs_review for product #${existingOffer.product_id}. Unauthorized reassignment or clearance blocked without operator resolution.`
+                })
+              } else {
+                // Existing status is 'verified_linked'
+                // Case A: Incoming sync specifies a different product ID -> unauthorized reassignment intercepted!
+                if (payload.product_id && String(payload.product_id) !== String(existingOffer.product_id)) {
+                  payload.product_id = existingOffer.product_id
+                  payload.catalog_match_status = 'conflict_needs_review'
+                  payload.catalog_verification_basis = 'unauthorized_reassignment_on_resync'
+                  payload.catalog_verified_by = existingOffer.catalog_verified_by
+                  payload.catalog_verified_at = existingOffer.catalog_verified_at
+                  res.issues.push({
+                    severity: 'warning',
+                    code: 'UNAUTHORIZED_REASSIGNMENT_BLOCKED',
+                    fieldName: 'product_id',
+                    message: `Re-sync attempted to reassign verified product #${existingOffer.product_id} to #${payload.product_id}. Flagged as conflict_needs_review.`
+                  })
+                } else {
+                  // Case B: payload.product_id is null or matches existing product_id -> fail-closed validation
+                  const { data: linkedProduct, error: prodLookupErr } = await supabase
+                    .from('products')
+                    .select('id, name_en, name_ar, item_name_complete, canonical_product_key, brand_id, brand_name, variant_or_flavor, each_size_value, each_size_unit, inner_pack_count, sale_unit_type, verification_status')
+                    .eq('id', existingOffer.product_id)
+                    .maybeSingle()
+
+                  if (prodLookupErr) {
+                    res.issues.push({
+                      severity: 'error',
+                      code: 'DATABASE_LOOKUP_FAILURE',
+                      fieldName: 'product_id',
+                      message: `Database lookup failure during identity verification for product #${existingOffer.product_id}: ${prodLookupErr.message}. Offer sync aborted for row ${row.rowId}.`
+                    })
+                    res.status = 'error'
+                    result.errorRows++
+                    onProgress?.({ stage: 'row_failed', message: `Database lookup failure for row ${row.rowId}.`, rowId: row.rowId, current: currentCount, total: input.rows.length })
+                    result.results.push(res)
+                    if (!input.options.dryRun) {
+                      await updateRowErrors(supabase, res, input.importBatchId)
+                    }
+                    continue
+                  }
+
+                  if (!linkedProduct) {
+                    payload.product_id = existingOffer.product_id
+                    payload.catalog_match_status = 'conflict_needs_review'
+                    payload.catalog_verification_basis = 'product_record_missing'
+                    payload.catalog_verified_by = existingOffer.catalog_verified_by
+                    payload.catalog_verified_at = existingOffer.catalog_verified_at
+                    res.issues.push({
+                      severity: 'warning',
+                      code: 'VERIFIED_PRODUCT_NOT_FOUND',
+                      fieldName: 'product_id',
+                      message: `Verified product #${existingOffer.product_id} no longer exists in catalog. Quarantined to conflict_needs_review.`
+                    })
+                  } else {
+                    const compat = validateProductIdentityCompatibility(payload, linkedProduct)
+                    if (!compat.isCompatible) {
+                      payload.product_id = existingOffer.product_id
+                      payload.catalog_match_status = 'conflict_needs_review'
+                      payload.catalog_verification_basis = 'identity_contradiction_on_resync'
+                      payload.catalog_verified_by = existingOffer.catalog_verified_by
+                      payload.catalog_verified_at = existingOffer.catalog_verified_at
+                      res.issues.push({
+                        severity: 'warning',
+                        code: 'IDENTITY_CONTRADICTION_ON_RESYNC',
+                        fieldName: 'product_id',
+                        message: `Re-synced offer contradicts existing verified product #${linkedProduct.id}: ${compat.reason}. Flagged as conflict_needs_review.`
+                      })
+                    } else {
+                      payload.product_id = existingOffer.product_id
+                      payload.catalog_match_status = existingOffer.catalog_match_status
+                      payload.catalog_verification_basis = existingOffer.catalog_verification_basis
+                      payload.catalog_verified_by = existingOffer.catalog_verified_by
+                      payload.catalog_verified_at = existingOffer.catalog_verified_at
+                    }
+                  }
+                }
+              }
+            }
           }
         }
 
@@ -394,12 +617,22 @@ export async function syncPreparedOffers(
       res.createdOfferId = insertedData.id
       res.status = payload.status === 'needs_review' ? 'needs_review_imported' : payload.status === 'published' ? 'published' : 'imported'
       res.updatedPayload = payload
+      res.isReplayNoop = isReplayNoop
+      res.isRevisionUpdate = isRevisionUpdate
       
-      if (res.status === 'needs_review_imported') result.needsReviewImportedRows++
-      else if (res.status === 'published') result.publishedRows++
-      else result.importedRows++
+      if (isReplayNoop) {
+        result.replayedNoopRows = (result.replayedNoopRows || 0) + 1
+        onProgress?.({ stage: 'offer_inserted', message: `Row ${row.rowId} unchanged in DB (identical checksum no-op).`, rowId: row.rowId, current: currentCount, total: input.rows.length })
+      } else {
+        if (isRevisionUpdate) {
+          result.updatedRevisionRows = (result.updatedRevisionRows || 0) + 1
+        }
+        if (res.status === 'needs_review_imported') result.needsReviewImportedRows++
+        else if (res.status === 'published') result.publishedRows++
+        else result.importedRows++
 
-      onProgress?.({ stage: 'offer_inserted', message: `Created offer for row ${row.rowId} as ${res.status}.`, rowId: row.rowId, current: currentCount, total: input.rows.length })
+        onProgress?.({ stage: 'offer_inserted', message: `Created offer for row ${row.rowId} as ${res.status}.`, rowId: row.rowId, current: currentCount, total: input.rows.length })
+      }
     }
 
     result.results.push(res)
@@ -411,7 +644,8 @@ export async function syncPreparedOffers(
   // Final Batch Update
   onProgress?.({ stage: 'batch_updating', message: `Updating import batch final counts...` })
   let finalStatus: 'imported' | 'partially_imported' | 'failed' = 'imported'
-  if (result.importedRows === 0 && result.needsReviewImportedRows === 0) finalStatus = 'failed'
+  const totalProcessedOffers = result.importedRows + result.needsReviewImportedRows + result.publishedRows + (result.replayedNoopRows || 0)
+  if (totalProcessedOffers === 0) finalStatus = 'failed'
   else if (result.errorRows > 0 || result.skippedRows > 0 || result.duplicateRows > 0 || result.needsReviewImportedRows > 0) finalStatus = 'partially_imported'
   
   result.status = finalStatus
@@ -501,6 +735,7 @@ export async function syncPreparedOffers(
     }
   }
 
+  result.ok = result.errorRows === 0
   return result
 }
 
@@ -552,5 +787,205 @@ async function updateRowAndErrors(supabase: any, res: OfferSyncRowResult, origin
   await updateRowErrors(supabase, res, importBatchId)
 }
 
-export const syncApprovedOffers = syncPreparedOffers;
+export async function syncApprovedOffers(
+  target: string | OfferSyncInput,
+  onProgress?: (event: OfferSyncProgressEvent) => void,
+  syncOptions?: { forceRePublish?: boolean }
+): Promise<OfferSyncResult> {
+  if (typeof target !== 'string') {
+    return syncPreparedOffers(target, onProgress)
+  }
+
+  const workspacePath = path.isAbsolute(target) ? target : path.resolve(process.cwd(), target)
+  const manifest = await loadExtractionManifest(workspacePath)
+  if (!manifest) {
+    throw new Error(`Manifest not found at: ${workspacePath}`)
+  }
+
+  const isAlreadyPublished = manifest.db_update_status === 'completed' || manifest.stages?.db_update === 'completed'
+  if (isAlreadyPublished && !syncOptions?.forceRePublish) {
+    throw new Error(
+      `DB publish blocked: Extraction package '${manifest.extraction_folder_name || path.basename(workspacePath)}' was already published to the database. Re-publishing is blocked unless forceRePublish is enabled.`
+    )
+  }
+
+  // Load all canonical JSON files
+  const rawJsonDir = manifest.paths?.json_dir
+  const jsonDir = rawJsonDir
+    ? (path.isAbsolute(rawJsonDir) ? rawJsonDir : path.join(workspacePath, rawJsonDir))
+    : path.join(workspacePath, 'json')
+
+  if (!fs.existsSync(jsonDir)) {
+    throw new Error(`Canonical JSON directory not found at: ${jsonDir}`)
+  }
+
+  const jsonFiles = fs.readdirSync(jsonDir).filter(f => f.endsWith('.canonical.json')).sort()
+  if (jsonFiles.length === 0) {
+    throw new Error(`No .canonical.json files found in ${jsonDir}`)
+  }
+
+  const canonicalOffers: any[] = []
+  for (const f of jsonFiles) {
+    try {
+      const parsed = JSON.parse(fs.readFileSync(path.join(jsonDir, f), 'utf-8'))
+      canonicalOffers.push(parsed)
+    } catch (e: any) {
+      console.warn(`[syncApprovedOffers] Failed to parse ${f}:`, e.message)
+    }
+  }
+
+  if (canonicalOffers.length === 0) {
+    throw new Error(`No valid canonical offers could be parsed from ${jsonDir}`)
+  }
+
+  const firstOffer = canonicalOffers[0]
+  const trustedContext = firstOffer.trusted_context || {}
+
+  const supermarketId = trustedContext.supermarket_id || manifest.supermarket?.id
+  if (!supermarketId) {
+    throw new Error(`Supermarket ID could not be determined from extraction package at ${workspacePath}`)
+  }
+
+  const locationScope = trustedContext.location_scope || manifest.location?.location_scope || 'national'
+  const cityId = trustedContext.city_id !== undefined ? trustedContext.city_id : (manifest.location?.city_id ?? null)
+  const regionId = trustedContext.region_id !== undefined ? trustedContext.region_id : (manifest.location?.region_id ?? null)
+  const locationSlug = trustedContext.city_id ? 'jeddah' : (manifest.location?.location_slug || 'national')
+  const supermarketSlug = trustedContext.supermarket_slug || (manifest.supermarket as any)?.slug || 'supermarket'
+  const offerStartDate = trustedContext.offer_start_date || manifest.offer_dates?.valid_from || new Date().toISOString().slice(0, 10)
+  const offerEndDate = trustedContext.offer_end_date || manifest.offer_dates?.valid_to || new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10)
+  const leafletId = firstOffer.source?.leaflet_id || trustedContext.leaflet_id || manifest.location?.location_slug || 'leaflet'
+
+  const envConfig = loadEnvConfig()
+  const storageBucket = envConfig.supabase.storageBucket || 'offer-images'
+
+  const rows = canonicalOffers.map(canonical => {
+    const dec = canonical.quality?.publish_decision || 'publish'
+    const isEligible = dec === 'publish' || dec === 'publish_but_exclude_from_comparison'
+    
+    // Resolve local crop image path
+    let localImagePath = canonical.source?.crop_path || null
+    if (localImagePath && !fs.existsSync(localImagePath)) {
+      const relMatch = localImagePath.match(/(metadata[\\/].*|crops[\\/].*)/i)
+      if (relMatch) {
+        const candidate = path.join(workspacePath, relMatch[1])
+        if (fs.existsSync(candidate)) {
+          localImagePath = candidate
+        }
+      }
+    }
+
+    // Resolve local thumbnail image path
+    let localThumbnailPath = canonical.source?.thumbnail_path || null
+    if (localThumbnailPath && !fs.existsSync(localThumbnailPath)) {
+      const relMatch = localThumbnailPath.match(/(metadata[\\/].*|crops[\\/].*)/i)
+      if (relMatch) {
+        const candidate = path.join(workspacePath, relMatch[1])
+        if (fs.existsSync(candidate)) {
+          localThumbnailPath = candidate
+        }
+      }
+    }
+
+    if (!localThumbnailPath && localImagePath) {
+      const candidateSibling = path.join(path.dirname(localImagePath), 'product_thumb_crop.webp')
+      if (fs.existsSync(candidateSibling)) {
+        localThumbnailPath = candidateSibling
+      }
+    }
+
+    if (isEligible) {
+      canonical.status = 'published'
+    } else {
+      canonical.status = 'skipped'
+    }
+
+    return {
+      rowId: `item-${canonical.source?.source_item_number || '001'}`,
+      pageNumber: canonical.source?.source_page_number || 1,
+      status: isEligible ? ('prepared' as const) : ('skipped' as const),
+      preparedPayload: canonical,
+      normalizedData: canonical,
+      localImagePath,
+      localThumbnailPath
+    }
+  })
+
+  const syncInput: OfferSyncInput = {
+    supermarketId,
+    supermarketSlug,
+    locationScope,
+    locationSlug,
+    cityId,
+    regionId,
+    offerStartDate,
+    offerEndDate,
+    leafletId,
+    storageBucket,
+    rows,
+    options: {
+      requireImageForDraft: false,
+      defaultOfferStatus: 'published',
+      importDefaultStatus: 'published',
+      allowNeedsReviewFallback: true,
+      publishWarningsAllowed: true,
+      requirePrePublishApproval: true,
+      extractionPackagePath: workspacePath,
+      dryRun: false,
+      forceRePublish: !!syncOptions?.forceRePublish
+    }
+  }
+
+  // Ensure manifest pre_publish_preview status is approved
+  if (manifest.pre_publish_preview?.status !== 'approved') {
+    manifest.pre_publish_preview = {
+      status: 'approved',
+      opened_at: manifest.pre_publish_preview?.opened_at || new Date().toISOString(),
+      approved_at: new Date().toISOString(),
+      approved_by: 'system_auto_approval',
+      summary: {
+        publish_count: rows.filter(r => r.status === 'prepared').length,
+        publish_but_exclude_from_comparison_count: 0,
+        skip_or_quarantine_count: rows.filter(r => r.status === 'skipped').length,
+        warning_count: 0,
+        blocking_error_count: 0
+      }
+    }
+    await saveExtractionManifest(workspacePath, manifest)
+  }
+
+  onProgress?.({
+    stage: 'started',
+    message: `Starting database publish for ${path.basename(workspacePath)} (${rows.length} offers)...`,
+    current: 0,
+    total: rows.length
+  })
+
+  const result = await syncPreparedOffers(syncInput, onProgress)
+
+  // Update manifest with db update status
+  const isFailed = result.errorRows > 0 && result.importedRows === 0 && result.publishedRows === 0
+  const hasPartialSuccess = (result.importedRows > 0 || result.publishedRows > 0) && (result.errorRows > 0 || result.imageFailedRows > 0)
+  
+  manifest.db_update_status = isFailed ? 'failed' : 'completed'
+  if (manifest.stages) {
+    manifest.stages.db_update = isFailed ? 'failed' : (hasPartialSuccess ? 'partial' : 'completed')
+  }
+  await saveExtractionManifest(workspacePath, manifest)
+
+  const newOrUpdatedOffers = result.publishedRows + result.importedRows
+  const noopOffers = result.replayedNoopRows || 0
+  const completionMsg = noopOffers > 0
+    ? `Database publish completed: ${newOrUpdatedOffers} offers written (${noopOffers} already up to date, ${result.errorRows} errors, ${result.imageUploadedRows} images uploaded).`
+    : `Database publish completed. ${result.publishedRows} offers published (${result.errorRows} errors, ${result.imageUploadedRows} images uploaded).`
+
+  onProgress?.({
+    stage: 'completed',
+    message: completionMsg,
+    current: result.totalRows,
+    total: result.totalRows
+  })
+
+  result.ok = result.errorRows === 0
+  return result
+}
 

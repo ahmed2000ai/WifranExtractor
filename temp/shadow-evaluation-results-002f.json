@@ -1,0 +1,2101 @@
+{
+  "summary": {
+    "totalOffers": 90,
+    "verifiedPreservedCount": 6,
+    "newlyMatchedCount": 0,
+    "rejectedContradictoryCount": 1,
+    "rejectedMultipleCount": 0,
+    "noCandidateCount": 25,
+    "latencyMetrics": {
+      "minMs": 0.5831000000000586,
+      "maxMs": 15.440099999999973,
+      "avgMs": 1.7007722222222248,
+      "medianMs": 0.9121000000000095,
+      "p95Ms": 7.073700000000031
+    },
+    "safetyChecks": {
+      "1. All eight previously verified associations remain unchanged in production": true,
+      "2. Fakieh 10x600g cannot link to 600g single unit product": true,
+      "3. Al Safi 12x1L cannot link to 1x1L product": true,
+      "4. Total quantity equivalence cannot conceal pack count contradiction": true,
+      "5. Bilingual recognition preserves variant distinctions": true,
+      "6. No unverified product is automatically selected": true,
+      "7. Multiple distinct compatible verified products remain unresolved": true,
+      "8. Truncated and failed candidate retrieval remains fail-closed": true,
+      "9. Candidate ranking never overrides structured identity rejection": true,
+      "10. Existing approved-image reuse rules are preserved": true,
+      "11. Private leaflet crops isolated from consumer view": true
+    },
+    "postTestIntegrity": {
+      "isIntact": true,
+      "baselineDiff": {
+        "total_offers": {
+          "baseline": 90,
+          "postTest": 90,
+          "delta": 0
+        },
+        "published_offers": {
+          "baseline": 90,
+          "postTest": 90,
+          "delta": 0
+        },
+        "verified_offers": {
+          "baseline": 8,
+          "postTest": 8,
+          "delta": 0
+        },
+        "total_products": {
+          "baseline": 8,
+          "postTest": 8,
+          "delta": 0
+        },
+        "total_aliases": {
+          "baseline": 0,
+          "postTest": 0,
+          "delta": 0
+        },
+        "total_product_images": {
+          "baseline": 7,
+          "postTest": 7,
+          "delta": 0
+        },
+        "total_display_images": {
+          "baseline": 31,
+          "postTest": 31,
+          "delta": 0
+        },
+        "consumer_view_rows": {
+          "baseline": 90,
+          "postTest": 90,
+          "delta": 0
+        },
+        "verified_in_consumer_view": {
+          "baseline": 8,
+          "postTest": 8,
+          "delta": 0
+        }
+      }
+    }
+  },
+  "scalabilityResults": [
+    {
+      "catalogSize": 50,
+      "latencyMs": 1.3378000000000156,
+      "candidatesDiscovered": 0,
+      "candidatesUnique": 0,
+      "isTruncated": false
+    },
+    {
+      "catalogSize": 100,
+      "latencyMs": 1.3922000000000025,
+      "candidatesDiscovered": 0,
+      "candidatesUnique": 0,
+      "isTruncated": false
+    },
+    {
+      "catalogSize": 250,
+      "latencyMs": 2.5433000000000447,
+      "candidatesDiscovered": 0,
+      "candidatesUnique": 0,
+      "isTruncated": false
+    },
+    {
+      "catalogSize": 500,
+      "latencyMs": 3.937999999999988,
+      "candidatesDiscovered": 0,
+      "candidatesUnique": 0,
+      "isTruncated": false
+    }
+  ],
+  "offerResults": [
+    {
+      "offerId": "00de38a5-1e79-4801-ad8d-7dc2f1914f13",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p001:i001:s01",
+      "titleEn": "Sadia Whole Chicken 10x1000gm",
+      "titleAr": "دجاج مجمد ساديا ١٠×١٠٠٠جرام",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "no_eligible_candidate",
+        "reason": "No candidate products supplied or discovered for matching.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 15.440099999999973
+    },
+    {
+      "offerId": "0100cd5c-dddb-4fa5-b79f-59d93f633a0d",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p003:i015:s01",
+      "titleEn": "Remote Control Fighter Plane Asstd",
+      "titleAr": "طائرة مقاتلة بجهاز تحكم عن بعد",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 4.060799999999972
+    },
+    {
+      "offerId": "062cdc51-c4ff-42dc-bd48-60f5d2c31308",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p003:i012:s01",
+      "titleEn": "Mini Fan Asstd.",
+      "titleAr": "مروحة ميني منوع",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 1.3575999999999908
+    },
+    {
+      "offerId": "087f0ac7-bfbe-49e8-8815-e953b12913bd",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p003:i009:s01",
+      "titleEn": "Stainless Steel Fry Pan 25.5 cm",
+      "titleAr": "مقلاة من الستانلس ستيل ٢٥,٥ سم",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (generic_unbranded); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 3.4992000000000303
+    },
+    {
+      "offerId": "0a2cc13f-3932-4b1c-b826-658ef2e0ea08",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p004:i001:s01",
+      "titleEn": "Abu Kass Mazza / Amber Basmati Rice 10Kg",
+      "titleAr": "أبو كاس أرز مزة / عنبر بسمتي ١٠كيلو",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 6.505999999999972
+    },
+    {
+      "offerId": "0a732257-7614-42ea-956c-ef82a45c3580",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p003:i002:s01",
+      "titleEn": "Samsung QLED 4K TV",
+      "titleAr": "تلفزيون سامسونج كيو لد عالي الدقة",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "no_eligible_candidate",
+        "reason": "No candidate products supplied or discovered for matching.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 1.3188000000000102
+    },
+    {
+      "offerId": "0e49140f-53e9-4f19-8669-86b178432927",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p001:i008:s01",
+      "titleEn": "Walnut Per Kg",
+      "titleAr": "جوز للكيلو",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (loose_commodity); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.7719000000000733
+    },
+    {
+      "offerId": "0efe83d7-db00-4a84-9961-602d03ece336",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p002:i004:s01",
+      "titleEn": "Entaj Fresh Chkn Portion Drumstick 450gm",
+      "titleAr": "إنتاج فريش دجاج بورشن ٤٥٠ جرام",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": "3",
+        "matchStatus": "verified_linked"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "no_eligible_candidate",
+        "reason": "No candidate products supplied or discovered for matching.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 1.2164000000000215
+    },
+    {
+      "offerId": "0f39f870-ee78-44a9-99f5-34dc2b1c5b3d",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p003:i011:s01",
+      "titleEn": "Honor X8B Pad",
+      "titleAr": "هونر اكس 8 بي",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "no_eligible_candidate",
+        "reason": "No candidate products supplied or discovered for matching.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.9325999999999794
+    },
+    {
+      "offerId": "0fcf40f9-5914-412b-a6d6-95e6a8cfaec6",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p001:i007:s01",
+      "titleEn": "Fakieh Frozen Chicken 600Gm",
+      "titleAr": "دجاج فقيه مجمد ٦٠٠ ج",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": "5",
+        "matchStatus": "verified_linked"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_insufficient_evidence",
+        "reason": "Product #5: Offer lacks flavor/variant/cut specification to verify exact SKU match against candidate product (whole_chicken).",
+        "candidatesDiscovered": 16,
+        "candidatesUnique": 1,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": [
+          {
+            "productId": "5",
+            "nameEn": "Fakieh Frozen Chicken 600Gm",
+            "score": 421,
+            "isCompatible": false,
+            "conflicts": []
+          }
+        ]
+      },
+      "latencyMs": 8.662699999999973
+    },
+    {
+      "offerId": "224462ba-7e8b-4c55-9fa2-15fa0142dd37",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p002:i013:s01",
+      "titleEn": "Shrimps Small Sea Per KG",
+      "titleAr": "روبيان بحري صغير للكيلو",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (loose_commodity); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.7794999999999845
+    },
+    {
+      "offerId": "22b5ab44-cf2e-4b94-a4b1-31c56d497c65",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p004:i012:s01",
+      "titleEn": "Persil - Detergent Gel 5Ltr.",
+      "titleAr": "برسيل - جل غسيل ٥ لتر",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 1.0690999999999349
+    },
+    {
+      "offerId": "265296bb-1b51-4ffc-8b31-a05583d3df34",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p001:i010:s01",
+      "titleEn": "Noor - Cannola Oil 1.5Ltr.",
+      "titleAr": "نور - زيت كانولا ١,٥ لتر",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "no_eligible_candidate",
+        "reason": "No candidate products supplied or discovered for matching.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 1.1280000000000427
+    },
+    {
+      "offerId": "2ec312c1-634e-4bc0-98f4-ca45681e2a27",
+      "sourceOfferId": "noori-city-jeddah-2026-11-11:p001:i002:s01",
+      "titleEn": "Fakieh Frozen Chicken 10x600g",
+      "titleAr": "دجاج فقيه مجمد 10 × 600 جرام",
+      "supermarket": "2a01a099-ab36-4150-90fb-d63f3c18fa6c",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 13,
+        "candidatesUnique": 1,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": [
+          {
+            "productId": "5",
+            "nameEn": "Fakieh Frozen Chicken 600Gm",
+            "score": 400,
+            "isCompatible": false
+          }
+        ]
+      },
+      "latencyMs": 3.758000000000038
+    },
+    {
+      "offerId": "2f899401-15a5-4cd5-b6d2-a94b51764ed5",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p003:i001:s01",
+      "titleEn": "True Wireless Earbuds Asstd.",
+      "titleAr": "سماعات أذن بتقنية البلوتوث لاسلكية منوع",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.7038000000000011
+    },
+    {
+      "offerId": "319bfef6-db4d-4dd5-89b4-74def4419689",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p002:i006:s01",
+      "titleEn": "Managesh Akawi Cheese",
+      "titleAr": "مناقيش جبنة عكاوي",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "no_eligible_candidate",
+        "reason": "No candidate products supplied or discovered for matching.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.6028999999999769
+    },
+    {
+      "offerId": "3247ede9-a94f-4092-a551-1ec463204932",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p001:i006:s01",
+      "titleEn": "Mango Keitt Per Kg",
+      "titleAr": "مانجو كيت للكيلو",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (loose_commodity); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.846300000000042
+    },
+    {
+      "offerId": "335aa5c3-fa6f-4d36-89dc-586ebe25e26f",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p003:i006:s01",
+      "titleEn": "Epsilon Hair Trimmer",
+      "titleAr": "ماكينة قص الشعر",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (missing_identity); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.8387000000000171
+    },
+    {
+      "offerId": "3786010c-beda-4449-9af4-1a09cd06ca18",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p002:i004:s01",
+      "titleEn": "Salt Petit four Mix /kg",
+      "titleAr": "بيتيفور مالح مشكل /كيلو",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.703200000000038
+    },
+    {
+      "offerId": "3b3915b7-702b-41c0-95e3-464e8fa3b90f",
+      "sourceOfferId": "noori-city-jeddah-2026-11-11:p001:i003:s01",
+      "titleEn": "Al Shalan Sella Basmati Rice 5kg",
+      "titleAr": "أرز الشعلان مزة هندي بسمتي 5 كيلو",
+      "supermarket": "2a01a099-ab36-4150-90fb-d63f3c18fa6c",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 1.2810000000000628
+    },
+    {
+      "offerId": "3c9b5007-abc7-49ea-8718-449df85e2f16",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p003:i005:s01",
+      "titleEn": "Writing Tab Asstd.",
+      "titleAr": "جهاز لوحي للكتابة منوع",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.8022000000000844
+    },
+    {
+      "offerId": "40f78248-beb4-4846-be4b-af272e26b8e1",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p001:i011:s01",
+      "titleEn": "Lay's - Chips 110gm",
+      "titleAr": "ليز - شيبس ١١٠ جرام",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 1.1123999999999796
+    },
+    {
+      "offerId": "43640afd-cd3e-49d9-bc7c-94f0571a126b",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p001:i009:s01",
+      "titleEn": "Al Falah White Egg Small 30's",
+      "titleAr": "بيض الفلاح أبيض صغير ٣٠ بيضة",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": "1",
+        "matchStatus": "verified_linked"
+      },
+      "shadow": {
+        "matchedProductId": "1",
+        "status": "verified_compatible",
+        "reason": "Product identity and attributes verified compatible.",
+        "candidatesDiscovered": 7,
+        "candidatesUnique": 1,
+        "compatibleCandidatesCount": 1,
+        "rankedCandidates": [
+          {
+            "productId": "1",
+            "nameEn": "Al Falah White Egg Small 30's",
+            "score": 875,
+            "isCompatible": true
+          }
+        ]
+      },
+      "latencyMs": 4.754000000000019
+    },
+    {
+      "offerId": "4536b870-4854-40da-9042-a88f0eb05ea8",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p003:i006:s01",
+      "titleEn": "Samsung Galaxy A26",
+      "titleAr": "سامسونج جالكسي ايه 26",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "no_eligible_candidate",
+        "reason": "No candidate products supplied or discovered for matching.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.8154000000000678
+    },
+    {
+      "offerId": "45773d4c-f0f2-4c67-949b-d0b2919b4eee",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p001:i008:s01",
+      "titleEn": "Salmon Fillet / Kg",
+      "titleAr": "سلمون فيليه / كيلو",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.9189000000000078
+    },
+    {
+      "offerId": "458f28f0-ffc7-497c-86ca-7777676e08aa",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p004:i005:s01",
+      "titleEn": "Noor - Mayonnaise 32Oz/2x450ml",
+      "titleAr": "نور - مايونيز ٣٢ أونص / ٢×٤٥٠ جرام",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.9908000000000357
+    },
+    {
+      "offerId": "476881bf-ebf8-4654-99bf-8935c163ad25",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p002:i005:s01",
+      "titleEn": "Baraziq /kg",
+      "titleAr": "برازق /كيلو",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.6112000000000535
+    },
+    {
+      "offerId": "49316179-fab5-4aad-9907-5b295f11659b",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p003:i003:s01",
+      "titleEn": "Samsung QLED 4K TV",
+      "titleAr": "تلفزيون سامسونج كيو لد عالي الدقة",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "no_eligible_candidate",
+        "reason": "No candidate products supplied or discovered for matching.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.7228999999999814
+    },
+    {
+      "offerId": "49533de6-e030-42dc-b1e5-14b3b128a86c",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p002:i008:s01",
+      "titleEn": "Tanmiah Fresh Chicken Liver/Gizzard / Heart 450Gm",
+      "titleAr": "تنمية كبد / قوانص / قلوب دجاج ٤٥٠ ج",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 12,
+        "candidatesUnique": 2,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": [
+          {
+            "productId": "7",
+            "nameEn": "Tanmiah Fresh Chicken Bag",
+            "score": 369,
+            "isCompatible": false
+          },
+          {
+            "productId": "8",
+            "nameEn": "Tanmiah Fresh Chicken Bag",
+            "score": 369,
+            "isCompatible": false
+          }
+        ]
+      },
+      "latencyMs": 8.434200000000033
+    },
+    {
+      "offerId": "4c54185a-606a-44af-8fd8-32b37d7b33d2",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p001:i004:s01",
+      "titleEn": "Oska Drinking/ Arwa Mineral Water 6x1.5Ltr",
+      "titleAr": "مياه شرب أوسكا / مياه أروى المعدنية ٦ × ١.٥ مل",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 1.335399999999936
+    },
+    {
+      "offerId": "500a1ced-72bd-4fff-acc8-beb1d0d291ad",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p003:i016:s01",
+      "titleEn": "Camping Backpack Asstd.",
+      "titleAr": "حقيبة ظهر للتخييم متنوع",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.754799999999932
+    },
+    {
+      "offerId": "5372a323-0497-432f-ac6c-c16d2e3bbc68",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p003:i004:s01",
+      "titleEn": "LG QNED 4K Smart TV AI",
+      "titleAr": "ال جي تلفزيون كيونيد ذكي، ذكاء اصطناعي",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "no_eligible_candidate",
+        "reason": "No candidate products supplied or discovered for matching.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.9459000000000515
+    },
+    {
+      "offerId": "563ec4c9-4e76-4973-8b30-24a30bd252ad",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p001:i003:s01",
+      "titleEn": "Nestle Mega - Ice Cream 95ml",
+      "titleAr": "نستله ميجا - آيس كريم ٩٥مل",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 1.2368999999999915
+    },
+    {
+      "offerId": "56746264-3f57-428d-bb28-d7cd01601aaf",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p003:i007:s01",
+      "titleEn": "Honor X6C",
+      "titleAr": "هونر اكس 6 سي",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "no_eligible_candidate",
+        "reason": "No candidate products supplied or discovered for matching.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 1.0373999999999342
+    },
+    {
+      "offerId": "58ff1488-51ab-47e8-847d-c4e958ea214d",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p001:i009:s01",
+      "titleEn": "Garlic /Bag",
+      "titleAr": "ثوم / كيس",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.7454999999999927
+    },
+    {
+      "offerId": "595a196b-1530-4f64-842a-38dfc9935c57",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p004:i009:s01",
+      "titleEn": "Albayt White Sugar 1Kg",
+      "titleAr": "سكر أبيض البيت ١ كجم",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "no_eligible_candidate",
+        "reason": "No candidate products supplied or discovered for matching.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 1.0426000000001068
+    },
+    {
+      "offerId": "59c06dee-4653-4881-a29a-f28169f52583",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p002:i001:s01",
+      "titleEn": "Local Beef Bone Less Per KG",
+      "titleAr": "لحم بقري محلي خالي من العظم للكيلو",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (loose_commodity); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.7816000000000258
+    },
+    {
+      "offerId": "5b48620f-f478-4928-87b2-db7c2627fc3e",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p003:i005:s01",
+      "titleEn": "LG QNED 4K Smart TV AI",
+      "titleAr": "ال جي تلفزيون كيونيد ذكي، ذكاء اصطناعي",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "no_eligible_candidate",
+        "reason": "No candidate products supplied or discovered for matching.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.7736999999999625
+    },
+    {
+      "offerId": "60651b7a-476b-482f-8d3e-89cdff7bdef9",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p003:i007:s01",
+      "titleEn": "Electric Peeling 50w",
+      "titleAr": "قشارة كهربائية ٥٠ واط",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (generic_unbranded); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.6109000000000151
+    },
+    {
+      "offerId": "60cd2360-12c1-41eb-97eb-33e93b6c2fe6",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p002:i002:s01",
+      "titleEn": "Ethiopian Fresh Mutton Cuts Per KG",
+      "titleAr": "لحم الضأن الإثيوبي الطازج للكيلو",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (loose_commodity); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.76400000000001
+    },
+    {
+      "offerId": "67a6832b-330e-4e57-be18-137926343442",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p001:i014:s01",
+      "titleEn": "Cucumber /Kg",
+      "titleAr": "خيار / كيلو",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.6617999999999711
+    },
+    {
+      "offerId": "6a771248-6afb-47d9-a94e-1f22a562395c",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p001:i003:s01",
+      "titleEn": "Nadec UHT Milk Full Fat 4x1Lt",
+      "titleAr": "حليب نادك كامل الدسم طويل الأجل ٤ × ١ لتر",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": "6",
+        "matchStatus": "verified_linked"
+      },
+      "shadow": {
+        "matchedProductId": "6",
+        "status": "verified_compatible",
+        "reason": "Product identity and attributes verified compatible.",
+        "candidatesDiscovered": 3,
+        "candidatesUnique": 1,
+        "compatibleCandidatesCount": 1,
+        "rankedCandidates": [
+          {
+            "productId": "6",
+            "nameEn": "Nadec UHT Milk Full Fat 4x1Lt",
+            "score": 875,
+            "isCompatible": true
+          }
+        ]
+      },
+      "latencyMs": 4.5803999999999405
+    },
+    {
+      "offerId": "6c9eac47-82da-45db-aebf-394cc615f6db",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p002:i009:s01",
+      "titleEn": "Entaj Fresh Chicken Breast Fillet 450Gm",
+      "titleAr": "إنتاج فيليه صدور دجاج طازجة ٤٥٠ جرام",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": "2",
+        "matchStatus": "verified_linked"
+      },
+      "shadow": {
+        "matchedProductId": "2",
+        "status": "verified_compatible",
+        "reason": "Product identity and attributes verified compatible.",
+        "candidatesDiscovered": 5,
+        "candidatesUnique": 1,
+        "compatibleCandidatesCount": 1,
+        "rankedCandidates": [
+          {
+            "productId": "2",
+            "nameEn": "Entaj Fresh Chicken Breast Fillet 450Gm",
+            "score": 875,
+            "isCompatible": true
+          }
+        ]
+      },
+      "latencyMs": 4.980499999999893
+    },
+    {
+      "offerId": "6ef66c81-6a30-41bd-9cee-5b831667062e",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p001:i002:s01",
+      "titleEn": "Sadia Whole Chicken 1000g",
+      "titleAr": "دجاج مجمد ساديا ١٠٠٠جرام",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "no_eligible_candidate",
+        "reason": "No candidate products supplied or discovered for matching.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.9633000000000038
+    },
+    {
+      "offerId": "6efdb7e5-0b81-4965-b7d4-73b1c575a986",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p003:i001:s01",
+      "titleEn": "Samsung QLED 4K TV",
+      "titleAr": "تلفزيون سامسونج كيو لد عالي الدقة",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "no_eligible_candidate",
+        "reason": "No candidate products supplied or discovered for matching.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.7063000000000557
+    },
+    {
+      "offerId": "707b6428-b03b-4e8a-af95-401a9f73044c",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p001:i013:s01",
+      "titleEn": "Ever White Washing Powder 10Kg",
+      "titleAr": "مسحوق غسيل إيفر وايت ١٠ كج",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": "4",
+        "matchStatus": "verified_linked"
+      },
+      "shadow": {
+        "matchedProductId": "4",
+        "status": "verified_compatible",
+        "reason": "Product identity and attributes verified compatible.",
+        "candidatesDiscovered": 5,
+        "candidatesUnique": 1,
+        "compatibleCandidatesCount": 1,
+        "rankedCandidates": [
+          {
+            "productId": "4",
+            "nameEn": "Ever White Washing Powder 10Kg",
+            "score": 883,
+            "isCompatible": true
+          }
+        ]
+      },
+      "latencyMs": 4.142800000000079
+    },
+    {
+      "offerId": "71723b20-7645-441d-a841-87c7227d8f4e",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p001:i005:s01",
+      "titleEn": "King Fish Small Per Kg",
+      "titleAr": "سمك كنعد كامل صغير للكيلو",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (loose_commodity); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.6060999999999694
+    },
+    {
+      "offerId": "71842e1c-2e81-40fb-b2a5-1f493f5d2ce6",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p003:i002:s01",
+      "titleEn": "Wireless Neckband Asstd.",
+      "titleAr": "سماعات حول العنق بتقنية البلوتوث",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.5831000000000586
+    },
+    {
+      "offerId": "73e60543-eebe-4381-bb9c-86e936551096",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p003:i014:s01",
+      "titleEn": "Perinna Bed Sheet 225X250Cm",
+      "titleAr": "بيرينا شرشف سرير ٢٢٥*٢٥٠ سم",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (missing_identity); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.7327000000000226
+    },
+    {
+      "offerId": "74405ef2-d9c6-421e-adb2-7877b7b25a67",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p001:i002:s01",
+      "titleEn": "Indomie Noodles Chicken Curry / Soto Me/ SP Chicken 10x75Gm/Chicken 10x70gm",
+      "titleAr": "إندومي نودلز بنكهة الدجاج بالكاري / سوتو مي / الدجاج الخاص ٧٥x١٠ جم / الدجاج ٧٠x١٠ جم",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 1.1698999999999842
+    },
+    {
+      "offerId": "7544420a-ec18-4c7c-abf4-ef81d0048965",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p002:i012:s01",
+      "titleEn": "Flying fish steak",
+      "titleAr": "شريحة سمك الطائر",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (loose_commodity); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.597699999999918
+    },
+    {
+      "offerId": "76fac7dc-9c41-4ed1-b413-13f79a0ff588",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p001:i012:s01",
+      "titleEn": "Dove Soap 125Gm 5+1 Free Asstd.",
+      "titleAr": "صابون دوف للاستحمام ١٢٥ جرام ٥+١ مجانا منوع",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.9537000000000262
+    },
+    {
+      "offerId": "8068f003-c671-4934-913e-71bfbed9a303",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p001:i007:s01",
+      "titleEn": "Al Marai - Evaporated Milk 6x170gm",
+      "titleAr": "المراعي - حليب مركز ٦×١٧٠جرام",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "no_eligible_candidate",
+        "reason": "No candidate products supplied or discovered for matching.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 1.0171000000000276
+    },
+    {
+      "offerId": "8467bec8-1c3c-45bc-8383-b68c37e0d944",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p001:i013:s01",
+      "titleEn": "Veal Meat / Kg",
+      "titleAr": "لحم عجل بدون عظم / كيلو",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.6313999999999851
+    },
+    {
+      "offerId": "8589af5f-6578-4dc4-91cd-ecd01998f486",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p004:i002:s01",
+      "titleEn": "Rana Pasta 400gm (Penne Lise/Ditalini Rigate/Spaghetti)",
+      "titleAr": "رنا مكرونة ٤٠٠جرام",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.947400000000016
+    },
+    {
+      "offerId": "920ad0cb-edf8-47e5-ba41-90a1234574dc",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p001:i010:s01",
+      "titleEn": "Camel Meat with Bone Per KG",
+      "titleAr": "لحم جمل بالعظم للكيلو",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (loose_commodity); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.5930000000000746
+    },
+    {
+      "offerId": "98328358-0d6c-4ebd-ba9b-5efbef76fb04",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p004:i006:s01",
+      "titleEn": "Cadbury Miniatures 200g",
+      "titleAr": "كادبري شوكولاته مينيس ٢٠٠ جرام",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "no_eligible_candidate",
+        "reason": "No candidate products supplied or discovered for matching.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.8911999999999125
+    },
+    {
+      "offerId": "9a929495-e7f9-40d2-9068-cd8f4919c741",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p002:i005:s01",
+      "titleEn": "Tanmiah Fresh Chicken Bag",
+      "titleAr": "دجاج تنمية طازج كيس",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": "8",
+        "matchStatus": "verified_linked"
+      },
+      "shadow": {
+        "matchedProductId": "8",
+        "status": "verified_compatible",
+        "reason": "Product identity and attributes verified compatible.",
+        "candidatesDiscovered": 17,
+        "candidatesUnique": 2,
+        "compatibleCandidatesCount": 1,
+        "rankedCandidates": [
+          {
+            "productId": "8",
+            "nameEn": "Tanmiah Fresh Chicken Bag",
+            "score": 863,
+            "isCompatible": true
+          },
+          {
+            "productId": "7",
+            "nameEn": "Tanmiah Fresh Chicken Bag",
+            "score": 413,
+            "isCompatible": false,
+            "conflicts": [
+              "Package size mismatch: offer=1100g (1100g) vs product=1000g (1000g)"
+            ]
+          }
+        ]
+      },
+      "latencyMs": 7.808300000000031
+    },
+    {
+      "offerId": "9ac81516-cb1c-4923-9bb6-d6ebd7fab06b",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p001:i005:s01",
+      "titleEn": "Tomato / Kg",
+      "titleAr": "طماطم / كيلو",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.6820999999999913
+    },
+    {
+      "offerId": "9bf5b1c1-6f1e-4c3d-a4a4-33615475bf42",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p003:i004:s01",
+      "titleEn": "Hair Dryer Asstd.",
+      "titleAr": "مجفف الشعر",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 1.1335999999998876
+    },
+    {
+      "offerId": "a115c151-4491-4c36-b864-39d6a6cc5e59",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p004:i011:s01",
+      "titleEn": "Tide Detergent Powder 4Kg",
+      "titleAr": "مسحوق منظف تايد ٤ كجم",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 1.0131999999999834
+    },
+    {
+      "offerId": "a1debffb-2278-4989-a5eb-1c5dbf52b501",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p002:i001:s01",
+      "titleEn": "Mixed Fruits Cake",
+      "titleAr": "كيكة الفواكه المشكلة",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "no_eligible_candidate",
+        "reason": "No candidate products supplied or discovered for matching.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.6145000000000209
+    },
+    {
+      "offerId": "a2b6fe25-a18c-43d6-b71d-82c35ad9bf65",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p002:i003:s01",
+      "titleEn": "Mutton Liver Per KG",
+      "titleAr": "كبدة غنم للكيلو",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (loose_commodity); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.5923000000000229
+    },
+    {
+      "offerId": "a3daf689-b488-4093-8981-33c64a4dd722",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p002:i007:s01",
+      "titleEn": "Fresh Sheep Feet(Paya) Per KG",
+      "titleAr": "أقدام الأغنام الطازجة (بايا)",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (loose_commodity); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.769800000000032
+    },
+    {
+      "offerId": "aa7f81a8-73be-4638-a95c-e8b9870ea38a",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p002:i003:s01",
+      "titleEn": "Assorted Mini Slice Cake",
+      "titleAr": "ميني كيك متنوع",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.5975999999999431
+    },
+    {
+      "offerId": "aea71fd1-3de9-417c-9bbd-a69def32575c",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p003:i012:s01",
+      "titleEn": "AirPods Pro 3",
+      "titleAr": "AirPods Pro3 مع علبة شحن MagSafe",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "no_eligible_candidate",
+        "reason": "No candidate products supplied or discovered for matching.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.8118999999999232
+    },
+    {
+      "offerId": "b065ea68-a51d-4421-8ded-88af49b37a20",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p002:i002:s01",
+      "titleEn": "Snickers Cake",
+      "titleAr": "كيكة سنيكرز",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "no_eligible_candidate",
+        "reason": "No candidate products supplied or discovered for matching.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.7137000000000171
+    },
+    {
+      "offerId": "b3e42238-b785-4f14-8210-02734a821e34",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p001:i004:s01",
+      "titleEn": "Chicken Breast Fillet",
+      "titleAr": "إنتاج فيلية دجاج",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_contradictory",
+        "reason": "Product #2: Identity contradiction: Package size mismatch: offer=900g (900g) vs product=450g (450g); Candidate product contains meaningful modifier 'entaj' not present on offer",
+        "candidatesDiscovered": 2,
+        "candidatesUnique": 1,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": [
+          {
+            "productId": "2",
+            "nameEn": "Entaj Fresh Chicken Breast Fillet 450Gm",
+            "score": 388,
+            "isCompatible": false,
+            "conflicts": [
+              "Package size mismatch: offer=900g (900g) vs product=450g (450g)",
+              "Candidate product contains meaningful modifier 'entaj' not present on offer"
+            ]
+          }
+        ]
+      },
+      "latencyMs": 4.085500000000025
+    },
+    {
+      "offerId": "b3e80fd1-276d-40b8-88ff-7a764a15fb48",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p002:i011:s01",
+      "titleEn": "Sultan Fish Small Per KG",
+      "titleAr": "سمك سلطان صغير للكيلو",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (loose_commodity); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.6292000000000826
+    },
+    {
+      "offerId": "ba51bc95-0960-4c9c-b895-5c29f18c7b52",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p002:i010:s01",
+      "titleEn": "Tilapia Big Per KG",
+      "titleAr": "سمك البلطي للكيلو",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (loose_commodity); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.6067000000000462
+    },
+    {
+      "offerId": "bb739be3-662a-4d77-a6eb-2aa6abc92031",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p003:i003:s01",
+      "titleEn": "Krypton Zoomable Led Flashlight",
+      "titleAr": "جيباس مصباح يدوي ليد قابل للتكبير",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.7560999999999467
+    },
+    {
+      "offerId": "c1363b86-25fd-4837-b23f-d2791cf3767a",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p004:i008:s01",
+      "titleEn": "City Facial Tissue 10x150",
+      "titleAr": "سيتي مناديل وجه ١٠×١٥٠",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "no_eligible_candidate",
+        "reason": "No candidate products supplied or discovered for matching.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.939899999999966
+    },
+    {
+      "offerId": "c499b67d-70f1-458b-a2d0-4248f9e9e3da",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p003:i010:s01",
+      "titleEn": "Plastic Dish Drainer 3 Layer",
+      "titleAr": "رف تجفيف الصحون البلاستيكي ٣ طبقات",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (generic_unbranded); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.8243999999999687
+    },
+    {
+      "offerId": "c85f95ca-e47e-4bf5-81c0-ee1c36ed53d6",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p003:i009:s01",
+      "titleEn": "Techno Spark GO3",
+      "titleAr": "تكنو جوال جو3",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "no_eligible_candidate",
+        "reason": "No candidate products supplied or discovered for matching.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.8260000000000218
+    },
+    {
+      "offerId": "c9083df7-c456-40eb-83f4-0be29f687c04",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p004:i004:s01",
+      "titleEn": "Sensodyne Tooth Paste 125ml",
+      "titleAr": "معجون الأسنان سنسوداين ١٢٥ مل",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.9470999999999776
+    },
+    {
+      "offerId": "c9110eae-7105-4b55-b67f-14326dbacd34",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p002:i006:s01",
+      "titleEn": "Tanmiah Fresh Chicken Bag",
+      "titleAr": "دجاج تنمية طازج كيس",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": "7",
+        "matchStatus": "verified_linked"
+      },
+      "shadow": {
+        "matchedProductId": "7",
+        "status": "verified_compatible",
+        "reason": "Product identity and attributes verified compatible.",
+        "candidatesDiscovered": 17,
+        "candidatesUnique": 2,
+        "compatibleCandidatesCount": 1,
+        "rankedCandidates": [
+          {
+            "productId": "7",
+            "nameEn": "Tanmiah Fresh Chicken Bag",
+            "score": 863,
+            "isCompatible": true
+          },
+          {
+            "productId": "8",
+            "nameEn": "Tanmiah Fresh Chicken Bag",
+            "score": 413,
+            "isCompatible": false,
+            "conflicts": [
+              "Package size mismatch: offer=1000g (1000g) vs product=1100g (1100g)"
+            ]
+          }
+        ]
+      },
+      "latencyMs": 7.073700000000031
+    },
+    {
+      "offerId": "ca31a7df-23c0-4dae-a7f9-6626d7dda13a",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p004:i010:s01",
+      "titleEn": "Geisha Light Meat Tuna 185gm",
+      "titleAr": "جيشا - لحم تونة خفيف ١٨٥ جرام",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "no_eligible_candidate",
+        "reason": "No candidate products supplied or discovered for matching.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.9524000000000115
+    },
+    {
+      "offerId": "caef7ed6-8f82-4fc2-aa54-b4cf53eaadd5",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p003:i011:s01",
+      "titleEn": "Avoaky School Bag 16In Asstd",
+      "titleAr": "أفوكي حقائب مدرسية ١٦ انش ولادية و بناتية",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.8324999999999818
+    },
+    {
+      "offerId": "cc24decf-6d82-42d3-a80c-f31c213d06fb",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p003:i013:s01",
+      "titleEn": "Men's / Ladies Sports Shoes Asstd",
+      "titleAr": "حذاء رجالي / نسائي منوعة",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.6387000000000853
+    },
+    {
+      "offerId": "d1635732-716c-4e27-b6fe-7e97124048e5",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p004:i007:s01",
+      "titleEn": "Comfort Fabric Softener 4Ltr.",
+      "titleAr": "كمفرت معطر الأقمشة ٤ لتر",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 1.147299999999973
+    },
+    {
+      "offerId": "d59929dd-d0c8-4c51-aab8-a4ed76b8267c",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p003:i010:s01",
+      "titleEn": "Honor X8B Pad",
+      "titleAr": "هونر اكس 8 بي",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "no_eligible_candidate",
+        "reason": "No candidate products supplied or discovered for matching.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 1.0131000000000085
+    },
+    {
+      "offerId": "d8d8d79a-1177-47c7-9bf1-b65a85d16118",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p001:i011:s01",
+      "titleEn": "L'Oreal / Garnier Shampoo 400ml Asstd.",
+      "titleAr": "لوريال / غارنييه شامبو ٤٠٠ مل منوع",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.9121000000000095
+    },
+    {
+      "offerId": "dad1301e-72a7-4748-aefd-310e8adf827b",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p001:i012:s01",
+      "titleEn": "Veal Meat / Kg",
+      "titleAr": "لحم عجل بالعظم / كيلو",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.6558999999999742
+    },
+    {
+      "offerId": "e408687d-347c-4ab2-8da6-4b7a113be6c9",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p003:i008:s01",
+      "titleEn": "Hand Mixer 260W",
+      "titleAr": "خلاط يدوي ٢٦٠ واط",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (generic_unbranded); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.662900000000036
+    },
+    {
+      "offerId": "ed4e6e6c-2e3c-4428-8f44-f51a54ffe13c",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p004:i003:s01",
+      "titleEn": "Sunsilk Shampoo 700ml",
+      "titleAr": "صانسيلك شامبو ٧٠٠ مل",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.9673000000000229
+    },
+    {
+      "offerId": "f3a907c5-5620-478f-b8ca-1eebcfb1362f",
+      "sourceOfferId": "alwafa-city-jeddah-2026-10-20:p001:i001:s01",
+      "titleEn": "Taj Al-Hind /Taj Mahal Basmati Rice 5Kg",
+      "titleAr": "أرز بسمتي تاج الهند / تاج محل ٥ كجم",
+      "supermarket": "c2cc16c2-0008-4444-b000-c00000000008",
+      "existing": {
+        "productId": null,
+        "matchStatus": "excluded_ambiguous"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 1.004699999999957
+    },
+    {
+      "offerId": "f67cbae2-7d39-43cf-97d9-22c5e1a6601c",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p002:i007:s01",
+      "titleEn": "Petit four Sweets Mix /kg",
+      "titleAr": "بيتيفور حلو مشكلة /كيلو",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.6444999999999936
+    },
+    {
+      "offerId": "f6f800a2-074d-44c6-8365-85fe4d3479c5",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p003:i008:s01",
+      "titleEn": "iPhone 17 Pro Max",
+      "titleAr": "آيفون 17 برو ماكس",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "no_eligible_candidate",
+        "reason": "No candidate products supplied or discovered for matching.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.8004999999999427
+    },
+    {
+      "offerId": "fb02d81a-d536-4607-adae-6a8be5a5ab55",
+      "sourceOfferId": "bin-dawood-national-national-2026-10-20:p001:i006:s01",
+      "titleEn": "Rabea Extra Strong 100Teabags",
+      "titleAr": "ربيع - شاي الأقوى ١٠٠ كيس",
+      "supermarket": "c2cc16c2-0007-4444-b000-c00000000007",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "no_eligible_candidate",
+        "reason": "No candidate products supplied or discovered for matching.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 0.7853999999999814
+    },
+    {
+      "offerId": "fd865e4e-e9cb-444a-b71a-80c74efc16e4",
+      "sourceOfferId": "noori-city-jeddah-2026-11-11:p001:i001:s01",
+      "titleEn": "Al Safi Long Life Full Cream Milk 12x1Lt",
+      "titleAr": "حليب الصافي طويل الأجل كامل الدسم 3 × 4 لتر",
+      "supermarket": "2a01a099-ab36-4150-90fb-d63f3c18fa6c",
+      "existing": {
+        "productId": null,
+        "matchStatus": "unresolved"
+      },
+      "shadow": {
+        "matchedProductId": null,
+        "status": "rejected_ambiguous_offer",
+        "reason": "Offer represents an ambiguous entity (assortment); catalog SKU assignment blocked.",
+        "candidatesDiscovered": 0,
+        "candidatesUnique": 0,
+        "compatibleCandidatesCount": 0,
+        "rankedCandidates": []
+      },
+      "latencyMs": 1.200900000000047
+    }
+  ]
+}

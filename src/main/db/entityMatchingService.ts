@@ -55,7 +55,7 @@ export async function matchEntitiesForRows(
     let matchedCategoryId: string | null = null
     let categoryCreated = false
     
-    let matchedProductId: string | null = null
+    let matchedProductId: string | number | null = null
     let productCreated = false
     let aliasesCreated = false
 

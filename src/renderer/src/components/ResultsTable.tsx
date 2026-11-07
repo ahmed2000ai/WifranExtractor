@@ -80,7 +80,7 @@ export function ResultsTable({ rows, onSelectRow, selectedRowId }: ResultsTableP
               </td>
               <td style={{ padding: '8px' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.75rem' }}>
-                  {row.productId && <div><span style={{ color: '#94a3b8' }}>P: </span>{row.productId.substring(0, 8)}...</div>}
+                  {row.productId && <div><span style={{ color: '#94a3b8' }}>P: </span>{String(row.productId).substring(0, 8)}...</div>}
                   {row.createdOfferId && <div><span style={{ color: '#10b981' }}>Offer: </span>{row.createdOfferId.substring(0, 8)}...</div>}
                   {row.duplicateOfferId && <div><span style={{ color: '#f43f5e' }}>Dupe: </span>{row.duplicateOfferId.substring(0, 8)}...</div>}
                 </div>

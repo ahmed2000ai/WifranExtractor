@@ -167,7 +167,13 @@ export function mapPreparedPayloadToOffersInsert(input: {
 
     offer_start_date: prep.offer_start_date || prep.trusted_context?.offer_start_date || null,
     offer_end_date: offerEndDate,
-    status: prep.status === 'draft' || prep.status === 'needs_review' || prep.status === 'published' ? prep.status : 'needs_review',
+    status: prep.status === 'needs_review'
+      ? 'needs_review'
+      : prep.status === 'draft'
+      ? 'draft'
+      : (prep.status === 'published' || prep.quality?.publish_decision === 'publish' || prep.quality?.publish_decision === 'publish_but_exclude_from_comparison')
+      ? 'published'
+      : 'needs_review',
 
     image_url: sanitizedImageUrl,
     image_path: sanitizedStoragePath,
@@ -175,10 +181,10 @@ export function mapPreparedPayloadToOffersInsert(input: {
     image_source_type: prep.image_source_type || 'external_tool',
     // B-05: Use only the canonical public.offers column source_id (not offer_source_id)
     source_id: prep.source_id || prep.offer_source_id || input.sourceId || null,
-    source_page_number: prep.source_page_number || 1,
-    source_item_number: prep.source_item_number || null,
+    source_page_number: prep.source_page_number || prep.source?.source_page_number || 1,
+    source_item_number: prep.source_item_number || prep.source?.source_item_number || null,
     source_reference: prep.source_reference || null,
-    external_image_id: prep.external_image_id || null,
+    external_image_id: prep.external_image_id || prep.source?.external_image_id || null,
 
     deal_score: prep.deal_score || null,
     deal_label: prep.deal_label || null,
@@ -255,6 +261,20 @@ export function mapPreparedPayloadToOffersInsert(input: {
     payload.scoped_assessments = v2?.assessments?.capabilities || v2?.assessments?.structural_capabilities || prep.scoped_assessments || {}
     payload.reason_codes = reasonCodes
     payload.contract_v2 = v2 || null
+
+    // WIFRAN-07G/07H/07J: Catalog Match & Identity Verification Fields
+    if (prep.catalog_match_status !== undefined) {
+      payload.catalog_match_status = prep.catalog_match_status || null
+    }
+    if (prep.catalog_verification_basis !== undefined) {
+      payload.catalog_verification_basis = prep.catalog_verification_basis || null
+    }
+    if (prep.catalog_verified_by !== undefined) {
+      payload.catalog_verified_by = prep.catalog_verified_by || null
+    }
+    if (prep.catalog_verified_at !== undefined) {
+      payload.catalog_verified_at = prep.catalog_verified_at || null
+    }
   }
 
   return { payload, issues }

@@ -25,7 +25,7 @@ export type EntityMatchIssue = {
 export type MatchedEntityIds = {
   brandId: string | null
   categoryId: string | null
-  productId: string | null
+  productId: string | number | null
 }
 
 export type EntityMatchingRowResult = {

@@ -7,6 +7,9 @@ export function normalizeArabicText(value: string | null | undefined): string | 
   // Remove tatweel (kashida)
   text = text.replace(/ـ/g, '')
 
+  // Remove Arabic diacritics / tashkeel (fatha, damma, kasra, sukun, shadda, tanween: U+064B-U+065F, U+0670)
+  text = text.replace(/[\u064B-\u065F\u0670]/g, '')
+
   // Normalize Alef
   text = text.replace(/[أإآ]/g, 'ا')
   

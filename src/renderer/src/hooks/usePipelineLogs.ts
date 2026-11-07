@@ -50,6 +50,25 @@ export function usePipelineLogs() {
     return undefined
   }, [])
 
+  // Listen directly to main-process offerSync progress events so any publish is logged
+  useEffect(() => {
+    if (window.wifranExtractor?.offerSync?.onProgress) {
+      const unsub = window.wifranExtractor.offerSync.onProgress((event: any) => {
+        inMemoryLogs.push({
+          timestamp: new Date().toISOString(),
+          level: event.error || event.stage === 'row_failed' ? 'error' : (event.stage === 'warning' || event.stage === 'row_skipped' ? 'warning' : 'info'),
+          source: 'offer_sync',
+          message: event.message || `[${event.stage || 'progress'}] ${JSON.stringify(event)}`
+        })
+        setLogs([...inMemoryLogs])
+      })
+      return () => {
+        unsub()
+      }
+    }
+    return undefined
+  }, [])
+
   useEffect(() => {
     let added = false
     

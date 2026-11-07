@@ -224,13 +224,10 @@ export function useImportForm() {
       }
     }
 
-    if (!formState.supermarketId) {
-      errors.push({ field: 'supermarketId', code: 'SUPERMARKET_REQUIRED', message: 'Supermarket must be selected.' })
-    }
-
-    if (!formState.location) {
-      errors.push({ field: 'location', code: 'LOCATION_REQUIRED', message: 'Location must be selected.' })
-    } else {
+    // In the Local-First WIFRAN-07J pipeline, Supermarket, Location, and Offer Dates
+    // are completely optional upfront. They can be detected by Step 2 AI (M_ rows)
+    // or filled/edited in the Staging Workspace before final publish.
+    if (formState.location) {
       const { ok, errors: locErrors } = validateLocationScope({
         locationScope: formState.location.locationScope,
         cityId: formState.location.cityId,
@@ -241,14 +238,6 @@ export function useImportForm() {
           errors.push({ field: 'location', code: err.code, message: err.message })
         })
       }
-    }
-
-    if (!formState.offerStartDate) {
-      errors.push({ field: 'offerStartDate', code: 'START_DATE_REQUIRED', message: 'Start date must be selected.' })
-    }
-
-    if (!formState.offerEndDate) {
-      errors.push({ field: 'offerEndDate', code: 'END_DATE_REQUIRED', message: 'End date must be selected.' })
     }
 
     if (formState.offerStartDate && formState.offerEndDate) {
@@ -275,8 +264,7 @@ export function useImportForm() {
     if (!validation.ok) return false
     if (!configStatus) return false
     
-    // Check config readiness
-    if (!configStatus.supabase.url.configured || !configStatus.supabase.serviceRoleKey.configured || !configStatus.supabase.storageBucket.configured) return false
+    // Check config readiness for local OCR extraction
     if (!configStatus.mistral.apiKey.configured || !configStatus.mistral.ocrModel.configured || !configStatus.mistral.ocrEndpoint.configured) return false
 
     return true

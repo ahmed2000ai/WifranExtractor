@@ -38,7 +38,8 @@ vi.mock('../supabaseAdminClient', () => ({
         },
         select: () => ({
           eq: () => ({
-            single: async () => ({ data: { id: 'mock-db-id' }, error: null })
+            single: async () => ({ data: { id: 'mock-db-id' }, error: null }),
+            limit: async () => ({ data: [], error: null })
           })
         })
       };

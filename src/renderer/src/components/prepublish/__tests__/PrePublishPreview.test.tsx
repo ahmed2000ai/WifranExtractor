@@ -273,5 +273,69 @@ describe('PrePublishPreview Manual Publish Flow', () => {
     expect(screen.queryByText('Page Number')).not.toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Show Details/i })).toBeInTheDocument();
   });
+
+  it('disables publish button and shows banner when extraction was already published, and enables force republish with checkbox', async () => {
+    const publishApprovedMock = vi.fn().mockResolvedValue({ ok: true });
+    (window as any).wifranExtractor = {
+      prePublishPreview: {
+        load: vi.fn().mockResolvedValue({ 
+          ok: true, 
+          summary: { 
+            ...mockSummary, 
+            db_update_status: 'completed',
+            published_at: '2026-10-30T04:00:00.000Z'
+          } 
+        }),
+        markOpened: vi.fn().mockResolvedValue({ ok: true }),
+        publishApproved: publishApprovedMock,
+        getStatus: vi.fn().mockResolvedValue({ ok: true, db_update_status: 'completed', published_at: '2026-10-30T04:00:00.000Z' })
+      }
+    };
+
+    render(
+      <PipelineProvider>
+        <PrePublishPreview workspacePath="/test" onClose={vi.fn()} onPublishStarted={vi.fn()} />
+      </PipelineProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText('Pre-Publish Preview')).toBeInTheDocument();
+    });
+
+    // Verify already published banner & badge are displayed
+    expect(screen.getByText('ALREADY PUBLISHED')).toBeInTheDocument();
+    expect(screen.getByText(/This extraction was previously published to the database/i)).toBeInTheDocument();
+
+    // Verify publish button is disabled and indicates already published
+    const publishBtn = screen.getByRole('button', { name: /Already Published to DB/i });
+    expect(publishBtn).toBeInTheDocument();
+    expect(publishBtn).toBeDisabled();
+
+    // Check Enable Force Re-publish checkbox
+    const forceCheckbox = screen.getByLabelText(/Enable Force Re-publish/i);
+    expect(forceCheckbox).toBeInTheDocument();
+    expect(forceCheckbox).not.toBeChecked();
+
+    fireEvent.click(forceCheckbox);
+    expect(forceCheckbox).toBeChecked();
+
+    // Button should now be enabled and say 'Force Re-publish to DB'
+    const forcePublishBtn = screen.getByRole('button', { name: /Force Re-publish to DB/i });
+    expect(forcePublishBtn).toBeInTheDocument();
+    expect(forcePublishBtn).not.toBeDisabled();
+
+    // Click Force Re-publish -> opens confirm modal with republish warning
+    fireEvent.click(forcePublishBtn);
+    expect(screen.getByText(/Confirm Force Re-publish to Database/i)).toBeInTheDocument();
+    expect(screen.getByText(/Republish Notice:/i)).toBeInTheDocument();
+
+    // Confirm publish
+    const confirmBtn = screen.getByRole('button', { name: /Approve & Publish/i });
+    fireEvent.click(confirmBtn);
+
+    await waitFor(() => {
+      expect(publishApprovedMock).toHaveBeenCalledWith('/test', mockSummary.counts, { forceRePublish: true });
+    });
+  });
 });
 

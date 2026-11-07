@@ -18,6 +18,7 @@ import { registerStyleProfileSelectionIpcHandlers } from './styleProfileSelectio
 import { registerPrePublishIpc } from './prePublishIpc'
 import { registerPageFirstIpcHandlers } from './pageFirstIpc'
 import { registerRev1IpcHandlers } from './rev1Ipc'
+import { registerProductEnrichmentIpcHandlers } from './productEnrichmentIpc'
 
 export function registerIpcHandlers(): void {
   ipcMain.handle('app:getVersion', () => {
@@ -53,4 +54,5 @@ export function registerIpcHandlers(): void {
   registerPrePublishIpc()
   registerPageFirstIpcHandlers()
   registerRev1IpcHandlers()
+  registerProductEnrichmentIpcHandlers()
 }
