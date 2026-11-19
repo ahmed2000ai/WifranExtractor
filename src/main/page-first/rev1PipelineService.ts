@@ -26,6 +26,13 @@ export type Rev1PageProcessInput = {
   outputDir: string;
   pageNumber?: number;
   overrideModel?: string;
+  promptProfile?: import('../../shared/schemas/leafletPageExtractionSchema').LeafletPromptProfile;
+  schemaProfile?: import('../../shared/schemas/leafletPageExtractionSchema').LeafletSchemaProfile;
+  schemaVersion?: import('../../shared/schemas/leafletPageExtractionSchema').LeafletSchemaVersion;
+  executionMode?: import('../ocr/geminiCacheTypes').GeminiInferenceMode;
+  forceReextract?: boolean;
+  mockResponse?: any;
+  retryMockResponse?: any;
   onProgress?: (stage: string, message: string) => void;
 };
 
@@ -46,6 +53,11 @@ export type Rev1PageProcessResult = {
   retryExecuted: boolean;
   exportedToActiveLearning: boolean;
   enqueuedExceptionsCount: number;
+  usageReport?: import('../ocr/geminiCacheTypes').GeminiPageUsageReport;
+  attemptUsageReports?: import('../ocr/geminiCacheTypes').GeminiPageUsageReport[];
+  providerArchivePaths?: string[];
+  providerArchiveWarnings?: string[];
+  cacheHit?: boolean;
   error?: string;
 };
 
@@ -73,13 +85,38 @@ export class Rev1PipelineService {
     onProgress?.('stage_1_native_res', 'Preserving native resolution image dimensions...');
     const nativeDims = await getNativeDimensions(imagePath);
 
+    const attemptUsageReports: import('../ocr/geminiCacheTypes').GeminiPageUsageReport[] = [];
+    const providerArchivePaths: string[] = [];
+    const providerArchiveWarnings: string[] = [];
+    const correlationId = `rev1-p${pageNumber}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+
     // Stage 3: Multimodal Extraction via Gemini 3.8 Flash High Thinking
-    onProgress?.('stage_3_extraction', 'Extracting offers and atomic 2D boxes with Gemini 3.8 Flash...');
-    let extraction: LeafletPageExtractionRev1 = await this.geminiService.extractLeafletPage({
+    onProgress?.('stage_3_extraction', `Extracting offers with Gemini (${input.executionMode === 'flex' ? 'Economy Flex' : 'Fast Standard'})...`);
+    const extractionResult = await this.geminiService.extractLeafletPage({
       imagePath,
       pageNumber,
-      overrideModel
+      outputDir,
+      overrideModel,
+      promptProfile: input.promptProfile,
+      schemaProfile: input.schemaProfile,
+      schemaVersion: input.schemaVersion,
+      executionMode: input.executionMode,
+      forceReextract: input.forceReextract,
+      attemptKind: 'primary',
+      correlationId: `${correlationId}:primary`,
+      mockResponse: input.mockResponse
     });
+    if (extractionResult.usageReport) {
+      attemptUsageReports.push(extractionResult.usageReport);
+    }
+    if (extractionResult.providerArchivePath) {
+      providerArchivePaths.push(extractionResult.providerArchivePath);
+    }
+    if (extractionResult.providerArchiveWarning) {
+      providerArchiveWarnings.push(extractionResult.providerArchiveWarning);
+      onProgress?.('stage_3_archive_warning', extractionResult.providerArchiveWarning);
+    }
+    let extraction: LeafletPageExtractionRev1 = extractionResult;
 
     // Stage 4: Deterministic Union Box & Voronoi Neighbor-Bleed Clamping
     onProgress?.('stage_4_union_box', 'Calculating deterministic union boxes and Voronoi midpoint clamping...');
@@ -98,9 +135,28 @@ export class Rev1PipelineService {
         const retryResult = await this.geminiService.extractLeafletPage({
           imagePath,
           pageNumber,
+          outputDir,
+          executionMode: input.executionMode,
+          forceReextract: input.forceReextract,
           isDiagnosticRetry: true,
-          failureReasons
+          failureReasons,
+          promptProfile: input.promptProfile,
+          schemaProfile: input.schemaProfile,
+          schemaVersion: input.schemaVersion,
+          attemptKind: 'retry',
+          correlationId: `${correlationId}:retry`,
+          mockResponse: input.retryMockResponse
         });
+        if (retryResult.usageReport) {
+          attemptUsageReports.push(retryResult.usageReport);
+        }
+        if (retryResult.providerArchivePath) {
+          providerArchivePaths.push(retryResult.providerArchivePath);
+        }
+        if (retryResult.providerArchiveWarning) {
+          providerArchiveWarnings.push(retryResult.providerArchiveWarning);
+          onProgress?.('stage_6_archive_warning', retryResult.providerArchiveWarning);
+        }
 
         // Reconcile offers: Merge and re-normalize
         if (retryResult.offers.length > 0) {
@@ -180,7 +236,12 @@ export class Rev1PipelineService {
       auditResult,
       retryExecuted,
       exportedToActiveLearning,
-      enqueuedExceptionsCount
+      enqueuedExceptionsCount,
+      usageReport: extractionResult.usageReport,
+      attemptUsageReports,
+      providerArchivePaths,
+      providerArchiveWarnings,
+      cacheHit: extractionResult.cacheHit
     };
   }
 }

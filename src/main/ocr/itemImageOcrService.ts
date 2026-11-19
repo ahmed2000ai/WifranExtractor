@@ -5,6 +5,7 @@ import { buildItemOcrJsonSchema } from '../../shared/schemas/itemOcrSchema'
 import type { ItemOcrJson } from '../../shared/types/itemOcr'
 import { error as logError, info } from '../logging/logger'
 import { runWithMistralRateLimit } from './mistralRateLimitQueue'
+import { assertNotOfflineUat } from '../config/offlineUatGuard'
 
 export type ItemImageOcrInput = {
   localImagePath: string;
@@ -26,6 +27,7 @@ export type ItemImageOcrResult = {
  * Returns a flexible ItemOcrJson or an error.
  */
 export async function ocrSingleItemImage(input: ItemImageOcrInput): Promise<ItemImageOcrResult> {
+  assertNotOfflineUat('Live Mistral Item Image OCR API calls')
   const config = loadEnvConfig()
   const apiKey = config.mistral.apiKey
 

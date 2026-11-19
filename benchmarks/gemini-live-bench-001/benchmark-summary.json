@@ -1,0 +1,111 @@
+{
+  "benchmarkId": "WIFRAN-EXTRACTOR-GEMINI-LIVE-BENCH-001",
+  "date": "2026-11-11T01:18:18.802Z",
+  "model": "gemini-3.8-flash",
+  "backend": "vertex_ai",
+  "location": "global",
+  "thinkingLevel": "HIGH",
+  "testA": {
+    "testId": "test-a-legacy",
+    "model": "gemini-3.8-flash",
+    "backend": "vertex_ai",
+    "location": "global",
+    "promptProfile": "legacy",
+    "schemaProfile": "legacy",
+    "thinkingLevel": "HIGH",
+    "executionMode": "flex",
+    "imageSha256": "d5ebb7b85c90ef82b3835222fe9589ae6fdc5a9a8388a2af432a5be7ad22fa5b",
+    "trafficType": "ON_DEMAND_FLEX",
+    "requestDurationMs": 75330,
+    "tokens": {
+      "promptTokenCount": 5460,
+      "candidatesTokenCount": 4676,
+      "thoughtsTokenCount": 8153,
+      "cachedContentTokenCount": 0,
+      "totalTokenCount": 18289
+    },
+    "cost": {
+      "totalCostUsd": 0.02610188,
+      "inputCostUsd": 0.0020475,
+      "outputCostUsd": 0.0087675,
+      "thinkingCostUsd": 0.01528688,
+      "cachedInputCostUsd": 0,
+      "tier": "flex"
+    },
+    "offersCount": 10,
+    "responseId": "8MDzaqW7JKOBtfAPiJ3rkQE",
+    "status": "SUCCESS"
+  },
+  "testB": {
+    "testId": "test-b-compact",
+    "model": "gemini-3.8-flash",
+    "backend": "vertex_ai",
+    "location": "global",
+    "promptProfile": "compact_v1",
+    "schemaProfile": "compact_v1",
+    "thinkingLevel": "HIGH",
+    "executionMode": "flex",
+    "imageSha256": "d5ebb7b85c90ef82b3835222fe9589ae6fdc5a9a8388a2af432a5be7ad22fa5b",
+    "trafficType": "ON_DEMAND_FLEX",
+    "requestDurationMs": 108004,
+    "tokens": {
+      "promptTokenCount": 3799,
+      "candidatesTokenCount": 2472,
+      "thoughtsTokenCount": 15362,
+      "cachedContentTokenCount": 0,
+      "totalTokenCount": 21633
+    },
+    "cost": {
+      "totalCostUsd": 0.03486337,
+      "inputCostUsd": 0.00142462,
+      "outputCostUsd": 0.004635,
+      "thinkingCostUsd": 0.02880375,
+      "cachedInputCostUsd": 0,
+      "tier": "flex"
+    },
+    "offersCount": 10,
+    "responseId": "78HzaqCzOaOBtfAPiJ3rkQE",
+    "status": "SUCCESS"
+  },
+  "comparison": {
+    "promptTokens": {
+      "testA": 5460,
+      "testB": 3799,
+      "diff": -1661,
+      "pctChange": "-30.42%"
+    },
+    "candidateTokens": {
+      "testA": 4676,
+      "testB": 2472,
+      "diff": -2204,
+      "pctChange": "-47.13%"
+    },
+    "thinkingTokens": {
+      "testA": 8153,
+      "testB": 15362,
+      "diff": 7209,
+      "pctChange": "88.42%"
+    },
+    "totalTokens": {
+      "testA": 18289,
+      "testB": 21633,
+      "diff": 3344,
+      "pctChange": "18.28%"
+    },
+    "costUsd": {
+      "testA": 0.02610188,
+      "testB": 0.03486337,
+      "diff": 0.008761489999999997,
+      "pctChange": "33.57%"
+    },
+    "durationMs": {
+      "testA": 75330,
+      "testB": 108004,
+      "diff": 32674
+    },
+    "offersCount": {
+      "testA": 10,
+      "testB": 10
+    }
+  }
+}

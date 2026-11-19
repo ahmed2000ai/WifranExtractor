@@ -2,6 +2,8 @@ export type PrePublishPreviewItem = {
   source_page_number: number | null;
   source_item_number: string;
   crop_path: string;
+  thumbnail_path?: string | null;
+  catalog_image_url?: string | null;
   crop_image_url?: string | null;
 
   publish_decision:

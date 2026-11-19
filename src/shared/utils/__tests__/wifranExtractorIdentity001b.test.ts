@@ -949,7 +949,7 @@ describe('WIFRAN-EXTRACTOR-IDENTITY-001B — Phase 1 Safety Remediation and Offl
           region: 'Western Region',
           validFrom: '2026-11-01',
           validTo: '2026-11-15',
-          headerModifiedByOperator: false
+          headerModifiedByOperator: true
         },
         items: [
           {
@@ -1021,7 +1021,7 @@ describe('WIFRAN-EXTRACTOR-IDENTITY-001B — Phase 1 Safety Remediation and Offl
           region: 'Western Region',
           validFrom: '2026-11-01',
           validTo: '2026-11-15',
-          headerModifiedByOperator: false
+          headerModifiedByOperator: true
         },
         items: [
           {
@@ -1069,7 +1069,7 @@ describe('WIFRAN-EXTRACTOR-IDENTITY-001B — Phase 1 Safety Remediation and Offl
           region: 'Western Region',
           validFrom: '2026-11-01',
           validTo: '2026-11-15',
-          headerModifiedByOperator: false
+          headerModifiedByOperator: true
         },
         items: [
           {
@@ -1114,7 +1114,7 @@ describe('WIFRAN-EXTRACTOR-IDENTITY-001B — Phase 1 Safety Remediation and Offl
           region: 'Western Region',
           validFrom: '2026-11-01',
           validTo: '2026-11-15',
-          headerModifiedByOperator: false
+          headerModifiedByOperator: true
         },
         items: [
           {
@@ -1157,7 +1157,7 @@ describe('WIFRAN-EXTRACTOR-IDENTITY-001B — Phase 1 Safety Remediation and Offl
           region: 'Western Region',
           validFrom: '2026-11-01',
           validTo: '2026-11-15',
-          headerModifiedByOperator: false
+          headerModifiedByOperator: true
         },
         items: [
           {
@@ -1209,7 +1209,7 @@ describe('WIFRAN-EXTRACTOR-IDENTITY-001B — Phase 1 Safety Remediation and Offl
           region: 'Western Region',
           validFrom: '2026-11-01',
           validTo: '2026-11-15',
-          headerModifiedByOperator: false
+          headerModifiedByOperator: true
         },
         items: [
           {
@@ -1261,7 +1261,7 @@ describe('WIFRAN-EXTRACTOR-IDENTITY-001B — Phase 1 Safety Remediation and Offl
           region: 'Western Region',
           validFrom: '2026-11-01',
           validTo: '2026-11-15',
-          headerModifiedByOperator: false
+          headerModifiedByOperator: true
         },
         items: [
           {
@@ -1312,7 +1312,7 @@ describe('WIFRAN-EXTRACTOR-IDENTITY-001B — Phase 1 Safety Remediation and Offl
           region: 'Western Region',
           validFrom: '2026-11-01',
           validTo: '2026-11-15',
-          headerModifiedByOperator: false
+          headerModifiedByOperator: true
         },
         items: [
           {
@@ -1367,7 +1367,7 @@ describe('WIFRAN-EXTRACTOR-IDENTITY-001B — Phase 1 Safety Remediation and Offl
           region: 'Western Region',
           validFrom: '2026-11-01',
           validTo: '2026-11-15',
-          headerModifiedByOperator: false
+          headerModifiedByOperator: true
         },
         items: [
           {
@@ -1418,7 +1418,7 @@ describe('WIFRAN-EXTRACTOR-IDENTITY-001B — Phase 1 Safety Remediation and Offl
           region: 'Western Region',
           validFrom: '2026-11-01',
           validTo: '2026-11-15',
-          headerModifiedByOperator: false
+          headerModifiedByOperator: true
         },
         items: [
           {
@@ -1469,7 +1469,7 @@ describe('WIFRAN-EXTRACTOR-IDENTITY-001B — Phase 1 Safety Remediation and Offl
           region: 'Western Region',
           validFrom: '2026-11-01',
           validTo: '2026-11-15',
-          headerModifiedByOperator: false
+          headerModifiedByOperator: true
         },
         items: [
           {
@@ -1549,7 +1549,7 @@ describe('WIFRAN-EXTRACTOR-IDENTITY-001B — Phase 1 Safety Remediation and Offl
           region: 'Western Region',
           validFrom: '2026-11-01',
           validTo: '2026-11-15',
-          headerModifiedByOperator: false
+          headerModifiedByOperator: true
         },
         items: [
           {
@@ -1620,7 +1620,7 @@ describe('WIFRAN-EXTRACTOR-IDENTITY-001B — Phase 1 Safety Remediation and Offl
           region: 'Western Region',
           validFrom: '2026-11-01',
           validTo: '2026-11-15',
-          headerModifiedByOperator: false
+          headerModifiedByOperator: true
         },
         items: [
           {
@@ -1744,7 +1744,7 @@ describe('WIFRAN-EXTRACTOR-IDENTITY-001B — Phase 1 Safety Remediation and Offl
           region: 'Western Region',
           validFrom: '2026-11-02',
           validTo: '2026-11-11',
-          headerModifiedByOperator: false
+          headerModifiedByOperator: true
         },
         items: [
           {
@@ -1808,7 +1808,7 @@ describe('WIFRAN-EXTRACTOR-IDENTITY-001B — Phase 1 Safety Remediation and Offl
           region: 'Western Region',
           validFrom: '2026-11-02',
           validTo: '2026-11-11',
-          headerModifiedByOperator: false
+          headerModifiedByOperator: true
         },
         items: [
           {
@@ -1881,7 +1881,7 @@ describe('WIFRAN-EXTRACTOR-IDENTITY-001B — Phase 1 Safety Remediation and Offl
           region: 'Western Region',
           validFrom: '2026-11-02',
           validTo: '2026-11-11',
-          headerModifiedByOperator: false
+          headerModifiedByOperator: true
         },
         items: [
           {
@@ -1937,7 +1937,7 @@ describe('WIFRAN-EXTRACTOR-IDENTITY-001B — Phase 1 Safety Remediation and Offl
           region: 'Western Region',
           validFrom: '2026-11-02',
           validTo: '2026-11-11',
-          headerModifiedByOperator: false
+          headerModifiedByOperator: true
         },
         items: [
           {
@@ -1988,7 +1988,7 @@ describe('WIFRAN-EXTRACTOR-IDENTITY-001B — Phase 1 Safety Remediation and Offl
           region: 'Western Region',
           validFrom: '2026-11-02',
           validTo: '2026-11-11',
-          headerModifiedByOperator: false
+          headerModifiedByOperator: true
         },
         items: [
           {

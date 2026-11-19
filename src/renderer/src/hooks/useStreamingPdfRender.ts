@@ -117,6 +117,13 @@ export function useStreamingPdfRender() {
     setError(null)
   }, [])
 
+  const restoreState = useCallback((nextState: StreamingPdfRenderState) => {
+    currentJobIdRef.current = null
+    setRunning(false)
+    setError(null)
+    setState(nextState)
+  }, [])
+
   return {
     running,
     state,
@@ -130,6 +137,7 @@ export function useStreamingPdfRender() {
     startRender,
     getPageStatus,
     getRenderedPage,
-    reset
+    reset,
+    restoreState
   }
 }

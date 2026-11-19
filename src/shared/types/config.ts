@@ -1,9 +1,12 @@
+import type { DatabaseEnvironmentStatus } from './app'
+
 export type ConfigKeyStatus = {
   configured: boolean
   required: boolean
 }
 
 export type SafeConfigStatus = {
+  databaseEnvironment?: DatabaseEnvironmentStatus
   supabase: {
     url: ConfigKeyStatus
     anonKey: ConfigKeyStatus

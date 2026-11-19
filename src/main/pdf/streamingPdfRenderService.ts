@@ -1,6 +1,7 @@
 import { writeFile } from 'fs/promises'
 import { fromPath } from 'pdf2pic'
 import sharp from 'sharp'
+import crypto from 'crypto'
 import type { 
   StreamingPdfRenderInput, 
   StreamingPdfRenderState, 
@@ -11,9 +12,44 @@ import { createPdfWorkspace } from './pdfWorkspace'
 import { validatePdfFile } from './pdfValidator'
 import { splitPdfIntoChunks } from './pdfSplitter'
 import { error as logError, info } from '../logging/logger'
-import { createInitialExtractionManifest } from '../extraction/extractionManifestService'
+import { createInitialExtractionManifest, loadExtractionManifest, saveExtractionManifest } from '../extraction/extractionManifestService'
 import fs from 'fs'
 import path from 'path'
+
+async function computeRenderedPageFingerprints(imagePath: string): Promise<{
+  pageContentSha256: string | null
+  pagePerceptualHash: string | null
+}> {
+  let pageContentSha256: string | null = null
+  let pagePerceptualHash: string | null = null
+  try {
+    const fileBuf = fs.readFileSync(imagePath)
+    pageContentSha256 = crypto.createHash('sha256').update(fileBuf).digest('hex')
+    try {
+      const { data } = await sharp(fileBuf)
+        .grayscale()
+        .resize(9, 8, { fit: 'fill' })
+        .raw()
+        .toBuffer({ resolveWithObject: true })
+      if (data && data.length >= 72) {
+        let bits = 0n
+        for (let row = 0; row < 8; row++) {
+          for (let col = 0; col < 8; col++) {
+            const left = data[row * 9 + col]
+            const right = data[row * 9 + col + 1]
+            bits = (bits << 1n) | (left > right ? 1n : 0n)
+          }
+        }
+        pagePerceptualHash = bits.toString(16).padStart(16, '0')
+      }
+    } catch {
+      pagePerceptualHash = null
+    }
+  } catch {
+    pageContentSha256 = null
+  }
+  return { pageContentSha256, pagePerceptualHash }
+}
 
 // Inject GS and GM into PATH if on Windows (from pdfRenderer)
 if (process.platform === 'win32') {
@@ -88,14 +124,37 @@ export async function renderPdfPagesStreaming(
         throw new Error(`Validation failed: ${validation.error?.message}`)
       }
       pageCount = validation.pageCount
-      state.totalPages = pageCount
       emit('pdf_validated', `PDF validated. Total pages: ${pageCount}`)
     }
 
-    // 2. Initialize pages array
-    for (let i = 1; i <= pageCount; i++) {
+    // 1b. Determine strict processing page scope
+    const selectionMode: 'all' | 'specific' =
+      input.selectionMode ||
+      (input.selectedPages && input.selectedPages.length > 0 && input.selectedPages.length < pageCount ? 'specific' : 'all')
+
+    let pagesToRender: number[]
+    if (selectionMode === 'specific') {
+      if (!input.selectedPages || input.selectedPages.length === 0) {
+        throw new Error('INVALID_PAGE_SELECTION: Specific pages mode selected, but no pages were specified.')
+      }
+      const outOfBounds = input.selectedPages.filter(p => p < 1 || p > pageCount)
+      if (outOfBounds.length > 0) {
+        throw new Error(`INVALID_PAGE_SELECTION: Selected pages [${outOfBounds.join(', ')}] exceed PDF page count (${pageCount}).`)
+      }
+      pagesToRender = Array.from(new Set(input.selectedPages)).sort((a, b) => a - b)
+    } else {
+      pagesToRender = Array.from({ length: pageCount }, (_, i) => i + 1)
+    }
+
+    state.totalDocumentPages = pageCount
+    state.selectedPages = pagesToRender
+    state.selectionMode = selectionMode
+    state.totalPages = pagesToRender.length
+
+    // 2. Initialize pages array STRICTLY for selected pages
+    for (const pNum of pagesToRender) {
       state.pages.push({
-        pageNumber: i,
+        pageNumber: pNum,
         imagePath: '',
         width: 0,
         height: 0,
@@ -121,10 +180,29 @@ export async function renderPdfPagesStreaming(
       state.workspacePath = workspacePath
       emit('pdf_copying', `Original PDF copied to workspace.`)
     } else {
+      if (!fs.existsSync(workspacePath)) {
+        fs.mkdirSync(workspacePath, { recursive: true })
+      }
       originalPdfPath = path.join(workspacePath, 'original.pdf')
+      if (!fs.existsSync(originalPdfPath)) {
+        if (input.pdfPath && fs.existsSync(input.pdfPath)) {
+          try {
+            fs.copyFileSync(input.pdfPath, originalPdfPath)
+          } catch {
+            originalPdfPath = input.pdfPath
+          }
+        } else if (input.originalFileName && fs.existsSync(path.join(workspacePath, input.originalFileName))) {
+          originalPdfPath = path.join(workspacePath, input.originalFileName)
+        } else if (input.pdfPath) {
+          originalPdfPath = input.pdfPath
+        }
+      }
       chunksPath = path.join(workspacePath, 'chunks')
       metadataJsonPath = path.join(workspacePath, 'metadata.json')
       state.workspacePath = workspacePath
+      if (!fs.existsSync(chunksPath)) {
+        fs.mkdirSync(chunksPath, { recursive: true })
+      }
     }
 
     const pagesDir = path.join(workspacePath, 'pages')
@@ -132,24 +210,65 @@ export async function renderPdfPagesStreaming(
       fs.mkdirSync(pagesDir, { recursive: true })
     }
 
-    // Initialize extraction manifest
-    await createInitialExtractionManifest({
-      packagePath: workspacePath,
-      pdfBaseName: path.basename(input.originalFileName || input.pdfPath, path.extname(input.originalFileName || input.pdfPath)),
-      pdfFileName: input.originalFileName || path.basename(input.pdfPath),
-      pageCount: pageCount,
-      supermarketId: input.metadata?.supermarketId,
-      location: input.metadata?.location,
-      offerDates: input.metadata?.offerDates,
-      parsedMetadata: input.metadata?.parsedMetadata
-    })
+    // Compute PDF content fingerprint
+    let pdfFingerprint = ''
+    try {
+      const pdfBytes = fs.readFileSync(originalPdfPath)
+      pdfFingerprint = crypto.createHash('sha256').update(pdfBytes).digest('hex')
+    } catch {
+      pdfFingerprint = path.basename(originalPdfPath)
+    }
 
-    // 4. Split into chunks (do this up front so it's ready for OCR later)
+    // If operator-confirmed metadata already exists in durable cache for this PDF fingerprint, sync it into the workspace
+    try {
+      const { getLeafletMetadataService } = await import('../metadata/leafletMetadataService')
+      const cache = getLeafletMetadataService().getCache()
+      const existingConfirmed = cache.getConfirmed(pdfFingerprint)
+      if (existingConfirmed && existingConfirmed.operatorConfirmed) {
+        cache.saveConfirmedMetadata(pdfFingerprint, existingConfirmed, workspacePath)
+      }
+    } catch {
+      // Non-fatal in offline/minimal unit tests
+    }
+
+    const processingSelection = {
+      pdfFingerprint,
+      totalDocumentPages: pageCount,
+      selectionMode,
+      selectedPages: pagesToRender,
+      processingStatus: 'in_progress' as const,
+      coverage: (pagesToRender.length === pageCount ? 'full' : 'partial') as 'full' | 'partial'
+    }
+
+    // Initialize or update extraction manifest without destroying existing artifacts
+    const existingManifest = await loadExtractionManifest(workspacePath)
+    if (existingManifest) {
+      existingManifest.processing_selection = processingSelection
+      existingManifest.processing_scope = {
+        mode: selectionMode === 'specific' ? 'selected_pages' : 'all_pages',
+        pages: pagesToRender
+      }
+      await saveExtractionManifest(workspacePath, existingManifest)
+    } else {
+      await createInitialExtractionManifest({
+        packagePath: workspacePath,
+        pdfBaseName: path.basename(input.originalFileName || input.pdfPath, path.extname(input.originalFileName || input.pdfPath)),
+        pdfFileName: input.originalFileName || path.basename(input.pdfPath),
+        pageCount: pageCount,
+        supermarketId: input.metadata?.supermarketId,
+        location: input.metadata?.location,
+        offerDates: input.metadata?.offerDates,
+        parsedMetadata: input.metadata?.parsedMetadata,
+        processingSelection
+      })
+    }
+
+    // 4. Split into chunks (ONLY for selected pages!)
     if (input.chunkSize && !state.chunks) {
-      emit('pdf_splitting', 'Splitting PDF into chunks...')
-      const chunks = await splitPdfIntoChunks(originalPdfPath, chunksPath, input.chunkSize)
+      emit('pdf_splitting', 'Splitting selected PDF pages into chunks...')
+      const chunks = await splitPdfIntoChunks(originalPdfPath, chunksPath, input.chunkSize, pagesToRender)
       state.chunks = chunks
-      emit('pdf_splitting', `Created ${chunks.length} chunks.`)
+      emit('pdf_splitting', `Created ${chunks.length} chunks for ${pagesToRender.length} selected pages.`)
     }
 
     // Initialize metadata
@@ -157,7 +276,11 @@ export async function renderPdfPagesStreaming(
       workspaceId: path.basename(workspacePath),
       originalFileName: input.originalFileName || path.basename(input.pdfPath),
       sourcePdfPath: originalPdfPath,
+      pdfFingerprint,
       pageCount,
+      totalDocumentPages: pageCount,
+      selectionMode,
+      selectedPages: pagesToRender,
       chunkSize: input.chunkSize || 1,
       renderDpi: input.dpi,
       chunks: state.chunks || [],
@@ -168,7 +291,7 @@ export async function renderPdfPagesStreaming(
     // Write initial metadata
     await writeFile(metadataJsonPath, JSON.stringify(metadataJson, null, 2))
 
-    // 5. Start Render Loop
+    // 5. Start Render Loop STRICTLY over pagesToRender
     const actualDpi = Math.max(100, Math.min(400, input.dpi))
     const storeAsImage = fromPath(originalPdfPath, {
       density: actualDpi,
@@ -179,46 +302,59 @@ export async function renderPdfPagesStreaming(
       height: undefined
     })
 
-    for (let i = 1; i <= pageCount; i++) {
-      const pageInfo = state.pages[i - 1]
+    const customRenderer = (input as any)._customPageRenderer as ((pageNum: number, pagesDir: string) => Promise<{ path: string; width?: number; height?: number }>) | undefined
+
+    for (let idx = 0; idx < pagesToRender.length; idx++) {
+      const pageNum = pagesToRender[idx]
+      const pageInfo = state.pages[idx]
       pageInfo.status = 'rendering'
-      emit('page_rendering', `Rendering page ${i}...`, pageInfo)
+      emit('page_rendering', `Rendering page ${pageNum}...`, pageInfo)
 
       try {
-        const result = await storeAsImage(i, { responseType: 'image' })
+        const result = customRenderer
+          ? await customRenderer(pageNum, pagesDir)
+          : await storeAsImage(pageNum, { responseType: 'image' })
         
         if (result && result.path) {
           const imagePath = result.path
-          const metadata = await sharp(imagePath).metadata()
+          const metadata = (result as any).width && (result as any).height
+            ? { width: (result as any).width, height: (result as any).height }
+            : await sharp(imagePath).metadata()
           
+          const { pageContentSha256, pagePerceptualHash } = await computeRenderedPageFingerprints(imagePath)
+
           pageInfo.status = 'rendered'
           pageInfo.imagePath = imagePath
           pageInfo.width = metadata.width || 0
           pageInfo.height = metadata.height || 0
-          
+          ;(pageInfo as any).pageContentSha256 = pageContentSha256
+          ;(pageInfo as any).pagePerceptualHash = pagePerceptualHash
+
           state.renderedPages++
-          if (i === 1) state.firstPageReady = true
+          if (state.renderedPages === 1) state.firstPageReady = true
 
           // Update workspace metadata
           metadataJson.renderedPages.push({
-            pageNumber: i,
+            pageNumber: pageNum,
             imagePath,
             width: pageInfo.width,
             height: pageInfo.height,
-            dpi: actualDpi
+            dpi: actualDpi,
+            pageContentSha256,
+            pagePerceptualHash
           })
           await writeFile(metadataJsonPath, JSON.stringify(metadataJson, null, 2))
 
-          emit('page_rendered', `Page ${i} rendered successfully.`, pageInfo)
+          emit('page_rendered', `Page ${pageNum} rendered successfully.`, pageInfo)
         } else {
           throw new Error('pdf2pic returned empty path.')
         }
       } catch (err: any) {
-        logError(`Failed to render page ${i}: ${err.message}`)
+        logError(`Failed to render page ${pageNum}: ${err.message}`)
         pageInfo.status = 'failed'
         pageInfo.error = { code: 'RENDER_FAILED', message: err.message }
         state.failedPages++
-        emit('page_failed', `Failed to render page ${i}: ${err.message}`, pageInfo)
+        emit('page_failed', `Failed to render page ${pageNum}: ${err.message}`, pageInfo)
       }
     }
 

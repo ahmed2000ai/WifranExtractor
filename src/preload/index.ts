@@ -6,7 +6,9 @@ const api = {
     getHealth: (): Promise<any> => ipcRenderer.invoke('app:getHealth')
   },
   config: {
-    getStatus: (): Promise<any> => ipcRenderer.invoke('config:getStatus')
+    getStatus: (): Promise<any> => ipcRenderer.invoke('config:getStatus'),
+    verifySchemaReadiness: (context?: 'PRODUCTION_UI' | 'DEVELOPMENT_TEST'): Promise<any> =>
+      ipcRenderer.invoke('config:verifySchemaReadiness', context)
   },
   reference: {
     loadAll: (): Promise<any> => ipcRenderer.invoke('reference:loadAll'),
@@ -14,9 +16,11 @@ const api = {
     loadLocationsForSupermarket: (supermarketId: string): Promise<any> => ipcRenderer.invoke('reference:loadLocationsForSupermarket', { supermarketId })
   },
   files: {
-    selectPdf: (): Promise<any> => ipcRenderer.invoke('file:selectPdf')
+    selectPdf: (): Promise<any> => ipcRenderer.invoke('file:selectPdf'),
+    selectMultiplePdfs: (): Promise<any[]> => ipcRenderer.invoke('file:selectMultiplePdfs')
   },
   pdf: {
+    getPageCount: (filePath: string): Promise<number> => ipcRenderer.invoke('pdf:getPageCount', filePath),
     preprocess: (input: any): Promise<any> => ipcRenderer.invoke('pdf:preprocess', input),
     onPreprocessProgress: (callback: (event: any) => void) => {
       const listener = (_event: any, arg: any) => callback(arg)
@@ -229,6 +233,100 @@ const api = {
       ipcRenderer.invoke('productEnrichment:resolve-supermarket', rawName),
     resolveRegion: (rawName: string): Promise<any> =>
       ipcRenderer.invoke('productEnrichment:resolve-region', rawName)
+  },
+  metadata: {
+    discover: (input: any): Promise<any> => ipcRenderer.invoke('metadata:discover', input),
+    discoverFromPackage: (packageDir: string, options?: any): Promise<any> => ipcRenderer.invoke('metadata:discoverFromPackage', packageDir, options),
+    get: (fingerprint: string): Promise<any> => ipcRenderer.invoke('metadata:get', fingerprint),
+    confirm: (input: any): Promise<any> => ipcRenderer.invoke('metadata:confirm', input),
+    invalidate: (fingerprint: string): Promise<any> => ipcRenderer.invoke('metadata:invalidate', fingerprint),
+    validatePublishReadiness: (input: any): Promise<any> => ipcRenderer.invoke('metadata:validatePublishReadiness', input),
+    grantBudgetExtension: (fingerprint: string, additionalAttempts: number): Promise<any> =>
+      ipcRenderer.invoke('metadata:grantBudgetExtension', { leafletFingerprint: fingerprint, additionalAttempts }),
+    getBudgetStatus: (fingerprint: string): Promise<any> => ipcRenderer.invoke('metadata:getBudgetStatus', fingerprint)
+  },
+  batch: {
+    backfillHistory: (options?: any): Promise<any> => ipcRenderer.invoke('batch:backfillHistory', options),
+    inspectDuplicates: (input: any): Promise<any> => ipcRenderer.invoke('batch:inspectDuplicates', input),
+    create: (input: any): Promise<any> => ipcRenderer.invoke('batch:create', input),
+    start: (input: any): Promise<any> => ipcRenderer.invoke('batch:start', input),
+    cancel: (batchId: string): Promise<any> => ipcRenderer.invoke('batch:cancel', batchId),
+    resume: (input: any): Promise<any> => ipcRenderer.invoke('batch:resume', input),
+    getManifest: (batchId: string): Promise<any> => ipcRenderer.invoke('batch:getManifest', batchId),
+    list: (): Promise<any[]> => ipcRenderer.invoke('batch:list'),
+    getUnifiedOffers: (input: any): Promise<any[]> => ipcRenderer.invoke('batch:getUnifiedOffers', input),
+    getSummary: (batchId: string): Promise<any> => ipcRenderer.invoke('batch:getSummary', batchId),
+    discoverLeafletMetadata: (input: any): Promise<any> => ipcRenderer.invoke('batch:discoverLeafletMetadata', input),
+    getMetadataVisionCostEstimate: (input: { batchId: string; leafletId: string }): Promise<any> =>
+      ipcRenderer.invoke('batch:getMetadataVisionCostEstimate', input),
+    discoverLeafletMetadataWithVision: (input: {
+      batchId: string;
+      leafletId: string;
+      explicitVisionAuthorization: boolean;
+      forceRefresh?: boolean;
+      throwOnError?: boolean;
+    }): Promise<any> => ipcRenderer.invoke('batch:discoverLeafletMetadataWithVision', input),
+    getCoverPreview: (input: { batchId: string; leafletId: string }): Promise<any> => ipcRenderer.invoke('batch:getCoverPreview', input),
+    updateLeafletMetadata: (input: any): Promise<any> => ipcRenderer.invoke('batch:updateLeafletMetadata', input),
+    updateOfferFields: (input: any): Promise<any> => ipcRenderer.invoke('batch:updateOfferFields', input),
+    resolveOfferAsAssorted: (input: any): Promise<any> => ipcRenderer.invoke('batch:resolveOfferAsAssorted', input),
+    selectAndReplaceOfferImage: (input: any): Promise<any> => ipcRenderer.invoke('batch:selectAndReplaceOfferImage', input),
+    restoreDefaultOfferImage: (input: any): Promise<any> => ipcRenderer.invoke('batch:restoreDefaultOfferImage', input),
+    updatePublishedOfferImage: (input: any): Promise<any> => ipcRenderer.invoke('batch:updatePublishedOfferImage', input),
+    confirmDerivedTierCrop: (input: any): Promise<any> => ipcRenderer.invoke('batch:confirmDerivedTierCrop', input),
+    previewPublishedOfferImageRepairs: (input: any): Promise<any> => ipcRenderer.invoke('batch:previewPublishedOfferImageRepairs', input),
+    repairPublishedOfferImages: (input: any): Promise<any> => ipcRenderer.invoke('batch:repairPublishedOfferImages', input),
+    getActiveSession: (): Promise<any> => ipcRenderer.invoke('batch:getActiveSession'),
+    setActiveSession: (session: any): Promise<any> => ipcRenderer.invoke('batch:setActiveSession', session),
+    clearActiveSession: (): Promise<any> => ipcRenderer.invoke('batch:clearActiveSession'),
+    split: (input: { sourceBatchId: string; selectedLeafletIds: string[] }): Promise<any> =>
+      ipcRenderer.invoke('batch:split', input),
+    onProgress: (callback: (event: any) => void) => {
+      const listener = (_event: any, data: any) => callback(data);
+      ipcRenderer.on('batch:progress', listener);
+      return () => {
+        ipcRenderer.removeListener('batch:progress', listener);
+      };
+    }
+  },
+  matching: {
+    estimate: (batchId: string): Promise<any> => ipcRenderer.invoke('matching:estimate', batchId),
+    start: (input: any): Promise<any> => ipcRenderer.invoke('matching:start', input),
+    pause: (batchId: string): Promise<any> => ipcRenderer.invoke('matching:pause', batchId),
+    cancel: (batchId: string): Promise<any> => ipcRenderer.invoke('matching:cancel', batchId),
+    getRetryFailedSummary: (batchId: string): Promise<any> =>
+      ipcRenderer.invoke('matching:getRetryFailedSummary', batchId),
+    retryFailedOnly: (input: any): Promise<any> => ipcRenderer.invoke('matching:retryFailedOnly', input),
+    getStatus: (batchId: string): Promise<any> => ipcRenderer.invoke('matching:getStatus', batchId),
+    saveDecision: (input: any): Promise<any> => ipcRenderer.invoke('matching:saveDecision', input),
+    saveConsumerImageApproval: (input: any): Promise<any> =>
+      ipcRenderer.invoke('matching:saveConsumerImageApproval', input),
+    publishApproved: (input: any): Promise<any> => ipcRenderer.invoke('matching:publishApproved', input),
+    getPublicationHistory: (input?: any): Promise<any[]> =>
+      ipcRenderer.invoke('matching:getPublicationHistory', input),
+    getPublicationOperationDetails: (input: { context?: 'PRODUCTION_UI' | 'DEVELOPMENT_TEST'; publishOperationId: string }): Promise<any> =>
+      ipcRenderer.invoke('matching:getPublicationOperationDetails', input),
+    previewUndoLastPublish: (input?: { context?: 'PRODUCTION_UI' | 'DEVELOPMENT_TEST'; publishOperationId?: string | null }): Promise<any> =>
+      ipcRenderer.invoke('matching:previewUndoLastPublish', input),
+    undoLastPublish: (input: {
+      context?: 'PRODUCTION_UI' | 'DEVELOPMENT_TEST'
+      operatorId: string
+      reason: string
+      publishOperationId?: string | null
+      operatorAuthorizedProductionPublish?: boolean
+    }): Promise<any> => ipcRenderer.invoke('matching:undoLastPublish', input),
+    retryUndoStorageCleanup: (input: {
+      context?: 'PRODUCTION_UI' | 'DEVELOPMENT_TEST'
+      publishOperationId: string
+      operatorAuthorizedProductionPublish?: boolean
+    }): Promise<any> => ipcRenderer.invoke('matching:retryUndoStorageCleanup', input),
+    onProgress: (callback: (event: any) => void) => {
+      const listener = (_event: any, data: any) => callback(data);
+      ipcRenderer.on('matching:progress', listener);
+      return () => {
+        ipcRenderer.removeListener('matching:progress', listener);
+      };
+    }
   }
 }
 

@@ -908,7 +908,7 @@ describe('WIFRAN-EXTRACTOR-IDENTITY-001 — Product Matching Safety and False-Ma
         region: 'Western Region',
         validFrom: '2026-11-01',
         validTo: '2026-11-07',
-        headerModifiedByOperator: false
+        headerModifiedByOperator: true
       },
       items: [newOffer]
     }

@@ -130,7 +130,7 @@ export function loadEnvConfig(): AppConfig {
       thinkingLevel: (process.env.GEMINI_THINKING_LEVEL as any) || 'HIGH',
       retryModel: process.env.GEMINI_RETRY_MODEL || 'gemini-4-argon',
       escalationModel: process.env.GEMINI_RETRY_MODEL || process.env.GEMINI_ESCALATION_MODEL || 'gemini-4-argon',
-      executionMode: (process.env.GEMINI_EXECUTION_MODE as any) || 'standard',
+      executionMode: (process.env.GEMINI_EXECUTION_MODE as any) || 'flex',
       googleApplicationCredentials: process.env.GOOGLE_APPLICATION_CREDENTIALS,
       gcpProjectId: process.env.GCP_PROJECT_ID,
       gcpLocation: process.env.GCP_LOCATION || 'global'

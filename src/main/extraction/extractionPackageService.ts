@@ -12,6 +12,7 @@ import {
 } from './extractionManifestService'
 import { validateExtractionPackage, scanExtractionPackageFiles } from './extractionPackageValidator'
 import { info, error as logError } from '../logging/logger'
+import { isOfflineUatMode } from '../config/offlineUatGuard'
 
 export async function openExtractionPackage(packagePath: string): Promise<OpenExtractionPackageResult> {
   if (!fs.existsSync(packagePath)) {
@@ -54,12 +55,22 @@ export async function getDbEligibleItemsFromPackage(packagePath: string): Promis
 
   const items: DbEligiblePackageItem[] = []
 
-  const cropsDir = path.join(packagePath, manifest.paths.crops_dir)
-  const jsonDir = path.join(packagePath, manifest.paths.json_dir)
+  const cropsDir = path.isAbsolute(manifest.paths.crops_dir)
+    ? manifest.paths.crops_dir
+    : path.join(packagePath, manifest.paths.crops_dir)
+  const jsonDir = path.isAbsolute(manifest.paths.json_dir)
+    ? manifest.paths.json_dir
+    : path.join(packagePath, manifest.paths.json_dir)
 
-  if (!fs.existsSync(cropsDir) || !fs.existsSync(jsonDir)) {
+  if (!fs.existsSync(jsonDir)) {
     return items
   }
+
+  const sel = manifest.processing_selection
+  const selectedPageSet =
+    sel?.selectionMode === 'specific' && Array.isArray(sel.selectedPages) && sel.selectedPages.length > 0
+      ? new Set(sel.selectedPages)
+      : null
 
   const cropFiles = new Set<string>()
   const cropPathMap = new Map<string, string>() // basename -> full path
@@ -77,55 +88,126 @@ export async function getDbEligibleItemsFromPackage(packagePath: string): Promis
       }
     }
   }
-  traverseCrops(cropsDir)
+  if (fs.existsSync(cropsDir)) {
+    traverseCrops(cropsDir)
+  }
 
-  const traverseJson = (currentDir: string, pageNumRegex: RegExp) => {
+  const traverseJson = (currentDir: string) => {
     const files = fs.readdirSync(currentDir)
     for (const file of files) {
       const fullPath = path.join(currentDir, file)
       if (fs.statSync(fullPath).isDirectory()) {
-        traverseJson(fullPath, pageNumRegex)
+        traverseJson(fullPath)
       } else if (file.endsWith('.json')) {
+        const isCanonical = file.endsWith('.canonical.json')
         const basename = path.basename(file, '.json')
-        if (cropFiles.has(basename)) {
-          // Read JSON
-          try {
-            const data = fs.readFileSync(fullPath, 'utf8')
-            const jsonData = JSON.parse(data)
-            
-            // Extract page and item number from basename
-            // example basename: othaim-week24_001_001
-            const match = basename.match(/_(\d+)_(\d+)$/)
-            let pageNumber = 1
-            let itemNumber = basename
-            if (match) {
-              pageNumber = parseInt(match[1], 10)
-              itemNumber = match[2]
-            } else if (jsonData.source && jsonData.source.page_number) {
-              pageNumber = jsonData.source.page_number
-            }
+        if (!cropFiles.has(basename) && !isCanonical) {
+          continue
+        }
 
-            items.push({
-              pageNumber,
-              itemNumber,
-              cropPath: cropPathMap.get(basename)!,
-              jsonPath: fullPath,
-              jsonData
-            })
-          } catch (e) {
-            logError(`Failed to parse json file for eligible item: ${fullPath}`)
+        try {
+          const data = fs.readFileSync(fullPath, 'utf8')
+          const jsonData = JSON.parse(data)
+
+          // Extract page and item number from basename or canonical metadata
+          // legacy example: othaim-week24_001_001
+          // canonical example: page-002-001.canonical
+          const match = basename.match(/_(\d+)_(\d+)$/)
+          const canonMatch = basename.match(/^page-(\d+)-(\d+)\.canonical$/i)
+          let pageNumber = 1
+          let itemNumber = basename
+          if (match) {
+            pageNumber = parseInt(match[1], 10)
+            itemNumber = match[2]
+          } else if (canonMatch) {
+            pageNumber = parseInt(canonMatch[1], 10)
+            itemNumber = canonMatch[2]
           }
+
+          if (typeof jsonData.source?.source_page_number === 'number') {
+            pageNumber = jsonData.source.source_page_number
+          } else if (typeof jsonData.source?.page_number === 'number') {
+            pageNumber = jsonData.source.page_number
+          }
+          if (typeof jsonData.source?.source_item_number === 'string' && jsonData.source.source_item_number.trim()) {
+            itemNumber = jsonData.source.source_item_number.trim()
+          }
+
+          // Strict selected-page isolation: never include unselected-page offers in staged batch
+          if (selectedPageSet && !selectedPageSet.has(pageNumber)) {
+            continue
+          }
+
+          let resolvedCropPath = cropPathMap.get(basename) || ''
+          if (!resolvedCropPath && isCanonical && typeof jsonData.source?.crop_path === 'string' && jsonData.source.crop_path.trim()) {
+            const candidate = path.isAbsolute(jsonData.source.crop_path)
+              ? jsonData.source.crop_path
+              : path.join(packagePath, jsonData.source.crop_path)
+            if (fs.existsSync(candidate)) {
+              resolvedCropPath = candidate
+            }
+          }
+          if (!resolvedCropPath && isCanonical && fs.existsSync(cropsDir)) {
+            const pagePadded = String(pageNumber).padStart(3, '0')
+            for (const ext of ['webp', 'png', 'jpg', 'jpeg']) {
+              const candidate = path.join(cropsDir, `page-${pagePadded}`, `${itemNumber}.${ext}`)
+              if (fs.existsSync(candidate)) {
+                resolvedCropPath = candidate
+                break
+              }
+            }
+          }
+
+          if (!resolvedCropPath) {
+            continue
+          }
+
+          let resolvedThumbPath: string | null = null
+          if (isCanonical && typeof jsonData.source?.thumbnail_path === 'string' && jsonData.source.thumbnail_path.trim()) {
+            const candidate = path.isAbsolute(jsonData.source.thumbnail_path)
+              ? jsonData.source.thumbnail_path
+              : path.join(packagePath, jsonData.source.thumbnail_path)
+            if (fs.existsSync(candidate)) {
+              resolvedThumbPath = candidate
+            }
+          }
+          if (!resolvedThumbPath && isCanonical && typeof jsonData.image?.thumbnail_path === 'string' && jsonData.image.thumbnail_path.trim()) {
+            const candidate = path.isAbsolute(jsonData.image.thumbnail_path)
+              ? jsonData.image.thumbnail_path
+              : path.join(packagePath, jsonData.image.thumbnail_path)
+            if (fs.existsSync(candidate)) {
+              resolvedThumbPath = candidate
+            }
+          }
+          if (!resolvedThumbPath && resolvedCropPath) {
+            const siblingThumb = path.join(path.dirname(resolvedCropPath), 'product_thumb_crop.webp')
+            if (fs.existsSync(siblingThumb)) {
+              resolvedThumbPath = siblingThumb
+            }
+          }
+
+          items.push({
+            pageNumber,
+            itemNumber,
+            cropPath: resolvedCropPath,
+            thumbnailPath: resolvedThumbPath,
+            jsonPath: fullPath,
+            jsonData
+          })
+        } catch (e) {
+          logError(`Failed to parse json file for eligible item: ${fullPath}`)
         }
       }
     }
   }
-  traverseJson(jsonDir, /page-(\d+)/)
+  traverseJson(jsonDir)
 
   return items
 }
 
 export async function listAvailableExtractions(): Promise<AvailableExtractionItem[]> {
-  const extractsDir = path.join(process.cwd(), 'Extracts')
+  const workspaceFolder = isOfflineUatMode() ? 'workspaces_uat' : 'Extracts'
+  const extractsDir = path.join(process.cwd(), workspaceFolder)
   if (!fs.existsSync(extractsDir)) {
     return []
   }

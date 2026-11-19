@@ -13,7 +13,12 @@ export function useAppHealth() {
       try {
         setLoading(true)
         setError(null)
-        const status = await window.wifranExtractor.app.getHealth()
+        const getHealthFn = (window as any)?.wifranExtractor?.app?.getHealth
+        if (typeof getHealthFn !== 'function') {
+          if (mounted) setHealth(null)
+          return
+        }
+        const status = await getHealthFn()
         if (mounted) setHealth(status)
       } catch (err) {
         if (mounted) setError(err instanceof Error ? err.message : 'Unknown error')

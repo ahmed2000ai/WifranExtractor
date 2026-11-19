@@ -9,12 +9,21 @@ export interface ResolvedEntity {
 export interface StagedLeafletHeader {
   supermarketId?: string | null
   region?: string | null
+  locationScope?: 'national' | 'region' | 'city' | null
+  cityId?: string | null
+  regionId?: string | null
+  locationSlug?: string | null
   validFrom?: string | null
   validTo?: string | null
   firstPagePublicUrl?: string | null
   lastPagePublicUrl?: string | null
   firstPageTmpPath?: string | null
   lastPageTmpPath?: string | null
+  firstPageLocalPath?: string | null
+  lastPageLocalPath?: string | null
+  firstPageNumber?: number | null
+  lastPageNumber?: number | null
+  localPreviewPages?: Array<{ pageNumber: number; imagePath: string }>
   metadataPageNumber?: number | null
   headerModifiedByOperator: boolean
 }
@@ -28,6 +37,15 @@ export interface OriginalOcrSnapshot {
   priceAfter?: number | null
   discountPercent?: number | null
   promoNotes?: string | null
+  inner_pack_count?: number | null
+  each_size_value?: number | null
+  each_size_unit?: string | null
+  total_content_value?: number | null
+  total_content_unit?: string | null
+  free_units_text?: string | null
+  customer_limit?: string | null
+  sale_unit_type?: string | null
+  productThumbLocalPath?: string | null
 }
 
 export interface AiCorrectedSnapshot {
@@ -67,9 +85,18 @@ export interface StagedOfferItem {
   priceAfter?: number | null
   discountPercent?: number | null
   promoNotes?: string | null
+  inner_pack_count?: number | null
+  each_size_value?: number | null
+  each_size_unit?: string | null
+  total_content_value?: number | null
+  total_content_unit?: string | null
+  free_units_text?: string | null
+  customer_limit?: string | null
+  sale_unit_type?: string | null
 
   // Consumer Display Image Staging
   croppedEvidenceLocalPath: string
+  productThumbLocalPath?: string | null
   existingDbImageUrl?: string | null
   matchedProductId?: number | null
   matchedVisualSubjectKey?: string | null
@@ -79,7 +106,7 @@ export interface StagedOfferItem {
   candidateDownloadError?: string | null
   customImageUrl?: string | null
   customImageLocalPath?: string | null
-  selectedImageSource: 'existing_db' | 'candidate' | 'custom_local' | 'custom_url' | 'none'
+  selectedImageSource: 'existing_db' | 'candidate' | 'product_thumb' | 'custom_local' | 'custom_url' | 'none'
   postCorrectionDbMatch?: PostCorrectionDbMatch | null
 
   // Visual grouping & export metadata
@@ -97,8 +124,12 @@ export interface StagedLeafletDraft {
   sourcePdfPath?: string
   createdAt: string
   updatedAt: string
+  step1ExportedAt?: string
+  step2ImportedAt?: string
   status?: 'draft' | 'published'
   publishedAt?: string
+  partialCoveragePublish?: boolean
+  publishedPages?: number[]
   header: StagedLeafletHeader
   items: StagedOfferItem[]
 }
@@ -144,6 +175,7 @@ export interface ImportStep2CsvResult {
   missingMetadata?: boolean
   missingFields?: Array<'supermarket' | 'region' | 'validFrom' | 'validTo'>
   validationWarnings?: string[]
+  ignoredLegacyRowsCount?: number
   requiresOperatorMetadataConfirmation?: boolean
   errors: string[]
   draft: StagedLeafletDraft

@@ -42,7 +42,6 @@ Use visual evidence:
 - price block color
 - relative size
 - crossed-out state
-- proximity to SAR symbol
 - attached units such as L/ml/kg/g/pcs/inch
 - location in the crop
 - whether the value is inside a price block

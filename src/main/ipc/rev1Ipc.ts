@@ -3,6 +3,7 @@ import { sharedRev1PipelineService } from '../page-first/rev1PipelineService';
 import { sharedExceptionsQueueService } from '../ml/exceptionsQueueService';
 import { sharedTrainingOrchestrator } from '../ml/trainingOrchestrator';
 import type { ExtractedOfferRev1 } from '../../shared/types/leafletExtraction';
+import type { GeminiInferenceMode } from '../ocr/geminiCacheTypes';
 
 export function registerRev1IpcHandlers(): void {
   ipcMain.handle(
@@ -15,6 +16,8 @@ export function registerRev1IpcHandlers(): void {
         pageNumber?: number;
         overrideModel?: string;
         mockResponse?: any;
+        executionMode?: GeminiInferenceMode;
+        forceReextract?: boolean;
       }
     ) => {
       return await sharedRev1PipelineService.processPage(input);

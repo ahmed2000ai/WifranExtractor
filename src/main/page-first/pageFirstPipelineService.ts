@@ -14,6 +14,8 @@ import { loadExtractionManifest, saveExtractionManifest } from '../extraction/ex
 import { buildPrePublishSummary } from '../prepublish/prePublishApprovalService';
 import { info as logInfo, warn as logWarn, error as logError } from '../logging/logger';
 import sharp from 'sharp';
+import type { GeminiInferenceMode, GeminiJobUsageSummary, GeminiPageUsageReport } from '../ocr/geminiCacheTypes';
+import { aggregateJobUsage, calculateGeminiCost } from '../ocr/geminiPricingTable';
 
 export type PageFirstProgressEvent = {
   stage: 'initializing' | 'rendering' | 'ocr_running' | 'linking' | 'cropping' | 'validating' | 'retrying' | 'completed' | 'failed';
@@ -60,6 +62,11 @@ export type PageFirstPipelineInput = {
   rolloutMode?: PageFirstRolloutMode;
   overrideModel?: string;
   maxOffers?: number; // Limit offers per page (Quick Test mode)
+  promptProfile?: import('../../shared/schemas/leafletPageExtractionSchema').LeafletPromptProfile;
+  schemaProfile?: import('../../shared/schemas/leafletPageExtractionSchema').LeafletSchemaProfile;
+  schemaVersion?: import('../../shared/schemas/leafletPageExtractionSchema').LeafletSchemaVersion;
+  executionMode?: GeminiInferenceMode;
+  forceReextract?: boolean;
   mockPageResponses?: Map<number, any>; // Offline mock responses
   onProgress?: (progress: PageFirstProgressEvent) => void;
   onLog?: (log: PageFirstLogEvent) => void;
@@ -79,6 +86,7 @@ export type PageFirstPipelineResult = {
   estimatedCostUsd: number;
   report: PageFirstExtractionReport;
   items: CanonicalOffer[];
+  geminiUsageSummary?: GeminiJobUsageSummary;
   error?: string;
 };
 
@@ -92,6 +100,11 @@ export class PageFirstPipelineService {
       rolloutMode = 'pilot',
       overrideModel,
       maxOffers,
+      promptProfile,
+      schemaProfile,
+      schemaVersion,
+      executionMode = (process.env.GEMINI_EXECUTION_MODE as GeminiInferenceMode) || 'flex',
+      forceReextract = false,
       mockPageResponses,
       onProgress
     } = input;
@@ -110,11 +123,14 @@ export class PageFirstPipelineService {
       availablePages.sort((a, b) => a - b);
     }
 
-    const targetPages = input.pages && input.pages.length > 0
-      ? input.pages
-      : availablePages.length > 0
-        ? availablePages
-        : [1];
+    const selectedFromManifest = manifest?.processing_selection?.selectedPages;
+    const targetPages = (input.pages && input.pages.length > 0)
+      ? Array.from(new Set(input.pages)).sort((a, b) => a - b)
+      : (selectedFromManifest && selectedFromManifest.length > 0)
+        ? selectedFromManifest.slice().sort((a, b) => a - b)
+        : availablePages.length > 0
+          ? availablePages
+          : [1];
 
     // Budget Gate (Section 41)
     const costTracker = createCostTracker();
@@ -139,6 +155,7 @@ export class PageFirstPipelineService {
     const reportPages: PageFirstReportPageItem[] = [];
     const reportOffers: PageFirstReportOfferItem[] = [];
     const allCanonicalItems: CanonicalOffer[] = [];
+    const geminiPageReports: GeminiPageUsageReport[] = [];
 
     let primaryCompleted = 0;
     let retryCompleted = 0;
@@ -176,6 +193,10 @@ export class PageFirstPipelineService {
         emitLog(logCode, message, stage === 'failed' ? 'error' : 'info');
       }
       if (onProgress) {
+        const runningEstimatedCost =
+          geminiPageReports.length > 0
+            ? Number(geminiPageReports.reduce((sum, r) => sum + (r.cost?.totalCostUsd || 0), 0).toFixed(8))
+            : calculateEstimatedCostUsd(costTracker);
         onProgress({
           stage,
           currentPage,
@@ -188,7 +209,7 @@ export class PageFirstPipelineService {
           offersDetected: totalOffersDetected,
           offersLinked: totalOffersLinked,
           cropsGenerated: totalCropsGenerated,
-          estimatedCostUsd: calculateEstimatedCostUsd(costTracker),
+          estimatedCostUsd: runningEstimatedCost,
           elapsedMs: Date.now() - startTime,
           message,
           logCode
@@ -242,7 +263,8 @@ export class PageFirstPipelineService {
 
       const outputDir = join(packageDir, 'metadata', 'rev1', `page-${pagePadded}`);
 
-      let rev1Result;
+      let rev1Result: any;
+      let pageUsageReports: GeminiPageUsageReport[] = [];
       if (mockPageResponses && mockPageResponses.has(pageNumber)) {
         const mockRaw = mockPageResponses.get(pageNumber);
         const rawOffers = mockRaw.offers || (mockRaw.document_annotation?.offers || []).map((o: any, idx: number) => ({
@@ -274,15 +296,60 @@ export class PageFirstPipelineService {
           product_thumb_crop_path: null
         }));
 
+        if (Array.isArray(mockRaw.attemptUsageReports) && mockRaw.attemptUsageReports.length > 0) {
+          pageUsageReports = mockRaw.attemptUsageReports;
+        } else if (mockRaw.usageReport) {
+          pageUsageReports = [mockRaw.usageReport];
+        } else if (mockRaw.usageMetadata) {
+          const mockModel = overrideModel || mockRaw.modelVersion || 'gemini-3.8-flash';
+          const meta = mockRaw.usageMetadata;
+          const usage = {
+            promptTokenCount: meta.promptTokenCount ?? 0,
+            candidatesTokenCount: meta.candidatesTokenCount ?? meta.responseTokenCount ?? 0,
+            thoughtsTokenCount: meta.thoughtsTokenCount ?? 0,
+            cachedContentTokenCount: meta.cachedContentTokenCount ?? 0,
+            totalTokenCount:
+              meta.totalTokenCount ??
+              (meta.promptTokenCount || 0) +
+                (meta.candidatesTokenCount || meta.responseTokenCount || 0) +
+                (meta.thoughtsTokenCount || 0),
+            usageReported: true
+          };
+          pageUsageReports = [
+            {
+              pageNumber,
+              modelId: mockModel,
+              modelVersion: mockRaw.modelVersion,
+              requestedServiceTier: executionMode,
+              actualServiceTier: executionMode,
+              cacheHit: Boolean(mockRaw.cacheHit),
+              requestDurationMs: 0,
+              retriesCount: 0,
+              usage,
+              cost: mockRaw.cacheHit
+                ? {
+                    ...calculateGeminiCost(usage, mockModel, executionMode),
+                    inputCostUsd: 0,
+                    outputCostUsd: 0,
+                    thinkingCostUsd: 0,
+                    cachedInputCostUsd: 0,
+                    totalCostUsd: 0
+                  }
+                : calculateGeminiCost(usage, mockModel, executionMode),
+              fingerprintHash: 'mock-usage-report'
+            }
+          ];
+        }
+
         rev1Result = {
           ok: true,
           pageNumber,
-          pageMetadata: {
-            is_loyalty_page: false,
-            loyalty_program_name: null,
-            validity_start_date: null,
-            validity_end_date: null,
-            ignored_banners: []
+          pageMetadata: mockRaw.pageMetadata || {
+            is_loyalty_page: Boolean(mockRaw.is_loyalty_page),
+            loyalty_program_name: mockRaw.loyalty_program_name ?? null,
+            validity_start_date: mockRaw.validity_start_date ?? null,
+            validity_end_date: mockRaw.validity_end_date ?? null,
+            ignored_banners: Array.isArray(mockRaw.ignored_banners) ? mockRaw.ignored_banners : []
           },
           nativeDimensions: { width: 400, height: 400 },
           offers: rawOffers.map((o: any) => ({ ...o, confidence: o.confidence ?? 0.95 })),
@@ -295,9 +362,11 @@ export class PageFirstPipelineService {
             unresolved_retries: 0,
             suspect_regions: []
           },
-          retryExecuted: false,
+          retryExecuted: Boolean(mockRaw.retryExecuted),
           exportedToActiveLearning: false,
-          enqueuedExceptionsCount: 0
+          enqueuedExceptionsCount: 0,
+          usageReport: pageUsageReports[0],
+          attemptUsageReports: pageUsageReports
         };
       } else {
         try {
@@ -306,6 +375,11 @@ export class PageFirstPipelineService {
             outputDir,
             pageNumber,
             overrideModel: overrideModel || 'gemini-3.8-flash',
+            promptProfile,
+            schemaProfile,
+            schemaVersion,
+            executionMode,
+            forceReextract,
             onProgress: (stage, message) => {
               const mappedStage: PageFirstProgressEvent['stage'] =
                 stage === 'stage_8_cropping' ? 'cropping' :
@@ -314,6 +388,12 @@ export class PageFirstPipelineService {
               emitProgress(mappedStage, pageNumber, message);
             }
           });
+          pageUsageReports =
+            rev1Result.attemptUsageReports && rev1Result.attemptUsageReports.length > 0
+              ? rev1Result.attemptUsageReports
+              : rev1Result.usageReport
+                ? [rev1Result.usageReport]
+                : [];
         } catch (err: any) {
           totalFailed++;
           const errMsg = err.message || 'Gemini 3.8 Flash extraction failed';
@@ -331,7 +411,8 @@ export class PageFirstPipelineService {
             crop_count: 0,
             unresolved_reason: errMsg,
             pages_processed_usage: 1,
-            estimated_cost_usd: 0.001,
+            estimated_cost_usd: 0,
+            is_cost_estimate: true,
             warnings: [errMsg],
             blocking_issues: ['FATAL_GEMINI_CALL_FAILURE']
           });
@@ -339,11 +420,21 @@ export class PageFirstPipelineService {
         }
       }
 
+      if (pageUsageReports.length > 0) {
+        geminiPageReports.push(...pageUsageReports);
+      }
+
       primaryCompleted++;
       costTracker.primaryPageCalls++;
-      if (rev1Result.retryExecuted) {
-        retryCompleted++;
-        costTracker.retryPageCalls++;
+      const pageRetryAttempts = Math.max(
+        rev1Result.retryExecuted ? 1 : 0,
+        Math.max(0, pageUsageReports.length - 1)
+      );
+      if (rev1Result.retryExecuted || pageRetryAttempts > 0) {
+        if (rev1Result.retryExecuted) {
+          retryCompleted++;
+        }
+        costTracker.retryPageCalls += pageRetryAttempts;
       }
 
       // Quick Test mode limit if requested
@@ -442,6 +533,21 @@ export class PageFirstPipelineService {
       totalOffersLinked += offersToProcess.length;
       totalCropsGenerated += rev1Result.cropRectangles.length;
 
+      const pageMeasuredCostUsd = pageUsageReports.length > 0
+        ? Number(pageUsageReports.reduce((sum, r) => sum + (r.cost?.totalCostUsd || 0), 0).toFixed(8))
+        : Number(((1 + pageRetryAttempts) * costTracker.estimatedPricePerPage).toFixed(4));
+
+      const pageTokenUsage = pageUsageReports.length > 0
+        ? {
+            prompt_tokens: pageUsageReports.reduce((s, r) => s + (r.usage?.promptTokenCount || 0), 0),
+            candidates_tokens: pageUsageReports.reduce((s, r) => s + (r.usage?.candidatesTokenCount || 0), 0),
+            thoughts_tokens: pageUsageReports.reduce((s, r) => s + (r.usage?.thoughtsTokenCount || 0), 0),
+            cached_tokens: pageUsageReports.reduce((s, r) => s + (r.usage?.cachedContentTokenCount || 0), 0),
+            total_tokens: pageUsageReports.reduce((s, r) => s + (r.usage?.totalTokenCount || 0), 0),
+            cache_hit: pageUsageReports.every(r => r.cacheHit)
+          }
+        : undefined;
+
       reportPages.push({
         page_number: pageNumber,
         page_classification: rev1Result.pageMetadata.is_loyalty_page ? 'loyalty_page' : 'standard_promotional',
@@ -455,7 +561,9 @@ export class PageFirstPipelineService {
         crop_count: rev1Result.cropRectangles.length,
         unresolved_reason: rev1Result.auditResult.passed ? null : rev1Result.auditResult.issues[0]?.message || null,
         pages_processed_usage: 1,
-        estimated_cost_usd: 0.001,
+        estimated_cost_usd: pageMeasuredCostUsd,
+        is_cost_estimate: true,
+        ...(pageTokenUsage ? { token_usage: pageTokenUsage } : {}),
         warnings: rev1Result.auditResult.issues.filter(i => i.severity === 'warning').map(i => i.message),
         blocking_issues: rev1Result.auditResult.issues.filter(i => i.severity === 'error').map(i => i.message)
       });
@@ -476,6 +584,20 @@ export class PageFirstPipelineService {
       writeFileSync(statePath, JSON.stringify(Array.from(pageStateMap.values()), null, 2), 'utf8');
     }
 
+    // Aggregate measured Gemini token consumption & reconciled USD estimate BEFORE generating report & manifest
+    const geminiUsageSummary = geminiPageReports.length > 0
+      ? aggregateJobUsage(geminiPageReports, targetPages.length)
+      : undefined;
+    const modelsUsed = geminiPageReports.length > 0
+      ? Array.from(new Set(geminiPageReports.map(r => r.modelId).filter(Boolean)))
+      : [];
+    if (geminiUsageSummary && modelsUsed.length > 0) {
+      geminiUsageSummary.modelsUsed = modelsUsed;
+    }
+    const authoritativeEstimatedCostUsd = geminiUsageSummary
+      ? geminiUsageSummary.totalCostUsd
+      : calculateEstimatedCostUsd(costTracker);
+
     emitProgress('completed', targetPages.length, 'Generating final extraction report and Pre-Publish Preview...');
 
     // Generate Final Reports (Section 46 & 47)
@@ -488,7 +610,8 @@ export class PageFirstPipelineService {
       pages: reportPages,
       offers: reportOffers,
       startTime,
-      costTracker
+      costTracker,
+      geminiUsageSummary
     });
 
     // Generate Pre-Publish Preview summary immediately (metadata/reports/pre-publish-preview-summary.json)
@@ -532,6 +655,21 @@ export class PageFirstPipelineService {
 
     // Update Extraction Manifest (Section 43)
     if (manifest) {
+      const totalDocPages = manifest.processing_selection?.totalDocumentPages || manifest.page_count || targetPages.length;
+      const isSpecific = (manifest.processing_selection?.selectionMode === 'specific') || (targetPages.length < totalDocPages);
+
+      manifest.processing_selection = {
+        pdfFingerprint: manifest.processing_selection?.pdfFingerprint || '',
+        totalDocumentPages: totalDocPages,
+        selectionMode: isSpecific ? 'specific' : 'all',
+        selectedPages: targetPages,
+        processingStatus: totalFailed > 0 ? 'partial' : totalUnresolved > 0 ? 'partial' : 'completed',
+        coverage: targetPages.length === totalDocPages ? 'full' : 'partial'
+      };
+      manifest.processing_scope = {
+        mode: isSpecific ? 'selected_pages' : 'all_pages',
+        pages: targetPages
+      };
       manifest.extraction_mode = 'page_first_annotated_ocr';
       manifest.page_first_ocr = {
         status: totalUnresolved > 0 ? 'paused' : 'completed',
@@ -546,14 +684,32 @@ export class PageFirstPipelineService {
         offers_detected: totalOffersDetected,
         offers_linked: totalOffersLinked,
         crops_generated: totalCropsGenerated,
-        estimated_cost_usd: calculateEstimatedCostUsd(costTracker),
+        estimated_cost_usd: authoritativeEstimatedCostUsd,
+        is_cost_estimate: true,
         budget_usd: costTracker.budgetUsd,
+        ...(geminiUsageSummary
+          ? {
+              gemini_usage_summary: {
+                api_calls_count: geminiUsageSummary.apiCallsCount,
+                cache_hits_count: geminiUsageSummary.cacheHitsCount,
+                retries_count: geminiUsageSummary.retriesCount,
+                total_prompt_tokens: geminiUsageSummary.totalPromptTokens,
+                total_candidates_tokens: geminiUsageSummary.totalCandidatesTokens,
+                total_thoughts_tokens: geminiUsageSummary.totalThoughtsTokens,
+                total_cached_tokens: geminiUsageSummary.totalCachedTokens,
+                total_tokens: geminiUsageSummary.totalTokens,
+                total_cost_usd: geminiUsageSummary.totalCostUsd,
+                is_estimate: true,
+                models_used: geminiUsageSummary.modelsUsed || [activeModel]
+              }
+            }
+          : {}),
         started_at: new Date(startTime).toISOString(),
         completed_at: new Date().toISOString(),
         page_state_path: 'metadata/page-first-ocr/page-state.json',
         report_path: 'metadata/reports/page-first-extraction-report.json'
       };
-      saveExtractionManifest(packageDir, manifest);
+      await saveExtractionManifest(packageDir, manifest);
     }
 
     return {
@@ -567,9 +723,10 @@ export class PageFirstPipelineService {
       offersDetected: totalOffersDetected,
       offersLinked: totalOffersLinked,
       cropsGenerated: totalCropsGenerated,
-      estimatedCostUsd: calculateEstimatedCostUsd(costTracker),
+      estimatedCostUsd: authoritativeEstimatedCostUsd,
       report,
-      items: allCanonicalItems
+      items: allCanonicalItems,
+      geminiUsageSummary
     };
   }
 

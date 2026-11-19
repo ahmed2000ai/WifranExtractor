@@ -204,8 +204,8 @@ describe('WIFRAN-07J Phase 1: Local Staging, Boundary Page Upload, Read-Only Pre
     }
   })
 
-  describe('1. First & Last Page Staging Upload', () => {
-    it('Locates boundary pages, uploads them to tmp bucket, and persists to staged-draft.json', async () => {
+  describe('1. Local Boundary Page Preview Resolution (Zero Public tmp Uploads)', () => {
+    it('Locates boundary pages locally without uploading to tmp bucket and persists local preview paths to staged-draft.json', async () => {
       // Create pages directory with 3 pages
       const pagesDir = path.join(tmpDir, 'pages')
       fs.mkdirSync(pagesDir, { recursive: true })
@@ -220,25 +220,31 @@ describe('WIFRAN-07J Phase 1: Local Staging, Boundary Page Upload, Read-Only Pre
         { supabaseClient: mockSupabase }
       )
 
-      expect(result.firstPagePublicUrl).toContain('hash-test-leaflet-123_first.png')
-      expect(result.lastPagePublicUrl).toContain('hash-test-leaflet-123_last.png')
-      expect(result.firstPageTmpPath).toBe('hash-test-leaflet-123_first.png')
-      expect(result.lastPageTmpPath).toBe('hash-test-leaflet-123_last.png')
+      expect(result.firstPagePublicUrl).toBeNull()
+      expect(result.lastPagePublicUrl).toBeNull()
+      expect(result.firstPageTmpPath).toBeNull()
+      expect(result.lastPageTmpPath).toBeNull()
+      expect(result.firstPageLocalPath).toContain('page-001.png')
+      expect(result.lastPageLocalPath).toContain('page-003.png')
+      expect(result.firstPageNumber).toBe(1)
+      expect(result.lastPageNumber).toBe(3)
+      expect(result.localPreviewPages).toHaveLength(3)
 
-      // Verify uploads in storage mock 'tmp' bucket
-      expect(mockDb.storage['tmp'].has('hash-test-leaflet-123_first.png')).toBe(true)
-      expect(mockDb.storage['tmp'].has('hash-test-leaflet-123_last.png')).toBe(true)
+      // Verify zero uploads in storage mock 'tmp' bucket
+      expect(mockDb.storage['tmp'].size).toBe(0)
 
-      // Verify draft saved to disk
+      // Verify draft saved to disk with local preview fields and null public URLs
       const draft = await loadStagedLeafletDraft(tmpDir)
       expect(draft).not.toBeNull()
-      expect(draft?.header.firstPagePublicUrl).toBe(result.firstPagePublicUrl)
-      expect(draft?.header.lastPagePublicUrl).toBe(result.lastPagePublicUrl)
-      expect(draft?.header.firstPageTmpPath).toBe('hash-test-leaflet-123_first.png')
-      expect(draft?.header.lastPageTmpPath).toBe('hash-test-leaflet-123_last.png')
+      expect(draft?.header.firstPagePublicUrl).toBeNull()
+      expect(draft?.header.lastPagePublicUrl).toBeNull()
+      expect(draft?.header.firstPageTmpPath).toBeNull()
+      expect(draft?.header.lastPageTmpPath).toBeNull()
+      expect(draft?.header.firstPageLocalPath).toContain('page-001.png')
+      expect(draft?.header.lastPageLocalPath).toContain('page-003.png')
     })
 
-    it('Handles single-page leaflets gracefully with identical first and last URL', async () => {
+    it('Handles single-page leaflets gracefully with identical local first and last preview path', async () => {
       const pagesDir = path.join(tmpDir, 'pages')
       fs.mkdirSync(pagesDir, { recursive: true })
       fs.writeFileSync(path.join(pagesDir, 'page-001.png'), validPngBuffer)
@@ -250,13 +256,16 @@ describe('WIFRAN-07J Phase 1: Local Staging, Boundary Page Upload, Read-Only Pre
         { supabaseClient: mockSupabase }
       )
 
-      expect(result.firstPagePublicUrl).toBe(result.lastPagePublicUrl)
-      expect(result.firstPagePublicUrl).toContain('single-page-hash_first.png')
-      expect(result.firstPageTmpPath).toBe(result.lastPageTmpPath)
-      expect(result.firstPageTmpPath).toBe('single-page-hash_first.png')
+      expect(result.firstPagePublicUrl).toBeNull()
+      expect(result.lastPagePublicUrl).toBeNull()
+      expect(result.firstPageTmpPath).toBeNull()
+      expect(result.lastPageTmpPath).toBeNull()
+      expect(result.firstPageLocalPath).toBe(result.lastPageLocalPath)
+      expect(result.firstPageLocalPath).toContain('page-001.png')
+      expect(mockDb.storage['tmp'].size).toBe(0)
     })
 
-    it('Uploads ONLY specified metadataPageNumber (page 2 on 3-page leaflet) and emits only FPTSP in CSV', async () => {
+    it('Selects specified local metadataPageNumber without uploading to tmp bucket and emits zero FPTSP/LPTSP in Step 1 CSV', async () => {
       const leafletDir = path.join(tmpDir, 'leaflet-single-meta')
       const pagesDir = path.join(leafletDir, 'pages')
       fs.mkdirSync(pagesDir, { recursive: true })
@@ -295,20 +304,19 @@ describe('WIFRAN-07J Phase 1: Local Staging, Boundary Page Upload, Read-Only Pre
         }
       )
 
-      // Exactly 1 upload call made
-      expect(uploadSpy).toHaveBeenCalledTimes(1)
-      expect(uploadSpy).toHaveBeenCalledWith('hash-3page-leaflet_page_2.png', expect.any(Buffer), expect.any(Object))
+      // Zero storage uploads made
+      expect(uploadSpy).toHaveBeenCalledTimes(0)
+      expect(mockDb.storage['tmp'].size).toBe(0)
 
-      expect(result.firstPagePublicUrl).toBe('https://storage.wifran.com/tmp/hash-3page-leaflet_page_2.png')
+      expect(result.firstPagePublicUrl).toBeNull()
       expect(result.lastPagePublicUrl).toBeNull()
-      expect(result.firstPageTmpPath).toBe('hash-3page-leaflet_page_2.png')
+      expect(result.firstPageTmpPath).toBeNull()
       expect(result.lastPageTmpPath).toBeNull()
+      expect(result.firstPageLocalPath).toContain('page-002.png')
+      expect(result.firstPageNumber).toBe(2)
+      expect(result.lastPageLocalPath).toBeNull()
 
-      expect(mockDb.storage['tmp'].has('hash-3page-leaflet_page_2.png')).toBe(true)
-      expect(mockDb.storage['tmp'].has('hash-3page-leaflet_first.png')).toBe(false)
-      expect(mockDb.storage['tmp'].has('hash-3page-leaflet_last.png')).toBe(false)
-
-      // Add a sample staged item to test CSV export
+      // Add a sample staged item to test Step 1 CSV export emits P/O only
       const draft = await loadStagedLeafletDraft(leafletDir)
       expect(draft).not.toBeNull()
       draft!.items = [
@@ -330,13 +338,13 @@ describe('WIFRAN-07J Phase 1: Local Staging, Boundary Page Upload, Read-Only Pre
       })
 
       const lines = exportRes.csvContent.replace('\uFEFF', '').split('\r\n')
-      expect(lines).toContain('FPTSP,https://storage.wifran.com/tmp/hash-3page-leaflet_page_2.png')
+      expect(lines[0]).toBe('Image_Ref,Item_Name')
+      expect(exportRes.csvContent).not.toContain('FPTSP')
       expect(exportRes.csvContent).not.toContain('LPTSP')
-      expect(exportRes.metadataRowsCount).toBe(1)
-      expect(lines[lines.length - 1]).toBe('FPTSP,https://storage.wifran.com/tmp/hash-3page-leaflet_page_2.png')
+      expect(exportRes.metadataRowsCount).toBe(0)
+      expect(lines).toHaveLength(2)
 
-      // Test B: Leaving metadataPageNumber undefined continues to upload page 1 and page 3
-      uploadSpy.mockClear()
+      // Test B: Leaving metadataPageNumber undefined resolves pages 1 and 3 locally with 0 uploads
       const defaultLeafletDir = path.join(tmpDir, 'leaflet-default-meta')
       const defaultPagesDir = path.join(defaultLeafletDir, 'pages')
       fs.mkdirSync(defaultPagesDir, { recursive: true })
@@ -353,9 +361,11 @@ describe('WIFRAN-07J Phase 1: Local Staging, Boundary Page Upload, Read-Only Pre
         }
       )
 
-      expect(uploadSpy).toHaveBeenCalledTimes(2)
-      expect(defaultResult.firstPagePublicUrl).toBe('https://storage.wifran.com/tmp/hash-default-leaflet_first.png')
-      expect(defaultResult.lastPagePublicUrl).toBe('https://storage.wifran.com/tmp/hash-default-leaflet_last.png')
+      expect(uploadSpy).toHaveBeenCalledTimes(0)
+      expect(defaultResult.firstPagePublicUrl).toBeNull()
+      expect(defaultResult.lastPagePublicUrl).toBeNull()
+      expect(defaultResult.firstPageLocalPath).toContain('page-001.png')
+      expect(defaultResult.lastPageLocalPath).toContain('page-003.png')
 
       const defaultDraft = await loadStagedLeafletDraft(defaultLeafletDir)
       defaultDraft!.items = [
@@ -376,10 +386,9 @@ describe('WIFRAN-07J Phase 1: Local Staging, Boundary Page Upload, Read-Only Pre
         mapFilePath: testMapPath
       })
 
-      const defaultLines = defaultExportRes.csvContent.replace('\uFEFF', '').split('\r\n')
-      expect(defaultLines).toContain('FPTSP,https://storage.wifran.com/tmp/hash-default-leaflet_first.png')
-      expect(defaultLines).toContain('LPTSP,https://storage.wifran.com/tmp/hash-default-leaflet_last.png')
-      expect(defaultExportRes.metadataRowsCount).toBe(2)
+      expect(defaultExportRes.csvContent).not.toContain('FPTSP')
+      expect(defaultExportRes.csvContent).not.toContain('LPTSP')
+      expect(defaultExportRes.metadataRowsCount).toBe(0)
     })
   })
 
@@ -503,8 +512,8 @@ describe('WIFRAN-07J Phase 1: Local Staging, Boundary Page Upload, Read-Only Pre
     })
   })
 
-  describe('3. Upgraded 6-Column Step 1 CSV Export & Metadata Rows', () => {
-    it('Exports strictly 2-column CSV with UTF-8 BOM, net-new P and O rows, and bottom FPTSP/LPTSP rows', async () => {
+  describe('3. Product/Offer-Only Step 1 CSV Export (No Boundary or Metadata Rows)', () => {
+    it('Exports strictly 2-column CSV with UTF-8 BOM and net-new P and O rows only', async () => {
       const draft: StagedLeafletDraft = {
         schemaVersion: 'wifran.staged.draft/1.0',
         jobDir: tmpDir,
@@ -512,14 +521,14 @@ describe('WIFRAN-07J Phase 1: Local Staging, Boundary Page Upload, Read-Only Pre
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         header: {
-          firstPagePublicUrl: 'https://storage.wifran.com/tmp/abc_first.png',
-          lastPagePublicUrl: 'https://storage.wifran.com/tmp/abc_last.png',
-          firstPageTmpPath: 'abc_first.png',
-          lastPageTmpPath: 'abc_last.png',
-          supermarketId: null,
-          region: null,
-          validFrom: null,
-          validTo: null,
+          firstPagePublicUrl: null,
+          lastPagePublicUrl: null,
+          firstPageTmpPath: null,
+          lastPageTmpPath: null,
+          supermarketId: 'alwafa',
+          region: 'Jeddah',
+          validFrom: '2026-11-01',
+          validTo: '2026-11-07',
           headerModifiedByOperator: false
         },
         items: [
@@ -606,6 +615,7 @@ describe('WIFRAN-07J Phase 1: Local Staging, Boundary Page Upload, Read-Only Pre
 
       const lines = exportRes.csvContent.replace('\uFEFF', '').split('\r\n')
       expect(lines[0]).toBe('Image_Ref,Item_Name')
+      expect(lines).toHaveLength(3)
 
       // Verify row counts:
       // Item 1 is skipped (already has image in DB)
@@ -616,7 +626,7 @@ describe('WIFRAN-07J Phase 1: Local Staging, Boundary Page Upload, Read-Only Pre
       expect(exportRes.skippedAlreadyImagedCount).toBe(1)
       expect(exportRes.pCount).toBe(1)
       expect(exportRes.oCount).toBe(1)
-      expect(exportRes.metadataRowsCount).toBe(2)
+      expect(exportRes.metadataRowsCount).toBe(0)
 
       // Verify P2 row: compact combined item name
       expect(lines[1]).toBe('"P2","Nadec Fresh Milk 1L | حليب نادك طازج"')
@@ -624,9 +634,13 @@ describe('WIFRAN-07J Phase 1: Local Staging, Boundary Page Upload, Read-Only Pre
       // Verify O1 row: compact combined item name
       expect(lines[2]).toBe('"O1","Fresh Strawberries 250g | فراولة طازجة"')
 
-      // Verify Bottom 2 boundary page rows (FPTSP and LPTSP)
-      expect(lines[3]).toBe('FPTSP,https://storage.wifran.com/tmp/abc_first.png')
-      expect(lines[4]).toBe('LPTSP,https://storage.wifran.com/tmp/abc_last.png')
+      // Verify zero boundary/metadata rows emitted
+      expect(exportRes.csvContent).not.toContain('FPTSP')
+      expect(exportRes.csvContent).not.toContain('LPTSP')
+      expect(exportRes.csvContent).not.toContain('SMN')
+      expect(exportRes.csvContent).not.toContain('REG')
+      expect(exportRes.csvContent).not.toContain('SD,')
+      expect(exportRes.csvContent).not.toContain('ED,')
 
       // Verify draft links between representative and member
       const updatedDraft = await loadStagedLeafletDraft(tmpDir)

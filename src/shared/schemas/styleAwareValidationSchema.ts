@@ -42,7 +42,7 @@ export const styleAwareValidationModelSchema = z.object({
       price_block_color: z.string().nullable(),
       relative_size: z.enum(['largest', 'large', 'medium', 'small', 'unknown']).nullable(),
       is_crossed_out: z.boolean().nullable(),
-      near_currency_symbol: z.boolean().nullable(),
+      near_currency_symbol: z.boolean().nullable().optional().default(null),
       position_hint: z.string().nullable(),
     }),
     original_price: z.object({
@@ -84,7 +84,7 @@ export const buildStyleAwareValidationJsonSchema = () => {
           pack_quantity: { type: ["number", "null"] },
           bundle_quantity: { type: ["number", "null"] },
           price_basis: { type: ["string", "null"], enum: ["each", "per_pack", "per_box", "per_bag", "per_kg", "per_2kg", "per_dozen", "bundle", "multi_buy", "unknown", null] },
-          promotion_mechanic: { type: ["string", "null"], enum: ["standard_price", "bogo", "bundle", "multi_buy", "loyalty_required", "selected_branches", "unknown", null] }
+          promotion_mechanic: { type: ["string", "null"], enum: ["standard_price", "bogo", "bundle", "multi_buy", "unknown", null] }
         },
         required: ["offer_price", "original_price", "size_text", "pack_quantity", "bundle_quantity", "price_basis", "promotion_mechanic"]
       },
@@ -130,10 +130,9 @@ export const buildStyleAwareValidationJsonSchema = () => {
               price_block_color: { type: ["string", "null"] },
               relative_size: { type: ["string", "null"], enum: ["largest", "large", "medium", "small", "unknown", null] },
               is_crossed_out: { type: ["boolean", "null"] },
-              near_currency_symbol: { type: ["boolean", "null"] },
               position_hint: { type: ["string", "null"] }
             },
-            required: ["explanation", "text_color", "price_block_color", "relative_size", "is_crossed_out", "near_currency_symbol", "position_hint"]
+            required: ["explanation", "text_color", "price_block_color", "relative_size", "is_crossed_out", "position_hint"]
           },
           original_price: {
             type: "object",

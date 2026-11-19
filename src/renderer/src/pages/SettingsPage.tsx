@@ -1,12 +1,17 @@
 
+import { useState } from 'react'
 import { PageHeader } from '../components/PageHeader'
 import { useConfigStatus } from '../hooks/useConfigStatus'
 import { useReferenceData } from '../hooks/useReferenceData'
 import { StatusBadge } from '../components/StatusBadge'
+import { useAppHealth } from '../hooks/useAppHealth'
+import { PublicationHistoryRecoveryPanel } from '../components/settings/PublicationHistoryRecoveryPanel'
 
 export function SettingsPage(): JSX.Element {
   const { configStatus: status, loading: configLoading, refresh: loadStatus } = useConfigStatus()
   const { data: refData, loading: refLoading, error: refError, reload: reloadRef } = useReferenceData()
+  const { health } = useAppHealth()
+  const [activeTab, setActiveTab] = useState<'general' | 'advanced'>('general')
 
 
 
@@ -33,6 +38,45 @@ export function SettingsPage(): JSX.Element {
         description="This page shows the status of your environment variables. Secrets are kept safe in the main process." 
       />
 
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
+        <button
+          type="button"
+          onClick={() => setActiveTab('general')}
+          className={activeTab === 'general' ? 'btn btn-primary btn-sm' : 'btn btn-secondary btn-sm'}
+        >
+          General Configuration
+        </button>
+        <button
+          type="button"
+          onClick={() => setActiveTab('advanced')}
+          className={activeTab === 'advanced' ? 'btn btn-primary btn-sm' : 'btn btn-secondary btn-sm'}
+        >
+          Advanced (Publication History &amp; Recovery)
+        </button>
+      </div>
+
+      {activeTab === 'advanced' ? (
+        <PublicationHistoryRecoveryPanel />
+      ) : (
+        <>
+
+      {health?.isOfflineUat && (
+        <div
+          data-testid="settings-offline-uat-notice"
+          style={{
+            padding: '12px 16px',
+            backgroundColor: '#f5f3ff',
+            border: '1px solid #c4b5fd',
+            borderRadius: '6px',
+            marginBottom: '16px',
+            color: '#4c1d95',
+            fontSize: '0.9rem'
+          }}
+        >
+          <strong>🛡️ Offline UAT Mode Active:</strong> Credentials in <code>.env.local</code> show as Configured below for inspection only. Live Gemini/Mistral APIs and remote Supabase network operations are strictly blocked, and reference catalogs come from offline built-in master data.
+        </div>
+      )}
+
       {!status.validation.ok && (
         <div style={{ padding: '10px', backgroundColor: '#fee', border: '1px solid #fcc', borderRadius: '4px', marginBottom: '20px' }}>
           <h3 style={{ color: 'red', marginTop: 0 }}>Validation Errors</h3>
@@ -57,7 +101,26 @@ export function SettingsPage(): JSX.Element {
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
         <section>
-          <h3>Supabase</h3>
+          <h3>Supabase Database Environment</h3>
+          <div className="status-row" style={{ marginBottom: '8px' }}>
+            <strong>Target:</strong>{' '}
+            <StatusBadge variant={status.databaseEnvironment?.isValidatedProduction ? 'success' : 'error'}>
+              {status.databaseEnvironment?.displayBadge || 'Database: UNKNOWN'}
+            </StatusBadge>
+          </div>
+          <div className="status-row" style={{ marginBottom: '8px' }}>
+            <strong>Project Reference:</strong>{' '}
+            <code>{status.databaseEnvironment?.projectRef || 'unknown'}</code>
+          </div>
+          <div className="status-row" style={{ marginBottom: '8px' }}>
+            <strong>Isolation Policy:</strong>{' '}
+            <span style={{ color: '#16a34a', fontWeight: 600 }}>Enforced (UI Locked to Production)</span>
+          </div>
+          {status.databaseEnvironment?.error && (
+            <div style={{ color: 'red', marginTop: '6px' }}>
+              Error: {status.databaseEnvironment.error}
+            </div>
+          )}
           {renderStatusItem('URL', status.supabase.url)}
           {renderStatusItem('Service Role Key', status.supabase.serviceRoleKey)}
           {renderStatusItem('Storage Bucket', status.supabase.storageBucket)}
@@ -118,6 +181,8 @@ export function SettingsPage(): JSX.Element {
           Reload Reference Data
         </button>
       </div>
+        </>
+      )}
     </div>
   )
 }

@@ -1,0 +1,355 @@
+{
+  "source": {
+    "leaflet_id": "default_leaflet",
+    "source_page_number": 1,
+    "source_item_number": "008",
+    "external_image_id": "noori-supermarket-229798534-jeddah_p001_008",
+    "crop_path": null,
+    "thumbnail_path": null,
+    "page_area_share_pct": 4.16,
+    "json_path": ""
+  },
+  "trusted_context": {},
+  "product": {
+    "title_ar": "مسحوق غسيل وفير أزرق 2.5 كجم",
+    "title_en": "",
+    "normalized_title_ar": "مسحوق غسيل وفير",
+    "normalized_title_en": "Wafir Detergent Powder",
+    "commodity_tag": "laundry_detergent",
+    "brand_text": "وفير",
+    "category_hint": "cleaning",
+    "item_domain": "grocery",
+    "description_ar": null,
+    "description_en": null
+  },
+  "prices": {
+    "offer_price": 10.99,
+    "original_price": 27.95,
+    "currency": "SAR",
+    "discount_amount": null,
+    "discount_percentage": null,
+    "price_basis": "each",
+    "price_condition_text": null,
+    "all_price_candidates": [
+      {
+        "raw_text": "10.99",
+        "normalized_value": 10.99,
+        "currency": "SAR",
+        "visual_role": "current_offer_price",
+        "classified_as": "offer_price",
+        "confidence": "high",
+        "evidence": "10.99",
+        "visual_evidence": {}
+      }
+    ]
+  },
+  "content": {
+    "size_text": "2.5 كجم",
+    "pack_quantity": 1,
+    "bundle_quantity": null,
+    "each_size_value": 2.5,
+    "each_size_unit": "kilogram",
+    "total_content_value": 2.5,
+    "total_content_unit": "kilogram"
+  },
+  "promotion": {
+    "mechanic": "standard_price",
+    "special_offer": null,
+    "condition_text": null,
+    "quantity_limit": null,
+    "bundle_quantity": null
+  },
+  "comparison": {
+    "comparison_eligible": true,
+    "comparison_unit": "kilogram",
+    "comparison_unit_price": 4.4,
+    "comparison_confidence": "high",
+    "comparison_exclusion_reason": null
+  },
+  "image": {
+    "image_bucket": null,
+    "image_path": null,
+    "image_url": null,
+    "thumbnail_path": null,
+    "thumbnail_url": null,
+    "image_source_type": "leaflet_crop"
+  },
+  "display": {
+    "show_display_unit_price": true,
+    "display_unit_price": 4.4,
+    "display_unit_basis_value": 1,
+    "display_unit_basis_unit": "kg",
+    "display_unit_family": "mass",
+    "display_unit_price_label_ar": "4.40 ر.س / 1 كجم",
+    "display_unit_price_label_en": "SAR 4.40 / 1kg",
+    "below_min_display_price_threshold": false,
+    "min_display_unit_price_sar": 0.5,
+    "hidden_reason": null,
+    "display_unit_price_unrounded": 4.396
+  },
+  "quality": {
+    "publish_decision": "publish",
+    "extraction_confidence": "high",
+    "validation_confidence": "high",
+    "comparison_confidence": "high",
+    "blocking_errors": [],
+    "non_blocking_warnings": []
+  },
+  "style_validation": {
+    "validation_result": "pass",
+    "visual_evidence": {},
+    "corrected_fields": {},
+    "style_profile_scope": "page"
+  },
+  "pre_publish": {
+    "preview_eligible": true,
+    "preview_group": "publish",
+    "display_in_preview": true
+  },
+  "raw": {
+    "raw_ocr_json": {},
+    "raw_validation_json": null,
+    "raw_ocr_text": null,
+    "raw_attributes": {
+      "raw_offer_extraction": {
+        "offer_number": 8,
+        "arabic_title": "مسحوق غسيل وفير أزرق 2.5 كجم",
+        "english_title": "",
+        "brand": "وفير",
+        "is_multi_brand_or_variant": false,
+        "compound_group_id": null,
+        "item_domain": "grocery",
+        "category_slug": "cleaning",
+        "normalized_product_name_ar": "مسحوق غسيل وفير",
+        "normalized_product_name_en": "Wafir Detergent Powder",
+        "commodity_tag": "laundry_detergent",
+        "quantity_limit": null,
+        "size_value": "2.5 كجم",
+        "unit_type": "كيس",
+        "pack_quantity": 1,
+        "each_size_value": 2.5,
+        "each_size_unit": "kg",
+        "is_uniform_size_across_variants": true,
+        "promo_price": 10.99,
+        "original_price": 27.95,
+        "promo_condition": "STANDARD",
+        "confidence": 0.99,
+        "components": {
+          "product_graphic_box": [
+            688,
+            128,
+            814,
+            280
+          ],
+          "promo_price_box": [
+            691,
+            28,
+            714,
+            108
+          ],
+          "original_price_box": [
+            710,
+            48,
+            726,
+            101
+          ],
+          "unit_and_size_badge_box": [
+            677,
+            47,
+            693,
+            94
+          ],
+          "title_text_box": [
+            813,
+            31,
+            842,
+            246
+          ]
+        }
+      },
+      "spatial_prominence": {
+        "page_area_share_pct": 4.16,
+        "is_front_page": true,
+        "is_hero_offer": true,
+        "normalized_union_box": [
+          677,
+          28,
+          842,
+          280
+        ]
+      },
+      "completeness_status": "complete",
+      "evidence_linking_status": "linked",
+      "is_retry_pass": false,
+      "page_first": {
+        "current_price_anchor_block_id": "rev1_price_anchor_p001_008",
+        "evidence_link_confidence": 1,
+        "completeness_status": "pass",
+        "crop_confidence": 0.99,
+        "is_retry": false
+      }
+    }
+  },
+  "schema_version": "wifran.extractor.offer/2.0",
+  "contract_v2": {
+    "record_metadata": {
+      "schema_version": "wifran.extractor.offer/2.0",
+      "source_offer_id": "default_leaflet:p001:i008:s01",
+      "source_revision": 1,
+      "semantic_checksum": "c33a7a59b479bc9941a87c843cad2aa5a2a30d453078d61dbfec42e3324a51e6",
+      "producer_model": "wifran-extractor-2.0",
+      "supersedes_source_offer_id": null
+    },
+    "product_facts": {
+      "exact_identity_status": "product_family_only",
+      "verified_product_id": null,
+      "gtin": null,
+      "brand_assertion": {
+        "value": "وفير",
+        "state": "supported",
+        "candidate_unverified": null,
+        "provenance": "extracted_brand"
+      },
+      "derived_subcategory_slug": "laundry_detergent",
+      "attributes": {
+        "scent": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "flavor": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "fat_level": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "milk_processing_type": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "product_form": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "model": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "power_watts": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "dimensions": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        }
+      }
+    },
+    "assortment": {
+      "status": "single_product",
+      "composition_type": "single",
+      "known_options": [],
+      "is_uniform_size": true,
+      "source_assertions": []
+    },
+    "quantity_semantics": {
+      "sale_unit": "each",
+      "inner_count": 1,
+      "per_inner_content": {
+        "value": 2.5,
+        "unit": "kilogram"
+      },
+      "total_content": {
+        "value": 2.5,
+        "unit": "kilogram"
+      },
+      "is_indivisible_sale_unit": true
+    },
+    "price_terms": {
+      "currency": "SAR",
+      "source_reported_offer_price": "10.99",
+      "source_reported_price_basis": "each",
+      "source_reported_original_price": "27.95",
+      "verified_current_non_member_price": null
+    },
+    "promotion_terms": {
+      "mechanic": "markdown",
+      "bonus_wording": null,
+      "bonus_fulfillment": "not_applicable",
+      "bonus_already_included_in_inner_count": false,
+      "structured_checkout_rule": null
+    },
+    "eligibility": {
+      "loyalty": {
+        "requirement": "unknown",
+        "program_id": null,
+        "source_path": null,
+        "restriction_coverage": "not_stated_in_inspected_source"
+      },
+      "sales_channel": "unknown",
+      "quantity_limit": {
+        "value": null,
+        "unit": null,
+        "scope": null
+      }
+    },
+    "evidence": {
+      "coordinate_system": "normalized_0_1000_ymin_xmin_ymax_xmax",
+      "offer_price_evidence_complete": true,
+      "original_price_evidence_complete": false
+    },
+    "assessments": {
+      "capabilities": {
+        "offer_display": "supported",
+        "save_to_list": "supported",
+        "selected_offer_subtotal": "supported",
+        "unit_price_calculation": "supported",
+        "exact_product_comparison": "needs_review",
+        "automatic_list_fulfillment": "needs_review"
+      },
+      "structural_capabilities": {
+        "offer_display": "supported",
+        "save_to_list": "supported",
+        "selected_offer_subtotal": "supported",
+        "unit_price_calculation": "supported",
+        "exact_product_comparison": "needs_review",
+        "automatic_list_fulfillment": "needs_review"
+      },
+      "confidence": {
+        "extraction_confidence": "high",
+        "unit_math_confidence": "high",
+        "identity_confidence": "high"
+      },
+      "reason_codes": [
+        "CHANNEL_UNKNOWN",
+        "PRICE_EVIDENCE_INCOMPLETE",
+        "MEDIA_UPLOAD_PENDING"
+      ]
+    },
+    "assets": {
+      "offer_card": {
+        "local_path_internal": null,
+        "storage_bucket": null,
+        "storage_object_path": null,
+        "subject_scope": "offer_group",
+        "upload_state": "pending"
+      },
+      "product_thumbnail": {
+        "local_path_internal": null,
+        "storage_bucket": null,
+        "storage_object_path": null,
+        "subject_scope": "offer_group",
+        "upload_state": "pending"
+      }
+    }
+  }
+}

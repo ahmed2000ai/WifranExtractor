@@ -8,7 +8,6 @@ import fs from 'fs';
 vi.mock('../../config/env');
 vi.mock('../../extraction/extractionManifestService');
 vi.mock('fs');
-vi.mock('path');
 
 describe('realPublishRehearsalService', () => {
   beforeEach(() => {
@@ -63,9 +62,20 @@ describe('realPublishRehearsalService', () => {
 
     vi.mocked(fs.existsSync).mockReturnValue(true);
     vi.mocked(fs.readdirSync).mockReturnValue(['dry-run-report-123.json'] as any);
-    vi.mocked(fs.readFileSync).mockReturnValue(JSON.stringify({
-      result: { image_upload_success_count: 1, db_upsert_success_count: 0 } // Not clean
-    }));
+    vi.mocked(fs.readFileSync).mockImplementation((filePath: any) => {
+      if (String(filePath).includes('confirmed')) {
+        return JSON.stringify({
+          record: {
+            operatorConfirmed: true,
+            retailer: { resolvedRetailerId: 'c2cc16c2-0001-4444-b000-c00000000001' },
+            validity: { startDate: '2026-11-01', endDate: '2026-11-07' }
+          }
+        });
+      }
+      return JSON.stringify({
+        result: { image_upload_success_count: 1, db_upsert_success_count: 0 } // Not clean
+      });
+    });
 
     const result = await realPublishRehearsalService.checkRealPublishRehearsalGates('/workspace');
     expect(result.ok).toBe(false);
@@ -86,9 +96,20 @@ describe('realPublishRehearsalService', () => {
 
     vi.mocked(fs.existsSync).mockReturnValue(true);
     vi.mocked(fs.readdirSync).mockReturnValue(['dry-run-report-123.json'] as any);
-    vi.mocked(fs.readFileSync).mockReturnValue(JSON.stringify({
-      result: { image_upload_success_count: 0, db_upsert_success_count: 0 } // Clean
-    }));
+    vi.mocked(fs.readFileSync).mockImplementation((filePath: any) => {
+      if (String(filePath).includes('confirmed')) {
+        return JSON.stringify({
+          record: {
+            operatorConfirmed: true,
+            retailer: { resolvedRetailerId: 'c2cc16c2-0001-4444-b000-c00000000001' },
+            validity: { startDate: '2026-11-01', endDate: '2026-11-07' }
+          }
+        });
+      }
+      return JSON.stringify({
+        result: { image_upload_success_count: 0, db_upsert_success_count: 0 } // Clean
+      });
+    });
 
     const result = await realPublishRehearsalService.checkRealPublishRehearsalGates('/workspace');
     expect(result.ok).toBe(false);
@@ -109,9 +130,20 @@ describe('realPublishRehearsalService', () => {
 
     vi.mocked(fs.existsSync).mockReturnValue(true);
     vi.mocked(fs.readdirSync).mockReturnValue(['dry-run-report-123.json'] as any);
-    vi.mocked(fs.readFileSync).mockReturnValue(JSON.stringify({
-      result: { image_upload_success_count: 0, db_upsert_success_count: 0 } // Clean
-    }));
+    vi.mocked(fs.readFileSync).mockImplementation((filePath: any) => {
+      if (String(filePath).includes('confirmed')) {
+        return JSON.stringify({
+          record: {
+            operatorConfirmed: true,
+            retailer: { resolvedRetailerId: 'c2cc16c2-0001-4444-b000-c00000000001' },
+            validity: { startDate: '2026-11-01', endDate: '2026-11-07' }
+          }
+        });
+      }
+      return JSON.stringify({
+        result: { image_upload_success_count: 0, db_upsert_success_count: 0 } // Clean
+      });
+    });
 
     const result = await realPublishRehearsalService.checkRealPublishRehearsalGates('/workspace', 'PUBLISH VERIFIED REHEARSAL');
     expect(result.ok).toBe(true);

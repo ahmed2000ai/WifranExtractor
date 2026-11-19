@@ -1,5 +1,7 @@
 import { loadEnvConfig } from './env'
 import { SafeConfigStatus, ConfigKeyStatus } from '../../shared/types/config'
+import { DatabaseEnvironmentStatus } from '../../shared/types/app'
+import { resolveDatabaseConfig, PRODUCTION_PROJECT_REF } from '../db/databaseEnvironmentResolver'
 
 function isValidUrl(urlStr: string): boolean {
   if (!urlStr) return false
@@ -22,6 +24,36 @@ export function getSafeConfigStatus(): SafeConfigStatus {
   const config = loadEnvConfig()
   const errors: string[] = []
   const warnings: string[] = []
+
+  let databaseEnvironment: DatabaseEnvironmentStatus
+  try {
+    if (process.env.WIFRAN_DEV_UAT_HARNESS === '1') {
+      const dbConfig = resolveDatabaseConfig('DEVELOPMENT_TEST')
+      databaseEnvironment = {
+        context: 'DEVELOPMENT_TEST',
+        projectRef: dbConfig.projectRef,
+        displayBadge: 'Database: DEVELOPMENT — TEST ONLY',
+        isValidatedProduction: false
+      }
+    } else {
+      const dbConfig = resolveDatabaseConfig('PRODUCTION_UI')
+      databaseEnvironment = {
+        context: 'PRODUCTION_UI',
+        projectRef: dbConfig.projectRef,
+        displayBadge: 'Database: PRODUCTION',
+        isValidatedProduction: dbConfig.projectRef === PRODUCTION_PROJECT_REF
+      }
+    }
+  } catch (err: any) {
+    databaseEnvironment = {
+      context: 'PRODUCTION_UI',
+      projectRef: 'unknown',
+      displayBadge: 'Database: MISCONFIGURED',
+      isValidatedProduction: false,
+      error: err?.message || String(err)
+    }
+    errors.push(`Database Environment Guard: ${err?.message || err}`)
+  }
 
   // Check required keys
   if (!config.supabase.url) errors.push('SUPABASE_URL is missing')
@@ -56,6 +88,7 @@ export function getSafeConfigStatus(): SafeConfigStatus {
   if (config.importBehavior.dataQualityNeedsReviewThreshold < 0 || config.importBehavior.dataQualityNeedsReviewThreshold > 100) errors.push('DATA_QUALITY_NEEDS_REVIEW_THRESHOLD must be between 0 and 100')
 
   return {
+    databaseEnvironment,
     supabase: {
       url: checkKey(config.supabase.url, true),
       anonKey: checkKey(config.supabase.anonKey, false),

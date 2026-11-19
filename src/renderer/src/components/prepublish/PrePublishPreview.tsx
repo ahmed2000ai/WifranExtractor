@@ -12,11 +12,11 @@ interface PrePublishPreviewProps {
   onBack?: () => void;
 }
 
-export function PrePublishPreview({ 
-  workspacePath, 
-  isDryRun = false, 
-  qaMode = false, 
-  onClose, 
+export function PrePublishPreview({
+  workspacePath,
+  isDryRun = false,
+  qaMode = false,
+  onClose,
   onPublishStarted,
   backButtonText,
   onBack
@@ -176,7 +176,7 @@ export function PrePublishPreview({
   const harnessBlocked = harnessGate?.decision === 'block_publish' || harnessGate?.decision === 'needs_human_review';
   const hasBlockingErrorsOnEligible = summary.items.some(
     i => (i.publish_decision === 'publish' || i.publish_decision === 'publish_but_exclude_from_comparison') &&
-         i.blocking_errors && i.blocking_errors.length > 0
+      i.blocking_errors && i.blocking_errors.length > 0
   );
   const isAlreadyPublished = dbStatus === 'completed' || summary.db_update_status === 'completed';
   const canPublish = dbConfigReady && eligibleCount > 0 && !publishing && !harnessBlocked && !hasBlockingErrorsOnEligible && (!isAlreadyPublished || allowRepublish);
@@ -189,7 +189,7 @@ export function PrePublishPreview({
   if (filter === 'errors') filteredItems = summary.items.filter(i => i.blocking_errors.length > 0);
   if (filter === 'non-grocery') filteredItems = summary.items.filter(i => i.fields.find(f => f.field_name === 'item_domain')?.value === 'electronics' || i.fields.find(f => f.field_name === 'item_domain')?.value === 'appliance' || i.fields.find(f => f.field_name === 'item_domain')?.value === 'other_non_grocery');
   if (filter === 'harness-suspicious') filteredItems = summary.items.filter(i => i.harness_issue_codes && i.harness_issue_codes.length > 0);
-  if (filter === 'harness-critical') filteredItems = summary.items.filter(i => i.harness_issue_codes && i.harness_issue_codes.some(c => ['size_misclassified_as_price','offer_price_matches_size_value','original_price_misclassified_as_offer_price','missing_offer_price','ambiguous_offer_price','missing_product_title','comparison_eligible_null_unit_price','publishable_with_blocking_errors'].includes(c)));
+  if (filter === 'harness-critical') filteredItems = summary.items.filter(i => i.harness_issue_codes && i.harness_issue_codes.some(c => ['size_misclassified_as_price', 'offer_price_matches_size_value', 'original_price_misclassified_as_offer_price', 'missing_offer_price', 'ambiguous_offer_price', 'missing_product_title', 'comparison_eligible_null_unit_price', 'publishable_with_blocking_errors'].includes(c)));
   if (filter === 'fixture-candidates') filteredItems = summary.items.filter(i => i.harness_issue_codes && i.harness_issue_codes.length > 0);
   if (filter === 'unresolved-page') filteredItems = summary.items.filter(i => i.page_first_diagnostics?.page_unresolved);
   if (filter === 'unmatched-evidence') filteredItems = summary.items.filter(i => i.page_first_diagnostics?.has_unmatched_evidence);
@@ -219,6 +219,10 @@ export function PrePublishPreview({
           </div>
           <div style={{ fontSize: '0.9rem', color: '#64748b' }}>
             {summary.supermarket_name} | {summary.location_label} | {summary.offer_start_date} to {summary.offer_end_date}
+          </div>
+          <div style={{ marginTop: '6px', display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '3px 10px', backgroundColor: '#f1f5f9', border: '1px solid #e2e8f0', borderRadius: '4px', fontSize: '0.8rem', color: '#475569' }}>
+            <span>ℹ️</span>
+            <span><strong>Leaflet crop — internal preview only. Not approved for consumer publication.</strong></span>
           </div>
           <div style={{ marginTop: '12px', display: 'flex', gap: '16px', fontSize: '0.85rem' }}>
             <span style={{ color: '#0f172a' }}><strong>Total:</strong> {summary.counts.total_items}</span>
@@ -256,16 +260,16 @@ export function PrePublishPreview({
             </div>
           )}
           {isAlreadyPublished && (
-            <div 
+            <div
               id="already-published-banner"
-              style={{ 
-                marginTop: '10px', 
-                padding: '10px 14px', 
-                borderRadius: '8px', 
-                border: '1px solid #86efac', 
-                backgroundColor: '#f0fdf4', 
-                display: 'flex', 
-                alignItems: 'center', 
+              style={{
+                marginTop: '10px',
+                padding: '10px 14px',
+                borderRadius: '8px',
+                border: '1px solid #86efac',
+                backgroundColor: '#f0fdf4',
+                display: 'flex',
+                alignItems: 'center',
                 justifyContent: 'space-between',
                 flexWrap: 'wrap',
                 gap: '12px'
@@ -280,11 +284,11 @@ export function PrePublishPreview({
                 </span>
               </div>
               <label style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '0.85rem', color: '#166534', fontWeight: 600, cursor: 'pointer' }}>
-                <input 
-                  type="checkbox" 
+                <input
+                  type="checkbox"
                   id="enable-force-republish-checkbox"
-                  checked={allowRepublish} 
-                  onChange={e => setAllowRepublish(e.target.checked)} 
+                  checked={allowRepublish}
+                  onChange={e => setAllowRepublish(e.target.checked)}
                 />
                 Enable Force Re-publish
               </label>
@@ -292,10 +296,10 @@ export function PrePublishPreview({
           )}
         </div>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <button 
+          <button
             id="preview-back-btn"
-            className="btn btn-secondary" 
-            onClick={onBack || onClose} 
+            className="btn btn-secondary"
+            onClick={onBack || onClose}
             disabled={publishing}
             style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontWeight: 600 }}
           >
@@ -304,35 +308,35 @@ export function PrePublishPreview({
           {rehearsalMode && isDryRun && (
             <div style={{ color: '#b91c1c', fontSize: '0.85rem', maxWidth: '200px' }}>Real publish rehearsal is blocked because dry-run mode is enabled.</div>
           )}
-          <button 
+          <button
             id="publish-to-database-btn"
-            className="btn btn-primary" 
+            className="btn btn-primary"
             onClick={handlePublishClick}
             disabled={(!canPublish && !isDryRun) || (rehearsalMode && isDryRun) || (rehearsalMode && !rehearsalGates?.ok) || harnessBlocked}
-            style={{ 
-              fontWeight: 'bold', 
-              padding: '10px 24px', 
-              backgroundColor: isDryRun 
-                ? '#eab308' 
-                : rehearsalMode 
-                  ? '#ef4444' 
+            style={{
+              fontWeight: 'bold',
+              padding: '10px 24px',
+              backgroundColor: isDryRun
+                ? '#eab308'
+                : rehearsalMode
+                  ? '#ef4444'
                   : (isAlreadyPublished && !allowRepublish)
                     ? '#94a3b8'
                     : (isAlreadyPublished && allowRepublish)
                       ? '#d97706'
-                      : undefined, 
+                      : undefined,
               color: (isDryRun || rehearsalMode || isAlreadyPublished) ? 'white' : undefined,
               cursor: (isAlreadyPublished && !allowRepublish && !isDryRun) ? 'not-allowed' : undefined
             }}
           >
-            {publishing 
-              ? 'Publishing...' 
-              : isDryRun 
-                ? 'Dry Run Publish' 
-                : rehearsalMode 
-                  ? 'Run Real Publish Rehearsal' 
-                  : isAlreadyPublished 
-                    ? (allowRepublish ? 'Force Re-publish to DB' : '✓ Already Published to DB') 
+            {publishing
+              ? 'Publishing...'
+              : isDryRun
+                ? 'Dry Run Publish'
+                : rehearsalMode
+                  ? 'Run Real Publish Rehearsal'
+                  : isAlreadyPublished
+                    ? (allowRepublish ? 'Force Re-publish to DB' : '✓ Already Published to DB')
                     : 'Publish to Database'}
           </button>
         </div>
@@ -340,23 +344,23 @@ export function PrePublishPreview({
 
       {/* Filters */}
       <div style={{ padding: '12px 24px', backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0', display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-        <FilterBtn active={filter==='all'} onClick={() => setFilter('all')}>All ({summary.counts.total_items})</FilterBtn>
-        <FilterBtn active={filter==='publish'} onClick={() => setFilter('publish')}>Will Publish ({summary.counts.publish})</FilterBtn>
-        <FilterBtn active={filter==='exclude'} onClick={() => setFilter('exclude')}>Publish but Excluded ({summary.counts.publish_but_exclude_from_comparison})</FilterBtn>
-        <FilterBtn active={filter==='skip'} onClick={() => setFilter('skip')}>Skipped/Quarantine ({summary.counts.skip_or_quarantine})</FilterBtn>
-        <FilterBtn active={filter==='warnings'} onClick={() => setFilter('warnings')}>Warnings ({summary.counts.warnings})</FilterBtn>
-        <FilterBtn active={filter==='errors'} onClick={() => setFilter('errors')}>Errors ({summary.counts.blocking_errors})</FilterBtn>
-        <FilterBtn active={filter==='non-grocery'} onClick={() => setFilter('non-grocery')}>Non-Grocery ({summary.counts.non_grocery})</FilterBtn>
-        <FilterBtn active={filter==='harness-suspicious'} onClick={() => setFilter('harness-suspicious')}>Harness Suspicious ({harnessSuspiciousCount})</FilterBtn>
-        <FilterBtn active={filter==='harness-critical'} onClick={() => setFilter('harness-critical')}>Harness Critical</FilterBtn>
-        <FilterBtn active={filter==='fixture-candidates'} onClick={() => setFilter('fixture-candidates')}>Fixture Candidates ({harnessGate?.fixture_candidate_count ?? 0})</FilterBtn>
+        <FilterBtn active={filter === 'all'} onClick={() => setFilter('all')}>All ({summary.counts.total_items})</FilterBtn>
+        <FilterBtn active={filter === 'publish'} onClick={() => setFilter('publish')}>Will Publish ({summary.counts.publish})</FilterBtn>
+        <FilterBtn active={filter === 'exclude'} onClick={() => setFilter('exclude')}>Publish but Excluded ({summary.counts.publish_but_exclude_from_comparison})</FilterBtn>
+        <FilterBtn active={filter === 'skip'} onClick={() => setFilter('skip')}>Skipped/Quarantine ({summary.counts.skip_or_quarantine})</FilterBtn>
+        <FilterBtn active={filter === 'warnings'} onClick={() => setFilter('warnings')}>Warnings ({summary.counts.warnings})</FilterBtn>
+        <FilterBtn active={filter === 'errors'} onClick={() => setFilter('errors')}>Errors ({summary.counts.blocking_errors})</FilterBtn>
+        <FilterBtn active={filter === 'non-grocery'} onClick={() => setFilter('non-grocery')}>Non-Grocery ({summary.counts.non_grocery})</FilterBtn>
+        <FilterBtn active={filter === 'harness-suspicious'} onClick={() => setFilter('harness-suspicious')}>Harness Suspicious ({harnessSuspiciousCount})</FilterBtn>
+        <FilterBtn active={filter === 'harness-critical'} onClick={() => setFilter('harness-critical')}>Harness Critical</FilterBtn>
+        <FilterBtn active={filter === 'fixture-candidates'} onClick={() => setFilter('fixture-candidates')}>Fixture Candidates ({harnessGate?.fixture_candidate_count ?? 0})</FilterBtn>
         {hasPageFirstItems && (
           <>
-            <FilterBtn active={filter==='unresolved-page'} onClick={() => setFilter('unresolved-page')}>Unresolved Page ({unresolvedPageCount})</FilterBtn>
-            <FilterBtn active={filter==='unmatched-evidence'} onClick={() => setFilter('unmatched-evidence')}>Unmatched Evidence ({unmatchedEvidenceCount})</FilterBtn>
-            <FilterBtn active={filter==='low-crop-confidence'} onClick={() => setFilter('low-crop-confidence')}>Low Crop Conf ({lowCropConfCount})</FilterBtn>
-            <FilterBtn active={filter==='retried-page'} onClick={() => setFilter('retried-page')}>Retried Page ({retriedCount})</FilterBtn>
-            <FilterBtn active={filter==='uncovered-anchor'} onClick={() => setFilter('uncovered-anchor')}>Uncovered Anchor ({uncoveredAnchorCount})</FilterBtn>
+            <FilterBtn active={filter === 'unresolved-page'} onClick={() => setFilter('unresolved-page')}>Unresolved Page ({unresolvedPageCount})</FilterBtn>
+            <FilterBtn active={filter === 'unmatched-evidence'} onClick={() => setFilter('unmatched-evidence')}>Unmatched Evidence ({unmatchedEvidenceCount})</FilterBtn>
+            <FilterBtn active={filter === 'low-crop-confidence'} onClick={() => setFilter('low-crop-confidence')}>Low Crop Conf ({lowCropConfCount})</FilterBtn>
+            <FilterBtn active={filter === 'retried-page'} onClick={() => setFilter('retried-page')}>Retried Page ({retriedCount})</FilterBtn>
+            <FilterBtn active={filter === 'uncovered-anchor'} onClick={() => setFilter('uncovered-anchor')}>Uncovered Anchor ({uncoveredAnchorCount})</FilterBtn>
           </>
         )}
       </div>
@@ -373,30 +377,30 @@ export function PrePublishPreview({
 
       {/* Modals for Publish: Confirm, In-Progress, Success, Error */}
       {modalMode !== 'idle' && (
-        <div 
+        <div
           id="publish-modal-backdrop"
-          style={{ 
-            position: 'fixed', 
-            inset: 0, 
-            backgroundColor: 'rgba(15, 23, 42, 0.65)', 
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(15, 23, 42, 0.65)',
             backdropFilter: 'blur(3px)',
-            zIndex: 10000, 
-            display: 'flex', 
-            alignItems: 'center', 
+            zIndex: 10000,
+            display: 'flex',
+            alignItems: 'center',
             justifyContent: 'center',
             padding: '20px'
           }}
         >
           {/* 1. Confirmation Modal */}
           {modalMode === 'confirm' && (
-            <div 
+            <div
               id="publish-confirmation-modal"
-              className="card" 
+              className="card"
               style={{ width: '560px', maxWidth: '100%', padding: '28px', backgroundColor: 'white', borderRadius: '12px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}
             >
               <h3 style={{ margin: '0 0 16px 0', fontSize: '1.25rem', color: '#0f172a' }}>
-                {rehearsalMode 
-                  ? 'Confirm Real Publish Rehearsal' 
+                {rehearsalMode
+                  ? 'Confirm Real Publish Rehearsal'
                   : (isDryRun ? 'Confirm Dry Run Publish' : (isAlreadyPublished ? 'Confirm Force Re-publish to Database' : 'Confirm Publish to Database'))}
               </h3>
 
@@ -413,7 +417,7 @@ export function PrePublishPreview({
                 </div>
                 <div style={{ marginBottom: '10px' }}>
                   <span style={{ color: '#64748b', fontSize: '0.85rem', display: 'block' }}>Location</span>
-                  <strong style={{ color: '#0f172a', fontSize: '1rem' }}>{summary.location_label || 'National'}</strong>
+                  <strong style={{ color: '#0f172a', fontSize: '1rem' }}>{summary.location_label || 'Unresolved (Confirmation Required)'}</strong>
                 </div>
                 <div style={{ marginBottom: '10px' }}>
                   <span style={{ color: '#64748b', fontSize: '0.85rem', display: 'block' }}>Leaflet / Validity</span>
@@ -452,8 +456,8 @@ export function PrePublishPreview({
                   <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '8px', color: '#334155' }}>
                     Type PUBLISH VERIFIED REHEARSAL to continue
                   </label>
-                  <input 
-                    type="text" 
+                  <input
+                    type="text"
                     value={typedConfirmation}
                     onChange={e => setTypedConfirmation(e.target.value)}
                     style={{ width: '100%', padding: '8px 12px', border: '1px solid #cbd5e1', borderRadius: '4px' }}
@@ -463,22 +467,22 @@ export function PrePublishPreview({
               )}
 
               <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-                <button 
+                <button
                   id="cancel-publish-button"
-                  className="btn" 
+                  className="btn"
                   onClick={() => setModalMode('idle')}
                   style={{ padding: '8px 18px' }}
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   id="confirm-publish-button"
-                  className="btn btn-primary" 
+                  className="btn btn-primary"
                   onClick={handleConfirmPublish}
                   disabled={rehearsalMode && typedConfirmation !== 'PUBLISH VERIFIED REHEARSAL'}
-                  style={{ 
-                    padding: '8px 22px', 
-                    fontWeight: 600, 
+                  style={{
+                    padding: '8px 22px',
+                    fontWeight: 600,
                     backgroundColor: isDryRun ? '#eab308' : (rehearsalMode ? '#ef4444' : '#16a34a'),
                     color: 'white'
                   }}
@@ -491,21 +495,21 @@ export function PrePublishPreview({
 
           {/* 2. In-Progress Modal */}
           {modalMode === 'publishing' && (
-            <div 
+            <div
               id="publish-progress-modal"
-              className="card" 
+              className="card"
               style={{ width: '540px', maxWidth: '100%', padding: '32px', backgroundColor: 'white', borderRadius: '12px', textAlign: 'center', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}
             >
               <div style={{ marginBottom: '20px' }}>
-                <div style={{ 
-                  display: 'inline-flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
-                  width: '56px', 
-                  height: '56px', 
-                  borderRadius: '50%', 
-                  backgroundColor: '#eff6ff', 
-                  color: '#2563eb', 
+                <div style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '56px',
+                  height: '56px',
+                  borderRadius: '50%',
+                  backgroundColor: '#eff6ff',
+                  color: '#2563eb',
                   fontSize: '1.75rem'
                 }}>
                   ⏳
@@ -521,10 +525,10 @@ export function PrePublishPreview({
 
               {/* Progress Bar */}
               <div style={{ backgroundColor: '#e2e8f0', borderRadius: '10px', height: '12px', overflow: 'hidden', marginBottom: '16px', position: 'relative' }}>
-                <div 
-                  style={{ 
-                    height: '100%', 
-                    backgroundColor: '#2563eb', 
+                <div
+                  style={{
+                    height: '100%',
+                    backgroundColor: '#2563eb',
                     borderRadius: '10px',
                     width: `${publishProgress?.total ? Math.min(100, Math.max(5, Math.round(((publishProgress.current || 0) / publishProgress.total) * 100))) : 20}%`,
                     transition: 'width 0.3s ease-in-out'
@@ -544,12 +548,12 @@ export function PrePublishPreview({
                 </span>
               </div>
 
-              <div style={{ 
-                padding: '10px 14px', 
-                backgroundColor: '#f8fafc', 
-                borderRadius: '6px', 
+              <div style={{
+                padding: '10px 14px',
+                backgroundColor: '#f8fafc',
+                borderRadius: '6px',
                 border: '1px solid #e2e8f0',
-                fontSize: '0.85rem', 
+                fontSize: '0.85rem',
                 color: '#334155',
                 textAlign: 'left',
                 overflow: 'hidden',
@@ -568,21 +572,21 @@ export function PrePublishPreview({
             const isAllReplayed = replayedCount > 0 && (publishResult?.publishedRows || 0) === 0 && (publishResult?.importedRows || 0) === 0;
 
             return (
-              <div 
+              <div
                 id="publish-success-modal"
-                className="card" 
+                className="card"
                 style={{ width: '580px', maxWidth: '100%', padding: '32px', backgroundColor: 'white', borderRadius: '12px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}
               >
                 <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-                  <div style={{ 
-                    display: 'inline-flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center', 
-                    width: '64px', 
-                    height: '64px', 
-                    borderRadius: '50%', 
-                    backgroundColor: isAllReplayed ? '#e0f2fe' : '#dcfce7', 
-                    color: isAllReplayed ? '#0284c7' : '#16a34a', 
+                  <div style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: '64px',
+                    height: '64px',
+                    borderRadius: '50%',
+                    backgroundColor: isAllReplayed ? '#e0f2fe' : '#dcfce7',
+                    color: isAllReplayed ? '#0284c7' : '#16a34a',
                     fontSize: '2rem',
                     marginBottom: '12px'
                   }}>
@@ -643,9 +647,9 @@ export function PrePublishPreview({
                 </div>
 
                 <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-                  <button 
+                  <button
                     id="view-logs-after-publish-btn"
-                    className="btn btn-secondary" 
+                    className="btn btn-secondary"
                     onClick={() => {
                       setModalMode('idle');
                       onClose();
@@ -655,9 +659,9 @@ export function PrePublishPreview({
                   >
                     📋 View Extraction Logs
                   </button>
-                  <button 
+                  <button
                     id="done-publish-btn"
-                    className="btn btn-primary" 
+                    className="btn btn-primary"
                     onClick={() => {
                       setModalMode('idle');
                       onClose();
@@ -673,21 +677,21 @@ export function PrePublishPreview({
 
           {/* 4. Error Modal */}
           {modalMode === 'error' && (
-            <div 
+            <div
               id="publish-error-modal"
-              className="card" 
+              className="card"
               style={{ width: '540px', maxWidth: '100%', padding: '32px', backgroundColor: 'white', borderRadius: '12px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)' }}
             >
               <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-                <div style={{ 
-                  display: 'inline-flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center', 
-                  width: '56px', 
-                  height: '56px', 
-                  borderRadius: '50%', 
-                  backgroundColor: '#fee2e2', 
-                  color: '#dc2626', 
+                <div style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '56px',
+                  height: '56px',
+                  borderRadius: '50%',
+                  backgroundColor: '#fee2e2',
+                  color: '#dc2626',
                   fontSize: '1.75rem',
                   marginBottom: '10px'
                 }}>
@@ -698,12 +702,12 @@ export function PrePublishPreview({
                 </h3>
               </div>
 
-              <div style={{ 
-                padding: '14px', 
-                backgroundColor: '#fef2f2', 
-                border: '1px solid #fecaca', 
-                borderRadius: '8px', 
-                color: '#991b1b', 
+              <div style={{
+                padding: '14px',
+                backgroundColor: '#fef2f2',
+                border: '1px solid #fecaca',
+                borderRadius: '8px',
+                color: '#991b1b',
                 fontSize: '0.9rem',
                 marginBottom: '24px',
                 wordBreak: 'break-word',
@@ -713,8 +717,8 @@ export function PrePublishPreview({
               </div>
 
               <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-end' }}>
-                <button 
-                  className="btn btn-secondary" 
+                <button
+                  className="btn btn-secondary"
                   onClick={() => {
                     setModalMode('idle');
                     onClose();
@@ -723,14 +727,14 @@ export function PrePublishPreview({
                 >
                   📋 View Logs
                 </button>
-                <button 
-                  className="btn btn-secondary" 
+                <button
+                  className="btn btn-secondary"
                   onClick={() => setModalMode('idle')}
                 >
                   Cancel
                 </button>
-                <button 
-                  className="btn btn-primary" 
+                <button
+                  className="btn btn-primary"
                   onClick={() => setModalMode('confirm')}
                   style={{ backgroundColor: '#dc2626' }}
                 >
@@ -747,11 +751,11 @@ export function PrePublishPreview({
 
 function FilterBtn({ active, onClick, children }: any) {
   return (
-    <button 
+    <button
       onClick={onClick}
-      style={{ 
-        padding: '6px 12px', 
-        borderRadius: '20px', 
+      style={{
+        padding: '6px 12px',
+        borderRadius: '20px',
         border: `1px solid ${active ? '#2563eb' : '#cbd5e1'}`,
         backgroundColor: active ? '#eff6ff' : 'white',
         color: active ? '#1d4ed8' : '#334155',
@@ -791,6 +795,8 @@ const FIELD_LABEL_MAP: Record<string, string> = {
   comparison_exclusion_reason: 'Comparison Exclusion Reason',
   display_unit_price_label_ar: 'Unit Price Label (Arabic)',
   display_unit_price_label_en: 'Unit Price Label (English)',
+  special_offer: 'Special Offer / Free Units',
+  quantity_limit: 'Customer Purchase Limit',
   publish_decision: 'Publish Decision'
 };
 
@@ -837,7 +843,9 @@ function formatFieldValue(value: unknown): string {
 
 function PrePublishItemCard({ item }: { item: PrePublishPreviewItem }) {
   const [expanded, setExpanded] = useState(false);
-  
+  const [viewMode, setViewMode] = useState<'thumb' | 'evidence' | 'catalog'>('thumb');
+  const [imgLoadError, setImgLoadError] = useState(false);
+
   const isSkip = item.publish_decision === 'skip_or_quarantine';
   const isPublishExclude = item.publish_decision === 'publish_but_exclude_from_comparison';
 
@@ -845,7 +853,30 @@ function PrePublishItemCard({ item }: { item: PrePublishPreviewItem }) {
   const badgeBorder = isSkip ? '#fca5a5' : isPublishExclude ? '#bae6fd' : '#bbf7d0';
   const badgeText = isSkip ? '#991b1b' : isPublishExclude ? '#0369a1' : '#166534';
 
-  const imgUrl = `local-file://get?path=${encodeURIComponent(item.crop_path)}`;
+  const canonical = item.raw?.canonical as any;
+  const thumbPath = item.thumbnail_path || (item.crop_path && item.crop_path.includes('offer_card_crop') ? item.crop_path.replace('offer_card_crop', 'product_thumb_crop') : null);
+  const thumbUrl = thumbPath ? `local-file://get?path=${encodeURIComponent(thumbPath)}` : null;
+  const evidenceUrl = item.crop_path ? `local-file://get?path=${encodeURIComponent(item.crop_path)}` : null;
+  const catalogUrl = item.catalog_image_url || null;
+
+  const currentImgUrl =
+    viewMode === 'evidence'
+      ? evidenceUrl
+      : viewMode === 'catalog' && catalogUrl
+        ? catalogUrl
+        : thumbUrl;
+
+  const isMultiProduct = Boolean(
+    canonical?.product?.is_multi_brand_or_variant ||
+    canonical?.assortment?.status === 'multi_product' ||
+    (canonical?.assortment?.known_options && canonical.assortment.known_options.length > 1)
+  );
+
+  const linkedProductId = canonical?.product?.product_id || canonical?.product?.id || null;
+  const hasCatalogMatch = Boolean(linkedProductId || catalogUrl);
+  const catalogMatchText = hasCatalogMatch
+    ? `Catalog: Verified (P#${linkedProductId || ''})`
+    : 'Catalog: Unresolved Offer (O)';
 
   const titleAr = item.fields.find(f => f.field_name === 'title_ar')?.value;
   const titleEn = item.fields.find(f => f.field_name === 'title_en')?.value;
@@ -859,14 +890,86 @@ function PrePublishItemCard({ item }: { item: PrePublishPreviewItem }) {
 
   return (
     <div className="card" style={{ padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      <div style={{ height: '200px', backgroundColor: '#f1f5f9', borderRadius: '8px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <img 
-          src={imgUrl} 
-          alt={`Crop ${item.source_item_number}`}
-          style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
-          onError={(e) => { (e.target as HTMLImageElement).src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><text x="10" y="50" font-size="12">Image Missing</text></svg>'; }}
-        />
+      {/* Main Internal Image Display */}
+      {viewMode === 'thumb' && (!thumbUrl || imgLoadError) ? (
+        <div style={{ height: '200px', backgroundColor: '#f8fafc', borderRadius: '8px', border: '1px dashed #cbd5e1', overflow: 'hidden', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '16px', textAlign: 'center' }}>
+          <span style={{ fontSize: '1.75rem', marginBottom: '4px' }}>🖼️</span>
+          <span style={{ fontSize: '0.85rem', fontWeight: 600, color: '#334155' }}>Product Thumbnail Missing</span>
+          <span style={{ fontSize: '0.75rem', marginTop: '4px', color: '#64748b' }}>Internal preview placeholder. Switch to "Inspect Evidence" below to inspect source offer card crop.</span>
+        </div>
+      ) : (
+        <div style={{ position: 'relative', height: '200px', backgroundColor: '#f1f5f9', borderRadius: '8px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <img
+            src={currentImgUrl || ''}
+            alt={`Crop ${item.source_item_number}`}
+            style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+            onError={() => setImgLoadError(true)}
+          />
+          <div style={{ position: 'absolute', top: '6px', left: '6px', backgroundColor: 'rgba(15, 23, 42, 0.75)', color: '#ffffff', fontSize: '0.7rem', padding: '2px 6px', borderRadius: '4px', fontWeight: 600, backdropFilter: 'blur(2px)' }}>
+            {viewMode === 'evidence' ? '🔍 Source Offer Evidence' : viewMode === 'catalog' ? '🖼️ Approved Catalog Image' : '📦 Product Thumbnail'}
+          </div>
+        </div>
+      )}
+
+      {/* Internal Image View Controls */}
+      <div style={{ display: 'flex', gap: '6px', justifyContent: 'center', flexWrap: 'wrap' }}>
+        <button
+          type="button"
+          onClick={() => { setViewMode('thumb'); setImgLoadError(false); }}
+          style={{
+            padding: '3px 8px',
+            fontSize: '0.75rem',
+            borderRadius: '4px',
+            border: `1px solid ${viewMode === 'thumb' ? '#2563eb' : '#cbd5e1'}`,
+            backgroundColor: viewMode === 'thumb' ? '#eff6ff' : '#ffffff',
+            color: viewMode === 'thumb' ? '#1d4ed8' : '#475569',
+            cursor: 'pointer',
+            fontWeight: viewMode === 'thumb' ? 600 : 400
+          }}
+        >
+          📦 Product Thumbnail
+        </button>
+        <button
+          type="button"
+          onClick={() => setViewMode('evidence')}
+          style={{
+            padding: '3px 8px',
+            fontSize: '0.75rem',
+            borderRadius: '4px',
+            border: `1px solid ${viewMode === 'evidence' ? '#2563eb' : '#cbd5e1'}`,
+            backgroundColor: viewMode === 'evidence' ? '#eff6ff' : '#ffffff',
+            color: viewMode === 'evidence' ? '#1d4ed8' : '#475569',
+            cursor: 'pointer',
+            fontWeight: viewMode === 'evidence' ? 600 : 400
+          }}
+        >
+          🔍 Inspect Evidence (Full Crop)
+        </button>
+        {catalogUrl && (
+          <button
+            type="button"
+            onClick={() => setViewMode('catalog')}
+            style={{
+              padding: '3px 8px',
+              fontSize: '0.75rem',
+              borderRadius: '4px',
+              border: `1px solid ${viewMode === 'catalog' ? '#059669' : '#cbd5e1'}`,
+              backgroundColor: viewMode === 'catalog' ? '#ecfdf5' : '#ffffff',
+              color: viewMode === 'catalog' ? '#047857' : '#475569',
+              cursor: 'pointer',
+              fontWeight: viewMode === 'catalog' ? 600 : 400
+            }}
+          >
+            🖼️ Catalog Image
+          </button>
+        )}
       </div>
+
+      {isMultiProduct && (
+        <div style={{ padding: '3px 8px', backgroundColor: '#fffbeb', border: '1px solid #fef3c7', borderRadius: '4px', fontSize: '0.72rem', color: '#92400e', textAlign: 'center' }}>
+          Multi-product offer: thumbnail shows primary variant. Inspect evidence to view all items.
+        </div>
+      )}
 
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', fontSize: '0.8rem' }}>
         <span style={{ padding: '2px 8px', borderRadius: '12px', backgroundColor: badgeColor, border: `1px solid ${badgeBorder}`, color: badgeText, fontWeight: 600 }}>
@@ -877,6 +980,9 @@ function PrePublishItemCard({ item }: { item: PrePublishPreviewItem }) {
         </span>
         <span style={{ padding: '2px 8px', borderRadius: '12px', backgroundColor: item.comparison_eligible ? '#f0fdf4' : '#fef2f2', border: `1px solid ${item.comparison_eligible ? '#bbf7d0' : '#fca5a5'}`, color: item.comparison_eligible ? '#166534' : '#991b1b' }}>
           Comp: {item.comparison_eligible ? 'Eligible' : 'Excluded'}
+        </span>
+        <span style={{ padding: '2px 8px', borderRadius: '12px', backgroundColor: hasCatalogMatch ? '#f0fdf4' : '#f8fafc', border: `1px solid ${hasCatalogMatch ? '#bbf7d0' : '#e2e8f0'}`, color: hasCatalogMatch ? '#166534' : '#475569', fontWeight: 600 }}>
+          {catalogMatchText}
         </span>
         {item.blocking_errors.length > 0 && (
           <span style={{ padding: '2px 8px', borderRadius: '12px', backgroundColor: '#fef2f2', border: '1px solid #fca5a5', color: '#991b1b' }}>
@@ -958,19 +1064,94 @@ function PrePublishItemCard({ item }: { item: PrePublishPreviewItem }) {
         )}
       </div>
 
+      {/* Quantity & Packaging Breakdown */}
+      {(() => {
+        const canonical = item.raw?.canonical as any;
+        const packQuantity = item.fields.find(f => f.field_name === 'pack_quantity')?.value ?? canonical?.content?.pack_quantity;
+        const sizeText = item.fields.find(f => f.field_name === 'size_text')?.value ?? canonical?.content?.size_text;
+        const eachSizeVal = item.fields.find(f => f.field_name === 'each_size_value')?.value ?? canonical?.content?.each_size_value;
+        const eachSizeUnit = item.fields.find(f => f.field_name === 'each_size_unit')?.value ?? canonical?.content?.each_size_unit;
+        const totalContentVal = item.fields.find(f => f.field_name === 'total_content_value')?.value ?? canonical?.content?.total_content_value;
+        const totalContentUnit = item.fields.find(f => f.field_name === 'total_content_unit')?.value ?? canonical?.content?.total_content_unit;
+        const specialOffer = item.fields.find(f => f.field_name === 'special_offer')?.value ?? canonical?.promotion?.special_offer;
+
+        const isMultipack = typeof packQuantity === 'number' && packQuantity > 1;
+        const hasUnitSize = eachSizeVal != null || (sizeText && isMultipack);
+        const hasTotalContent = totalContentVal != null && (isMultipack || totalContentVal !== eachSizeVal);
+        const hasFreeUnits = specialOffer && /free|مجانا|مجاني|\+\s*\d+/i.test(String(specialOffer));
+
+        if (!isMultipack && !hasUnitSize && !hasTotalContent && !hasFreeUnits && !sizeText) {
+          return null;
+        }
+
+        return (
+          <div
+            data-testid="quantity-breakdown"
+            style={{
+              padding: '8px 10px',
+              backgroundColor: '#f8fafc',
+              border: '1px solid #e2e8f0',
+              borderRadius: '6px',
+              fontSize: '0.8rem',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4px'
+            }}
+          >
+            {/* Units Included */}
+            {isMultipack && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ color: '#64748b', fontWeight: 500 }}>📦 Units Included:</span>
+                <span style={{ fontWeight: 700, color: '#0f172a' }}>{packQuantity} units</span>
+              </div>
+            )}
+
+            {/* Size per Unit */}
+            {(eachSizeVal != null || sizeText) && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ color: '#64748b', fontWeight: 500 }}>⚖️ Size per Unit:</span>
+                <span style={{ fontWeight: 600, color: '#334155' }}>
+                  {eachSizeVal != null && eachSizeUnit ? `${eachSizeVal} ${eachSizeUnit}` : String(sizeText)}
+                </span>
+              </div>
+            )}
+
+            {/* Total Package Content */}
+            {hasTotalContent && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ color: '#64748b', fontWeight: 500 }}>📊 Total Content:</span>
+                <span style={{ fontWeight: 600, color: '#0369a1' }}>
+                  {totalContentVal} {totalContentUnit || ''}
+                </span>
+              </div>
+            )}
+
+            {/* Free Promotional Units */}
+            {hasFreeUnits && (
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ color: '#16a34a', fontWeight: 600 }}>🎁 Promotional Bonus:</span>
+                <span style={{ fontWeight: 700, color: '#15803d', backgroundColor: '#dcfce7', padding: '1px 6px', borderRadius: '4px' }}>
+                  {String(specialOffer)}
+                </span>
+              </div>
+            )}
+          </div>
+        );
+      })()}
+
       {/* Toggle Details Button & Expandable Content */}
       <div>
-        <button 
+        <button
           id={`toggle-details-btn-${item.source_item_number}`}
           onClick={() => setExpanded(!expanded)}
-          style={{ 
-            width: '100%', 
-            padding: '8px 12px', 
-            backgroundColor: expanded ? '#f1f5f9' : '#ffffff', 
-            border: '1px solid #cbd5e1', 
-            borderRadius: '6px', 
-            cursor: 'pointer', 
-            fontSize: '0.82rem', 
+          style={{
+            width: '100%',
+            padding: '8px 12px',
+            backgroundColor: expanded ? '#f1f5f9' : '#ffffff',
+            border: '1px solid #cbd5e1',
+            borderRadius: '6px',
+            cursor: 'pointer',
+            fontSize: '0.82rem',
             fontWeight: 600,
             color: '#334155',
             display: 'flex',
@@ -1015,36 +1196,36 @@ function PrePublishItemCard({ item }: { item: PrePublishPreviewItem }) {
                 <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
                   <tbody>
                     {displayableFields.map((f, i) => (
-                      <tr 
-                        key={f.field_name} 
-                        style={{ 
-                          backgroundColor: i % 2 === 0 ? '#ffffff' : '#f8fafc', 
-                          borderBottom: i === displayableFields.length - 1 ? 'none' : '1px solid #f1f5f9' 
+                      <tr
+                        key={f.field_name}
+                        style={{
+                          backgroundColor: i % 2 === 0 ? '#ffffff' : '#f8fafc',
+                          borderBottom: i === displayableFields.length - 1 ? 'none' : '1px solid #f1f5f9'
                         }}
                       >
-                        <td 
-                          style={{ 
-                            padding: '6px 10px', 
-                            fontWeight: 600, 
-                            color: '#475569', 
-                            width: '44%', 
-                            whiteSpace: 'normal', 
+                        <td
+                          style={{
+                            padding: '6px 10px',
+                            fontWeight: 600,
+                            color: '#475569',
+                            width: '44%',
+                            whiteSpace: 'normal',
                             wordBreak: 'break-word',
                             lineHeight: 1.35,
-                            verticalAlign: 'top' 
+                            verticalAlign: 'top'
                           }}
                         >
                           {formatFieldLabel(f.field_name)}
                         </td>
-                        <td 
-                          style={{ 
-                            padding: '6px 10px', 
-                            color: '#0f172a', 
+                        <td
+                          style={{
+                            padding: '6px 10px',
+                            color: '#0f172a',
                             width: '56%',
-                            whiteSpace: 'normal', 
+                            whiteSpace: 'normal',
                             wordBreak: 'break-word',
                             lineHeight: 1.35,
-                            verticalAlign: 'top' 
+                            verticalAlign: 'top'
                           }}
                         >
                           {formatFieldValue(f.value)}

@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "2.0",
+  "leafletFingerprint": "alwafa-Western Region-2026-11-01-2026-11-15",
+  "sourceFileName": "job-e4-ai",
+  "record": {
+    "schemaVersion": "2.0",
+    "leafletFingerprint": "alwafa-Western Region-2026-11-01-2026-11-15",
+    "sourceFileName": "job-e4-ai",
+    "retailer": {
+      "detectedName": "alwafa",
+      "resolvedRetailerId": "alwafa",
+      "resolvedSlug": null,
+      "resolvedNameEn": null,
+      "resolvedNameAr": null,
+      "status": "confirmed",
+      "confidence": 1,
+      "sourcePage": 1,
+      "evidenceText": "Migrated from operator-confirmed staged draft header",
+      "isAmbiguous": false
+    },
+    "validity": {
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-15",
+      "status": "confirmed",
+      "confidence": 1,
+      "sourcePage": 1,
+      "rawPrintedText": "2026-11-01 to 2026-11-15",
+      "isAmbiguous": false,
+      "calendarType": "gregorian",
+      "isException": false
+    },
+    "locationScope": "region",
+    "cityId": null,
+    "regionId": "b144b6c8-2222-4444-b000-000000000002",
+    "locationSlug": "Western Region",
+    "conflictingValidity": [],
+    "pageExceptions": [],
+    "operatorConfirmed": true,
+    "confirmedAt": "2026-11-15T20:17:54.736Z",
+    "confirmedBy": "operator_migration",
+    "discoveryMethod": "operator_manual",
+    "rawEvidence": [],
+    "operatorEdits": {
+      "editedRetailerId": "alwafa",
+      "editedStartDate": "2026-11-01",
+      "editedEndDate": "2026-11-15",
+      "editedAt": "2026-11-15T20:17:54.736Z"
+    }
+  },
+  "savedAt": "2026-11-15T20:17:54.736Z"
+}

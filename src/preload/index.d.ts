@@ -9,6 +9,7 @@ declare global {
       }
       config: {
         getStatus: () => Promise<import('../../shared/types/config').SafeConfigStatus>
+        verifySchemaReadiness: (context?: 'PRODUCTION_UI' | 'DEVELOPMENT_TEST') => Promise<any>
       }
       reference: {
         loadAll: () => Promise<import('../../shared/types/referenceData').ReferenceDataLoadResult>
@@ -17,8 +18,10 @@ declare global {
       }
       files: {
         selectPdf: () => Promise<import('../../shared/types/importForm').SelectedPdfFile | null>
+        selectMultiplePdfs: () => Promise<import('../../shared/types/importForm').SelectedPdfFile[]>
       }
       pdf: {
+        getPageCount: (filePath: string) => Promise<number>
         preprocess: (input: import('../../shared/types/pdfPreprocess').PdfPreprocessInput) => Promise<import('../../shared/types/pdfPreprocess').PdfPreprocessResult>
         onPreprocessProgress: (callback: (event: import('../../shared/types/pdfPreprocess').PdfPreprocessProgressEvent) => void) => () => void
         renderStreaming: (input: import('../../shared/types/pdfPreprocess').StreamingPdfRenderInput) => Promise<import('../../shared/types/pdfPreprocess').StreamingPdfRenderState>
@@ -133,6 +136,248 @@ declare global {
         getSupermarketsAndRegions: () => Promise<{ supermarkets: any[]; regions: any[] }>
         resolveSupermarket: (rawName: string) => Promise<import('../shared/types/productImageEnrichment').ResolvedEntity>
         resolveRegion: (rawName: string) => Promise<import('../shared/types/productImageEnrichment').ResolvedEntity>
+      }
+      metadata: {
+        discover: (input: any) => Promise<{ ok: boolean; data?: any; error?: string }>
+        discoverFromPackage: (packageDir: string, options?: any) => Promise<{ ok: boolean; data?: any; error?: string }>
+        get: (fingerprint: string) => Promise<{ ok: boolean; data?: any; error?: string }>
+        confirm: (input: any) => Promise<{ ok: boolean; data?: any; error?: string }>
+        invalidate: (fingerprint: string) => Promise<{ ok: boolean; error?: string }>
+        validatePublishReadiness: (input: any) => Promise<{ ok: boolean; error?: string; confirmedRecord?: any }>
+        grantBudgetExtension: (fingerprint: string, additionalAttempts: number) => Promise<{ success: boolean; newAllowance: number; error?: string }>
+        getBudgetStatus: (fingerprint: string) => Promise<{ ok: boolean; data?: any; error?: string }>
+      }
+      batch: {
+        backfillHistory: (options?: {
+          extractsDir?: string
+          pdfSearchDirs?: string[]
+          pruneStaleMissingEntries?: boolean
+        }) => Promise<any>
+        inspectDuplicates: (input: {
+          files: Array<{
+            path?: string
+            filePath?: string
+            name?: string
+            fileName?: string
+            pageCount?: number
+            pagesToProcess?: number[]
+            selectedPages?: number[]
+            contentFingerprint?: string
+          }>
+          extractionPipelineMode?: import('../shared/types/batchExtraction').ExtractionPipelineMode
+          forceReextract?: boolean
+        }) => Promise<{
+          totalSelectedFiles?: number
+          totalSelectedPages: number
+          totalReusedPages?: number
+          totalReusablePages?: number
+          totalPayablePages: number
+          hasDuplicatesOrOverlaps?: boolean
+          summaryMessage?: string
+          adjustedEstimatedLowUsd?: number
+          adjustedEstimatedHighUsd?: number
+          matches?: Array<{
+            fileName: string
+            filePath: string
+            reusedPages: number[]
+            payablePages: number[]
+            matchedFilenameHistory: boolean
+            previousBatchIds: string[]
+          }>
+          perFile?: Array<{
+            filePath: string
+            fileName: string
+            fileFingerprint: string | null
+            documentId: string
+            targetPages: number[]
+            reusablePages: number[]
+            payablePages: number[]
+            classification:
+              | 'exact_duplicate_full_reuse'
+              | 'partial_page_overlap_reuse'
+              | 'within_batch_binary_duplicate'
+              | 'filename_collision_different_content'
+              | 'incompatible_or_corrupted_history'
+              | 'new_document'
+            matchedPriorFileName?: string | null
+            matchedPriorWorkspace?: string | null
+            incompatibilityReasons: string[]
+          }>
+        }>
+        create: (input: {
+          files: Array<{
+            path: string
+            name?: string
+            sizeBytes?: number
+            contentFingerprint?: string
+            pageCount?: number
+            pagesToProcess?: number[]
+            pageSelectionMode?: import('../shared/types/batchExtraction').PageSelectionMode
+            pageSelectionInput?: string
+            metadata?: import('../shared/types/batchExtraction').LeafletMetadataScope
+          }>
+          executionMode?: 'flex' | 'standard'
+          extractionPipelineMode?: import('../shared/types/batchExtraction').ExtractionPipelineMode
+          model?: string
+          approvedMaxBudgetUsd?: number | null
+          autoRunCatalogMatching?: boolean
+          targetDatabaseContext?: 'PRODUCTION_UI' | 'DEVELOPMENT_TEST'
+        }) => Promise<import('../shared/types/batchExtraction').BatchManifest>
+        start: (input: {
+          batchId: string
+          forceReextract?: boolean
+          hybridV3ExplicitAuthorization?: boolean
+          hybridV3FeatureEnabled?: boolean
+          hybridV3ExplicitLiveAuthorization?: boolean
+          disablePageContextVerification?: boolean
+          reauthorizeExpandedScope?: boolean
+          approvedMaxBudgetUsd?: number | null
+          approvedAdditionalBudgetUsd?: number
+          skipMetadataVerificationCheck?: boolean
+          autoRunCatalogMatching?: boolean
+          targetDatabaseContext?: 'PRODUCTION_UI' | 'DEVELOPMENT_TEST'
+        }) => Promise<import('../shared/types/batchExtraction').BatchManifest>
+        cancel: (batchId: string) => Promise<import('../shared/types/batchExtraction').BatchManifest>
+        resume: (input: {
+          batchId: string
+          forceReextract?: boolean
+          hybridV3ExplicitAuthorization?: boolean
+          hybridV3FeatureEnabled?: boolean
+          hybridV3ExplicitLiveAuthorization?: boolean
+          reauthorizeExpandedScope?: boolean
+          approvedMaxBudgetUsd?: number | null
+          approvedAdditionalBudgetUsd?: number
+          disablePageContextVerification?: boolean
+          skipMetadataVerificationCheck?: boolean
+          autoRunCatalogMatching?: boolean
+          targetDatabaseContext?: 'PRODUCTION_UI' | 'DEVELOPMENT_TEST'
+        }) => Promise<import('../shared/types/batchExtraction').BatchManifest>
+        getManifest: (batchId: string) => Promise<import('../shared/types/batchExtraction').BatchManifest | null>
+        list: () => Promise<import('../shared/types/batchExtraction').BatchManifest[]>
+        getUnifiedOffers: (input: { batchId: string; filters?: import('../shared/types/batchExtraction').BatchFilterOptions }) => Promise<import('../shared/types/batchExtraction').UnifiedBatchOffer[]>
+        getSummary: (batchId: string) => Promise<import('../shared/types/batchExtraction').UnifiedBatchSummary>
+        discoverLeafletMetadata: (input: { batchId: string; leafletId: string; catalogSupermarkets?: any[]; throwOnError?: boolean; forceRefresh?: boolean }) => Promise<import('../shared/types/batchExtraction').BatchManifest>
+        getMetadataVisionCostEstimate: (input: { batchId: string; leafletId: string }) => Promise<{
+          ok: boolean
+          targetPages: number[]
+          estimate: import('../shared/utils/geminiPricingAndCostEstimator').MetadataVisionCostEstimate
+          error?: string
+        }>
+        discoverLeafletMetadataWithVision: (input: {
+          batchId: string
+          leafletId: string
+          explicitVisionAuthorization: boolean
+          forceRefresh?: boolean
+          throwOnError?: boolean
+        }) => Promise<import('../shared/types/batchExtraction').BatchManifest>
+        getCoverPreview: (input: { batchId: string; leafletId: string }) => Promise<{ ok: boolean; dataUrl?: string; previewPath?: string; error?: string }>
+        updateLeafletMetadata: (input: { batchId: string; leafletId: string; metadata: Partial<import('../shared/types/batchExtraction').LeafletMetadataScope>; verified?: boolean; operatorId?: string }) => Promise<import('../shared/types/batchExtraction').BatchManifest>
+        updateOfferFields: (input: { batchId: string; batchOfferKey: string; operatorId?: string; patch: Record<string, any> }) => Promise<import('../shared/types/batchExtraction').UnifiedBatchOffer>
+        resolveOfferAsAssorted: (input: { batchId: string; batchOfferKey: string; operatorId?: string; customTitleEn?: string; customTitleAr?: string }) => Promise<import('../shared/types/batchExtraction').UnifiedBatchOffer>
+        selectAndReplaceOfferImage: (input: { batchId: string; batchOfferKey: string; customFilePath?: string }) => Promise<{ success: boolean; canceled?: boolean; updatedOffer?: import('../shared/types/batchExtraction').UnifiedBatchOffer; error?: string }>
+        restoreDefaultOfferImage: (input: { batchId: string; batchOfferKey: string }) => Promise<{ success: boolean; updatedOffer?: import('../shared/types/batchExtraction').UnifiedBatchOffer; error?: string }>
+        updatePublishedOfferImage: (input: { batchId: string; batchOfferKey: string; operatorConfirmed: boolean; databaseContext?: any }) => Promise<{ success: boolean; newImageUrl?: string; error?: string }>
+        confirmDerivedTierCrop: (input: { batchId: string; batchOfferKey: string }) => Promise<{ confirmed: boolean; metaPath: string | null }>
+        previewPublishedOfferImageRepairs: (input: { batchId: string; confirmedCropOfferKeys?: string[]; databaseContext?: any }) => Promise<import('../shared/types/batchExtraction').PublishedOfferImageRepairResult>
+        repairPublishedOfferImages: (input: { batchId: string; operatorAuthorizedRepair?: boolean; operatorAuthorizedIdentityCorrection?: boolean; confirmedCropOfferKeys?: string[]; operatorId?: string; databaseContext?: any }) => Promise<import('../shared/types/batchExtraction').PublishedOfferImageRepairResult>
+        getActiveSession: () => Promise<import('../shared/types/batchExtraction').ActiveWorkflowSession | null>
+        setActiveSession: (session: import('../shared/types/batchExtraction').ActiveWorkflowSession) => Promise<boolean>
+        clearActiveSession: () => Promise<boolean>
+        split: (input: { sourceBatchId: string; selectedLeafletIds: string[] }) => Promise<{
+          success: boolean
+          newBatchId: string | null
+          manifest: import('../shared/types/batchExtraction').BatchManifest
+          transferredLeafletCount: number
+        }>
+        onProgress: (callback: (event: import('../shared/types/batchExtraction').BatchProgressEvent) => void) => () => void
+      }
+      matching: {
+        estimate: (batchId: string) => Promise<import('../shared/types/catalogMatching').MatchingPreflightEstimate>
+        start: (input: {
+          batchId: string
+          mode?: 'full' | 'resume'
+          approvedByOperator: boolean
+          approvedMaxBudgetUsd: number
+          flexTimeoutMs?: number
+          targetDatabaseContext?: 'PRODUCTION_UI' | 'DEVELOPMENT_TEST'
+        }) => Promise<import('../shared/types/catalogMatching').MatchingRunManifest>
+        pause: (batchId: string) => Promise<{ accepted: boolean; message: string }>
+        cancel: (batchId: string) => Promise<{ accepted: boolean; message: string }>
+        getRetryFailedSummary: (
+          batchId: string
+        ) => Promise<import('../shared/types/catalogMatching').RetryFailedPreflightSummary>
+        retryFailedOnly: (input: {
+          batchId: string
+          approvedByOperator: boolean
+          approvedMaxBudgetUsd: number
+          targetRequestKeys?: string[]
+          flexTimeoutMs?: number
+          targetDatabaseContext?: 'PRODUCTION_UI' | 'DEVELOPMENT_TEST'
+        }) => Promise<import('../shared/types/catalogMatching').MatchingRunManifest>
+        getStatus: (batchId: string) => Promise<import('../shared/types/catalogMatching').MatchingRunManifest | null>
+        saveDecision: (input: {
+          batchId: string
+          batchOfferKey?: string
+          temporaryId?: string
+          decision: import('../shared/types/catalogMatching').OperatorDecisionStatus
+          linkedPermanentProductId?: string
+          operatorNotes?: string
+          targetType?: 'catalog' | 'non_catalog'
+          nonCatalogCategory?: import('../shared/types/catalogMatching').NonCatalogEligibilityCategory | null
+        }) => Promise<import('../shared/types/catalogMatching').MatchingRunManifest>
+        saveConsumerImageApproval: (input: {
+          batchId: string
+          batchOfferKey: string
+          decision: 'approve_generated_crop' | 'reuse_existing_catalog_image' | 'reject'
+          productThumbCropPath?: string | null
+          existingCatalogImageUrl?: string | null
+          imageSubjectScope?: string | null
+          boundProductKey?: string | null
+          boundProductLabel?: string | null
+          rightsBasis?: string | null
+          verifiedBy?: string | null
+        }) => Promise<import('../shared/types/catalogMatching').MatchingRunManifest>
+        publishApproved: (input: {
+          batchId: string
+          operatorId: string
+          targetContext?: 'PRODUCTION_UI' | 'DEVELOPMENT_TEST'
+          operatorAuthorizedDevPublish?: boolean
+          operatorAuthorizedProductionPublish?: boolean
+          allowExpiredForDevTest?: boolean
+          preflightOnly?: boolean
+          idempotencyKey?: string
+          approvedUpdateSourceIds?: string[]
+          approveAllUpdates?: boolean
+          enforceUpdateApproval?: boolean
+          overrideConflictSourceIds?: string[]
+        }) => Promise<any>
+        getPublicationHistory: (input?: {
+          context?: 'PRODUCTION_UI' | 'DEVELOPMENT_TEST'
+          limit?: number
+          statusFilter?: string | null
+          batchIdFilter?: string | null
+        }) => Promise<any[]>
+        getPublicationOperationDetails: (input: {
+          context?: 'PRODUCTION_UI' | 'DEVELOPMENT_TEST'
+          publishOperationId: string
+        }) => Promise<any>
+        previewUndoLastPublish: (input?: {
+          context?: 'PRODUCTION_UI' | 'DEVELOPMENT_TEST'
+          publishOperationId?: string | null
+        }) => Promise<any>
+        undoLastPublish: (input: {
+          context?: 'PRODUCTION_UI' | 'DEVELOPMENT_TEST'
+          operatorId: string
+          reason: string
+          publishOperationId?: string | null
+          operatorAuthorizedProductionPublish?: boolean
+        }) => Promise<any>
+        retryUndoStorageCleanup: (input: {
+          context?: 'PRODUCTION_UI' | 'DEVELOPMENT_TEST'
+          publishOperationId: string
+          operatorAuthorizedProductionPublish?: boolean
+        }) => Promise<any>
+        onProgress: (callback: (event: import('../shared/types/catalogMatching').MatchingProgressEvent) => void) => () => void
       }
     }
   }

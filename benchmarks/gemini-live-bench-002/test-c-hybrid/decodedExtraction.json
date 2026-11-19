@@ -1,0 +1,568 @@
+{
+  "is_loyalty_page": false,
+  "loyalty_program_name": null,
+  "validity_start_date": "2026-11-05",
+  "validity_end_date": "2026-11-15",
+  "ignored_banners": [
+    "أقل الأسعار / LOWEST PRICES Header Banner",
+    "Footer Terms and Dates Banner"
+  ],
+  "offers": [
+    {
+      "offer_number": 1,
+      "arabic_title": "أرز بوندي مزة هندي 10 كجم",
+      "english_title": "",
+      "brand": "بوندي",
+      "is_multi_brand_or_variant": false,
+      "compound_group_id": null,
+      "item_domain": "grocery",
+      "category_slug": "staples",
+      "normalized_product_name_ar": "أرز مزة هندي بوندي",
+      "normalized_product_name_en": "Bundi Mazza Rice",
+      "commodity_tag": "basmati_rice",
+      "quantity_limit": null,
+      "size_value": "10 كجم",
+      "unit_type": "كيس",
+      "pack_quantity": 1,
+      "each_size_value": 10,
+      "each_size_unit": "kg",
+      "is_uniform_size_across_variants": true,
+      "promo_price": 42.99,
+      "original_price": 62.99,
+      "promo_condition": "STANDARD",
+      "confidence": 0.99,
+      "components": {
+        "product_graphic_box": [
+          338,
+          126,
+          483,
+          290
+        ],
+        "promo_price_box": [
+          349,
+          29,
+          373,
+          108
+        ],
+        "original_price_box": [
+          370,
+          48,
+          388,
+          102
+        ],
+        "unit_and_size_badge_box": [
+          336,
+          45,
+          353,
+          95
+        ],
+        "title_text_box": [
+          484,
+          58,
+          502,
+          285
+        ]
+      }
+    },
+    {
+      "offer_number": 2,
+      "arabic_title": "دجاج فقيه مجمد 10 × 1000 جرام",
+      "english_title": "",
+      "brand": "فقيه",
+      "is_multi_brand_or_variant": false,
+      "compound_group_id": "cell_fakieh",
+      "item_domain": "grocery",
+      "category_slug": "meat-chicken",
+      "normalized_product_name_ar": "دجاج مجمد فقيه كرتون",
+      "normalized_product_name_en": "Fakieh Frozen Chicken Carton",
+      "commodity_tag": "whole_chicken",
+      "quantity_limit": null,
+      "size_value": "10x1000 جرام",
+      "unit_type": "كرتون",
+      "pack_quantity": 10,
+      "each_size_value": 1000,
+      "each_size_unit": "g",
+      "is_uniform_size_across_variants": true,
+      "promo_price": 141,
+      "original_price": 202,
+      "promo_condition": "STANDARD",
+      "confidence": 0.99,
+      "components": {
+        "product_graphic_box": [
+          340,
+          424,
+          489,
+          624
+        ],
+        "promo_price_box": [
+          350,
+          347,
+          374,
+          429
+        ],
+        "original_price_box": [
+          371,
+          358,
+          388,
+          422
+        ],
+        "unit_and_size_badge_box": [
+          336,
+          365,
+          353,
+          413
+        ],
+        "title_text_box": [
+          487,
+          375,
+          504,
+          614
+        ]
+      }
+    },
+    {
+      "offer_number": 3,
+      "arabic_title": "دجاج فقيه مجمد 10 × 1000 جرام",
+      "english_title": "",
+      "brand": "فقيه",
+      "is_multi_brand_or_variant": false,
+      "compound_group_id": "cell_fakieh",
+      "item_domain": "grocery",
+      "category_slug": "meat-chicken",
+      "normalized_product_name_ar": "دجاج مجمد فقيه حبة",
+      "normalized_product_name_en": "Fakieh Frozen Chicken Single",
+      "commodity_tag": "whole_chicken",
+      "quantity_limit": null,
+      "size_value": "1000 جرام",
+      "unit_type": "الحبة",
+      "pack_quantity": 1,
+      "each_size_value": 1000,
+      "each_size_unit": "g",
+      "is_uniform_size_across_variants": true,
+      "promo_price": 15.5,
+      "original_price": null,
+      "promo_condition": "STANDARD",
+      "confidence": 0.98,
+      "components": {
+        "product_graphic_box": [
+          340,
+          424,
+          489,
+          624
+        ],
+        "promo_price_box": [
+          405,
+          400,
+          419,
+          447
+        ],
+        "original_price_box": null,
+        "unit_and_size_badge_box": [
+          396,
+          398,
+          429,
+          452
+        ],
+        "title_text_box": [
+          487,
+          375,
+          504,
+          614
+        ]
+      }
+    },
+    {
+      "offer_number": 4,
+      "arabic_title": "بيض لؤلؤة المزارع مغلف 30 حبة",
+      "english_title": "",
+      "brand": "لؤلؤة المزارع",
+      "is_multi_brand_or_variant": false,
+      "compound_group_id": null,
+      "item_domain": "grocery",
+      "category_slug": "eggs",
+      "normalized_product_name_ar": "بيض لؤلؤة المزارع",
+      "normalized_product_name_en": "Pearl of Farms Eggs",
+      "commodity_tag": "white_eggs",
+      "quantity_limit": null,
+      "size_value": "30 حبة",
+      "unit_type": "طبق",
+      "pack_quantity": 1,
+      "each_size_value": 30,
+      "each_size_unit": "pcs",
+      "is_uniform_size_across_variants": true,
+      "promo_price": 13.25,
+      "original_price": 15,
+      "promo_condition": "STANDARD",
+      "confidence": 0.99,
+      "components": {
+        "product_graphic_box": [
+          353,
+          777,
+          474,
+          946
+        ],
+        "promo_price_box": [
+          350,
+          665,
+          374,
+          747
+        ],
+        "original_price_box": [
+          370,
+          683,
+          387,
+          739
+        ],
+        "unit_and_size_badge_box": [
+          336,
+          686,
+          353,
+          726
+        ],
+        "title_text_box": [
+          473,
+          670,
+          501,
+          796
+        ]
+      }
+    },
+    {
+      "offer_number": 5,
+      "arabic_title": "سكر فاصكو ناعم 5 كيلو",
+      "english_title": "",
+      "brand": "فاصكو",
+      "is_multi_brand_or_variant": false,
+      "compound_group_id": null,
+      "item_domain": "grocery",
+      "category_slug": "staples",
+      "normalized_product_name_ar": "سكر ناعم فاصكو",
+      "normalized_product_name_en": "Fazco Fine Sugar",
+      "commodity_tag": "sugar",
+      "quantity_limit": null,
+      "size_value": "5 كيلو",
+      "unit_type": "كيس",
+      "pack_quantity": 1,
+      "each_size_value": 5,
+      "each_size_unit": "kg",
+      "is_uniform_size_across_variants": true,
+      "promo_price": 16.5,
+      "original_price": 25,
+      "promo_condition": "STANDARD",
+      "confidence": 0.99,
+      "components": {
+        "product_graphic_box": [
+          510,
+          137,
+          650,
+          265
+        ],
+        "promo_price_box": [
+          523,
+          29,
+          546,
+          108
+        ],
+        "original_price_box": [
+          544,
+          48,
+          560,
+          102
+        ],
+        "unit_and_size_badge_box": [
+          508,
+          47,
+          524,
+          95
+        ],
+        "title_text_box": [
+          656,
+          103,
+          673,
+          281
+        ]
+      }
+    },
+    {
+      "offer_number": 6,
+      "arabic_title": "لبنة برايد كريمي",
+      "english_title": "",
+      "brand": "برايد",
+      "is_multi_brand_or_variant": false,
+      "compound_group_id": null,
+      "item_domain": "grocery",
+      "category_slug": "dairy",
+      "normalized_product_name_ar": "لبنة كريمي برايد",
+      "normalized_product_name_en": "Pride Creamy Labneh",
+      "commodity_tag": "labneh",
+      "quantity_limit": null,
+      "size_value": "الكيلو",
+      "unit_type": "الكيلو",
+      "pack_quantity": 1,
+      "each_size_value": 1,
+      "each_size_unit": "kg",
+      "is_uniform_size_across_variants": true,
+      "promo_price": 18.99,
+      "original_price": 32.95,
+      "promo_condition": "STANDARD",
+      "confidence": 0.99,
+      "components": {
+        "product_graphic_box": [
+          537,
+          417,
+          656,
+          615
+        ],
+        "promo_price_box": [
+          522,
+          348,
+          544,
+          428
+        ],
+        "original_price_box": [
+          541,
+          366,
+          558,
+          421
+        ],
+        "unit_and_size_badge_box": [
+          508,
+          365,
+          524,
+          411
+        ],
+        "title_text_box": [
+          657,
+          406,
+          672,
+          517
+        ]
+      }
+    },
+    {
+      "offer_number": 7,
+      "arabic_title": "دقيق قوت أند روت فاخر 1 كيلو",
+      "english_title": "",
+      "brand": "قوت أند روت",
+      "is_multi_brand_or_variant": false,
+      "compound_group_id": null,
+      "item_domain": "grocery",
+      "category_slug": "staples",
+      "normalized_product_name_ar": "دقيق فاخر قوت أند روت",
+      "normalized_product_name_en": "Qoot & Root Flour",
+      "commodity_tag": "flour",
+      "quantity_limit": null,
+      "size_value": "1 كيلو",
+      "unit_type": "9 حبات",
+      "pack_quantity": 9,
+      "each_size_value": 1,
+      "each_size_unit": "kg",
+      "is_uniform_size_across_variants": true,
+      "promo_price": 9.99,
+      "original_price": 26.55,
+      "promo_condition": "STANDARD",
+      "confidence": 0.99,
+      "components": {
+        "product_graphic_box": [
+          521,
+          749,
+          646,
+          977
+        ],
+        "promo_price_box": [
+          522,
+          666,
+          544,
+          746
+        ],
+        "original_price_box": [
+          542,
+          683,
+          558,
+          739
+        ],
+        "unit_and_size_badge_box": [
+          508,
+          681,
+          524,
+          732
+        ],
+        "title_text_box": [
+          647,
+          738,
+          673,
+          901
+        ]
+      }
+    },
+    {
+      "offer_number": 8,
+      "arabic_title": "مسحوق غسيل وفير أزرق 2.5 كجم",
+      "english_title": "",
+      "brand": "وفير",
+      "is_multi_brand_or_variant": false,
+      "compound_group_id": null,
+      "item_domain": "grocery",
+      "category_slug": "cleaning",
+      "normalized_product_name_ar": "مسحوق غسيل وفير",
+      "normalized_product_name_en": "Wafir Detergent Powder",
+      "commodity_tag": "laundry_detergent",
+      "quantity_limit": null,
+      "size_value": "2.5 كجم",
+      "unit_type": "كيس",
+      "pack_quantity": 1,
+      "each_size_value": 2.5,
+      "each_size_unit": "kg",
+      "is_uniform_size_across_variants": true,
+      "promo_price": 10.99,
+      "original_price": 27.95,
+      "promo_condition": "STANDARD",
+      "confidence": 0.99,
+      "components": {
+        "product_graphic_box": [
+          688,
+          128,
+          814,
+          280
+        ],
+        "promo_price_box": [
+          691,
+          28,
+          714,
+          108
+        ],
+        "original_price_box": [
+          710,
+          48,
+          726,
+          101
+        ],
+        "unit_and_size_badge_box": [
+          677,
+          47,
+          693,
+          94
+        ],
+        "title_text_box": [
+          813,
+          31,
+          842,
+          246
+        ]
+      }
+    },
+    {
+      "offer_number": 9,
+      "arabic_title": "مناديل سوفتي الوجه كيس (7+3 مجانا) 10×130 منديل",
+      "english_title": "",
+      "brand": "سوفتي",
+      "is_multi_brand_or_variant": false,
+      "compound_group_id": null,
+      "item_domain": "grocery",
+      "category_slug": "cleaning",
+      "normalized_product_name_ar": "مناديل وجه سوفتي",
+      "normalized_product_name_en": "Softy Facial Tissues",
+      "commodity_tag": "facial_tissue",
+      "quantity_limit": null,
+      "size_value": "10x130 منديل",
+      "unit_type": "ربطة",
+      "pack_quantity": 10,
+      "each_size_value": 130,
+      "each_size_unit": "sheet",
+      "is_uniform_size_across_variants": true,
+      "promo_price": 13.99,
+      "original_price": 23.95,
+      "promo_condition": "STANDARD",
+      "confidence": 0.99,
+      "components": {
+        "product_graphic_box": [
+          693,
+          467,
+          819,
+          621
+        ],
+        "promo_price_box": [
+          691,
+          348,
+          713,
+          429
+        ],
+        "original_price_box": [
+          711,
+          366,
+          727,
+          421
+        ],
+        "unit_and_size_badge_box": [
+          677,
+          368,
+          693,
+          409
+        ],
+        "title_text_box": [
+          816,
+          350,
+          842,
+          541
+        ]
+      }
+    },
+    {
+      "offer_number": 10,
+      "arabic_title": "مكسرات باجة فول سوداني مملح 18×25 جرام",
+      "english_title": "",
+      "brand": "باجة",
+      "is_multi_brand_or_variant": false,
+      "compound_group_id": null,
+      "item_domain": "grocery",
+      "category_slug": "staples",
+      "normalized_product_name_ar": "فول سوداني مملح باجة",
+      "normalized_product_name_en": "Baja Salted Peanuts",
+      "commodity_tag": "peanuts",
+      "quantity_limit": null,
+      "size_value": "18x25 جرام",
+      "unit_type": "ربطة",
+      "pack_quantity": 18,
+      "each_size_value": 25,
+      "each_size_unit": "g",
+      "is_uniform_size_across_variants": true,
+      "promo_price": 11.99,
+      "original_price": 26.99,
+      "promo_condition": "STANDARD",
+      "confidence": 0.99,
+      "components": {
+        "product_graphic_box": [
+          680,
+          794,
+          812,
+          933
+        ],
+        "promo_price_box": [
+          691,
+          666,
+          714,
+          747
+        ],
+        "original_price_box": [
+          711,
+          683,
+          728,
+          739
+        ],
+        "unit_and_size_badge_box": [
+          677,
+          686,
+          693,
+          727
+        ],
+        "title_text_box": [
+          812,
+          708,
+          842,
+          936
+        ]
+      }
+    }
+  ],
+  "page_number": 1
+}

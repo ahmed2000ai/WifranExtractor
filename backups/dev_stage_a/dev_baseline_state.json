@@ -1,0 +1,39 @@
+{
+  "projectRef": "gykrbpykjhpyrdrinkuk",
+  "dbHost": "db.gykrbpykjhpyrdrinkuk.supabase.co",
+  "timestamp": "2026-11-19T00:51:20.752Z",
+  "counts": {
+    "supermarkets": 13,
+    "products": 9,
+    "offers": 4,
+    "product_images": 0,
+    "offer_display_images": 0,
+    "categories": 13,
+    "brands": 0,
+    "cities": 25,
+    "regions": 5
+  },
+  "viewMarkers": {
+    "hasCandidateVisibility": true,
+    "has012Precedence": false,
+    "has012Constraint": false
+  },
+  "productDefaults": [
+    {
+      "column_name": "verification_basis",
+      "column_default": "'operator_verified_pack_identity'::text",
+      "is_nullable": "NO"
+    },
+    {
+      "column_name": "verification_status",
+      "column_default": "'verified'::text",
+      "is_nullable": "NO"
+    }
+  ],
+  "offerContractDefault": [
+    {
+      "column_name": "contract_version",
+      "column_default": null
+    }
+  ]
+}

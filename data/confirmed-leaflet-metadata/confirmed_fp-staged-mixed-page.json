@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "2.0",
+  "leafletFingerprint": "fp-staged-mixed-page",
+  "record": {
+    "schemaVersion": "2.0",
+    "leafletFingerprint": "fp-staged-mixed-page",
+    "retailer": {
+      "detectedName": "Al Wafa",
+      "resolvedRetailerId": "c2cc16c2-0008-4444-b000-c00000000008",
+      "resolvedSlug": "alwafa",
+      "resolvedNameEn": "Al Wafa Hypermarket",
+      "resolvedNameAr": "أسواق الوفاء المركزية",
+      "status": "confirmed",
+      "confidence": 1,
+      "sourcePage": 1,
+      "evidenceText": "Al Wafa Logo",
+      "isAmbiguous": false
+    },
+    "validity": {
+      "startDate": "2026-11-05",
+      "endDate": "2026-11-18",
+      "rawPrintedText": "05 to 18 Nov",
+      "status": "confirmed",
+      "sourcePage": 1,
+      "calendarType": "gregorian",
+      "confidence": 1,
+      "isAmbiguous": false
+    },
+    "locationScope": "national",
+    "cityId": null,
+    "regionId": null,
+    "conflictingValidity": [],
+    "pageExceptions": [
+      {
+        "pageNumber": 4,
+        "validity": {
+          "startDate": "2026-11-13",
+          "endDate": "2026-11-15",
+          "rawPrintedText": "Weekend Meat"
+        }
+      }
+    ],
+    "resolvedExceptions": [
+      {
+        "pageNumber": 4,
+        "resolution": "applied",
+        "startDate": "2026-11-13",
+        "endDate": "2026-11-15",
+        "scope": "specific_offers",
+        "affectedOfferIds": [
+          "offer_meat_009"
+        ]
+      }
+    ],
+    "operatorConfirmed": true,
+    "confirmedAt": "2026-11-08T22:07:23.151Z",
+    "confirmedBy": "operator",
+    "discoveryMethod": "operator_manual",
+    "rawEvidence": []
+  },
+  "savedAt": "2026-11-08T22:07:23.163Z"
+}

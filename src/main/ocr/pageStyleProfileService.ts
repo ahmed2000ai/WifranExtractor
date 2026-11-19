@@ -7,6 +7,7 @@ import { buildStyleProfileJsonSchema, leafletStyleProfileModelSchema } from '../
 import type { LeafletStyleProfile } from '../../shared/types/styleProfile';
 import { runWithMistralRateLimit } from './mistralRateLimitQueue';
 import { warn, error as logError, info } from '../logging/logger';
+import { assertNotOfflineUat } from '../config/offlineUatGuard';
 
 export async function generatePageStyleProfile(input: {
   leafletId?: string | null;
@@ -32,6 +33,8 @@ export async function generatePageStyleProfile(input: {
       warn(`Failed to parse existing page style profile for page ${input.pageNumber}, regenerating...`);
     }
   }
+
+  assertNotOfflineUat('Live Mistral Page Style Profile API calls');
 
   const apiKey = config.mistral.apiKey;
   if (!apiKey) {

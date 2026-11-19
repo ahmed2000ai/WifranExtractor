@@ -2,6 +2,15 @@ import crypto from 'crypto'
 import path from 'path'
 import { getSupabaseAdminClient } from './supabaseAdminClient'
 import { MASTER_SUPERMARKETS, MASTER_REGIONS, MASTER_CITIES } from './referenceDataService'
+import { assertNotOfflineUat } from '../config/offlineUatGuard'
+import {
+  normalizeEntityText,
+  stripSupermarketNoiseWords,
+  SUPERMARKET_SYNONYMS,
+  toAsciiSlug
+} from '../../shared/utils/supermarketCandidateUtils'
+
+export { normalizeEntityText, stripSupermarketNoiseWords, SUPERMARKET_SYNONYMS }
 
 export interface ResolvedEntity {
   id: string
@@ -15,48 +24,19 @@ export interface ResolveEntityOptions {
   supabaseClient?: any
 }
 
-/**
- * Normalizes text for comparison across English and Arabic:
- * - Lowercases and trims
- * - Normalizes Arabic letter variants (أ|إ|آ|ٱ -> ا, ة -> ه, ى -> ي)
- * - Strips Arabic tashkeel (diacritics) and tatweel (ـ)
- * - Normalizes multiple spaces and punctuation
- */
-export function normalizeEntityText(raw: string): string {
-  if (!raw) return ''
-  let text = String(raw).trim().toLowerCase()
-
-  // Remove Arabic diacritics / tashkeel (\u064B to \u065F, \u0670)
-  text = text.replace(/[\u064B-\u065F\u0670]/g, '')
-  // Remove tatweel (\u0640)
-  text = text.replace(/\u0640/g, '')
-
-  // Normalize Arabic letters
-  text = text.replace(/[أإآٱ]/g, 'ا')
-  text = text.replace(/ة/g, 'ه')
-  text = text.replace(/ى/g, 'ي')
-
-  // Normalize unicode punctuation and hyphens
-  text = text.replace(/[\u2010-\u2015\u2212]/g, '-')
-  // Replace punctuation with spaces except hyphens
-  text = text.replace(/[,._/\\()[\]{}'"`:;!?]/g, ' ')
-  // Collapse whitespace
-  text = text.replace(/\s+/g, ' ').trim()
-
-  return text
+export interface EnsureSupermarketOnPublishDescriptor {
+  id: string
+  slug?: string | null
+  name_en?: string | null
+  name_ar?: string | null
 }
 
-// Supermarket noise words in English and Arabic (Unicode-aware boundary)
-const SUPERMARKET_NOISE_REGEX =
-  /(?<![\p{L}\p{N}])(?:hypermarket|supermarket|hyper|super|markets|market|superstores|stores|store|company|co|llc|ksa|saudi|branch|هايبر|سوبرماركت|سوبر\s*ماركت|ماركت|أسواق|اسواق|سوق|متاجر|متجر|شركة|شركه|مؤسسة|مؤسسه|فرع|تخفيضات|عروض|مركز)(?![\p{L}\p{N}])/giu
-
-/**
- * Strips generic store noise words so slight variations never duplicate entries.
- */
-export function stripSupermarketNoiseWords(text: string): string {
-  const norm = normalizeEntityText(text)
-  const stripped = norm.replace(SUPERMARKET_NOISE_REGEX, ' ').replace(/\s+/g, ' ').trim()
-  return stripped || norm
+export interface EnsureSupermarketOnPublishResult {
+  supermarketId: string
+  slug: string
+  name_en: string
+  name_ar: string
+  created: boolean
 }
 
 // Region and City noise words in English and Arabic (Unicode-aware boundary)
@@ -70,76 +50,6 @@ export function stripRegionNoiseWords(text: string): string {
   const norm = normalizeEntityText(text)
   const stripped = norm.replace(REGION_NOISE_REGEX, ' ').replace(/\s+/g, ' ').trim()
   return stripped || norm
-}
-
-/**
- * Bilingual synonym dictionary for common Saudi supermarkets.
- */
-export const SUPERMARKET_SYNONYMS: Record<string, { slug: string; name_en: string; name_ar: string }> = {
-  // Panda
-  panda: { slug: 'panda', name_en: 'Panda', name_ar: 'بنده' },
-  بنده: { slug: 'panda', name_en: 'Panda', name_ar: 'بنده' },
-  'hyper panda': { slug: 'panda', name_en: 'Panda', name_ar: 'بنده' },
-  'هايبر بنده': { slug: 'panda', name_en: 'Panda', name_ar: 'بنده' },
-  'اسواق بنده': { slug: 'panda', name_en: 'Panda', name_ar: 'بنده' },
-  'أسواق بنده': { slug: 'panda', name_en: 'Panda', name_ar: 'بنده' },
-  'panda supermarket': { slug: 'panda', name_en: 'Panda', name_ar: 'بنده' },
-  // Danube
-  danube: { slug: 'danube', name_en: 'Danube', name_ar: 'الدانوب' },
-  الدانوب: { slug: 'danube', name_en: 'Danube', name_ar: 'الدانوب' },
-  دانوب: { slug: 'danube', name_en: 'Danube', name_ar: 'الدانوب' },
-  // Othaim
-  othaim: { slug: 'othaim', name_en: 'Othaim Markets', name_ar: 'أسواق العثيم' },
-  العثيم: { slug: 'othaim', name_en: 'Othaim Markets', name_ar: 'أسواق العثيم' },
-  عثيم: { slug: 'othaim', name_en: 'Othaim Markets', name_ar: 'أسواق العثيم' },
-  // Carrefour
-  carrefour: { slug: 'carrefour', name_en: 'Carrefour', name_ar: 'كارفور' },
-  كارفور: { slug: 'carrefour', name_en: 'Carrefour', name_ar: 'كارفور' },
-  // LuLu
-  lulu: { slug: 'lulu', name_en: 'LuLu Hypermarket', name_ar: 'لولو هايبر ماركت' },
-  لولو: { slug: 'lulu', name_en: 'LuLu Hypermarket', name_ar: 'لولو هايبر ماركت' },
-  // BinDawood
-  'bin-dawood': { slug: 'bin-dawood', name_en: 'BinDawood', name_ar: 'بن داود' },
-  bindawood: { slug: 'bin-dawood', name_en: 'BinDawood', name_ar: 'بن داود' },
-  'بن داود': { slug: 'bin-dawood', name_en: 'BinDawood', name_ar: 'بن داود' },
-  'بن داوود': { slug: 'bin-dawood', name_en: 'BinDawood', name_ar: 'بن داود' },
-  // Tamimi
-  tamimi: { slug: 'tamimi', name_en: 'Tamimi Markets', name_ar: 'أسواق التميمي' },
-  التميمي: { slug: 'tamimi', name_en: 'Tamimi Markets', name_ar: 'أسواق التميمي' },
-  تميمي: { slug: 'tamimi', name_en: 'Tamimi Markets', name_ar: 'أسواق التميمي' },
-  // Alwafa
-  alwafa: { slug: 'alwafa', name_en: 'Hyper Alwafa', name_ar: 'هايبر الوفاء' },
-  'al-wafa': { slug: 'alwafa', name_en: 'Hyper Alwafa', name_ar: 'هايبر الوفاء' },
-  'al wafa': { slug: 'alwafa', name_en: 'Hyper Alwafa', name_ar: 'هايبر الوفاء' },
-  wafa: { slug: 'alwafa', name_en: 'Hyper Alwafa', name_ar: 'هايبر الوفاء' },
-  الوفاء: { slug: 'alwafa', name_en: 'Hyper Alwafa', name_ar: 'هايبر الوفاء' },
-  وفاء: { slug: 'alwafa', name_en: 'Hyper Alwafa', name_ar: 'هايبر الوفاء' },
-  // Nesto
-  nesto: { slug: 'nesto', name_en: 'Nesto Hypermarket', name_ar: 'نستو هايبرماركت' },
-  نستو: { slug: 'nesto', name_en: 'Nesto Hypermarket', name_ar: 'نستو هايبرماركت' },
-  // Manuel
-  manuel: { slug: 'manuel', name_en: 'Manuel Market', name_ar: 'مانويل' },
-  مانويل: { slug: 'manuel', name_en: 'Manuel Market', name_ar: 'مانويل' },
-  // Raya
-  raya: { slug: 'raya', name_en: 'Al Raya Markets', name_ar: 'أسواق الراية' },
-  الراية: { slug: 'raya', name_en: 'Al Raya Markets', name_ar: 'أسواق الراية' },
-  رايه: { slug: 'raya', name_en: 'Al Raya Markets', name_ar: 'أسواق الراية' },
-  // Farm
-  farm: { slug: 'farm', name_en: 'Farm Superstores', name_ar: 'أسواق المزرعة' },
-  المزرعة: { slug: 'farm', name_en: 'Farm Superstores', name_ar: 'أسواق المزرعة' },
-  مزرعه: { slug: 'farm', name_en: 'Farm Superstores', name_ar: 'أسواق المزرعة' },
-  // Al Ahlam
-  'al-ahlam': { slug: 'al-ahlam', name_en: 'Al Ahlam', name_ar: 'الأحلام' },
-  'al ahlam': { slug: 'al-ahlam', name_en: 'Al Ahlam', name_ar: 'الأحلام' },
-  ahlam: { slug: 'al-ahlam', name_en: 'Al Ahlam', name_ar: 'الأحلام' },
-  الاحلام: { slug: 'al-ahlam', name_en: 'Al Ahlam', name_ar: 'الأحلام' },
-  الأحلام: { slug: 'al-ahlam', name_en: 'Al Ahlam', name_ar: 'الأحلام' },
-  // Noori
-  noori: { slug: 'noori', name_en: 'Noori Supermarket', name_ar: 'أسواق نوري' },
-  'noori supermarket': { slug: 'noori', name_en: 'Noori Supermarket', name_ar: 'أسواق نوري' },
-  نوري: { slug: 'noori', name_en: 'Noori Supermarket', name_ar: 'أسواق نوري' },
-  'اسواق نوري': { slug: 'noori', name_en: 'Noori Supermarket', name_ar: 'أسواق نوري' },
-  'أسواق نوري': { slug: 'noori', name_en: 'Noori Supermarket', name_ar: 'أسواق نوري' }
 }
 
 /**
@@ -223,6 +133,120 @@ function titleCase(str: string): string {
     .split(' ')
     .map((word) => (word ? word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() : ''))
     .join(' ')
+}
+
+/**
+ * Ensures an operator-confirmed pending supermarket exists in `public.supermarkets` at publish time.
+ * Uses read-then-write lookup by `id` and `slug` so existing DB IDs take precedence without `23505` slug collisions.
+ */
+export async function ensureConfirmedSupermarketExistsInDb(
+  descriptor: EnsureSupermarketOnPublishDescriptor,
+  options?: ResolveEntityOptions
+): Promise<EnsureSupermarketOnPublishResult> {
+  const id = (descriptor.id || '').trim()
+  if (!id) {
+    throw new Error('Confirmed supermarket ID cannot be empty on publish.')
+  }
+
+  if (!options?.supabaseClient) {
+    assertNotOfflineUat('Database supermarket creation on publish')
+  }
+
+  const supabase = options?.supabaseClient || getSupabaseAdminClient()
+  const rawSlug = (descriptor.slug || '').trim().toLowerCase()
+  const targetSlug = /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(rawSlug)
+    ? rawSlug
+    : toAsciiSlug(descriptor.name_en || descriptor.name_ar || id)
+  const targetNameEn = (descriptor.name_en || '').trim() || titleCase(targetSlug.replace(/-/g, ' '))
+  const targetNameAr = (descriptor.name_ar || '').trim() || targetNameEn
+
+  const { data: idRows, error: idErr } = await supabase
+    .from('supermarkets')
+    .select('id, slug, name_en, name_ar')
+    .eq('id', id)
+    .limit(1)
+
+  if (idErr) {
+    throw new Error(`Failed to verify supermarket '${id}' in database: ${idErr.message || String(idErr)}`)
+  }
+  if (Array.isArray(idRows) && idRows.length > 0) {
+    return {
+      supermarketId: String(idRows[0].id),
+      slug: idRows[0].slug || targetSlug,
+      name_en: idRows[0].name_en || targetNameEn,
+      name_ar: idRows[0].name_ar || targetNameAr,
+      created: false
+    }
+  }
+
+  const { data: slugRows, error: slugErr } = await supabase
+    .from('supermarkets')
+    .select('id, slug, name_en, name_ar')
+    .eq('slug', targetSlug)
+    .limit(1)
+
+  if (slugErr) {
+    throw new Error(`Failed to check existing supermarket slug '${targetSlug}' in database: ${slugErr.message || String(slugErr)}`)
+  }
+  if (Array.isArray(slugRows) && slugRows.length > 0) {
+    return {
+      supermarketId: String(slugRows[0].id),
+      slug: slugRows[0].slug || targetSlug,
+      name_en: slugRows[0].name_en || targetNameEn,
+      name_ar: slugRows[0].name_ar || targetNameAr,
+      created: false
+    }
+  }
+
+  const newRecord = {
+    id,
+    slug: targetSlug,
+    name_en: targetNameEn,
+    name_ar: targetNameAr,
+    is_active: true
+  }
+
+  const supermarketsTable = supabase.from('supermarkets')
+  const writeResult =
+    typeof supermarketsTable.upsert === 'function'
+      ? await supermarketsTable.upsert([newRecord], { onConflict: 'id' })
+      : await supermarketsTable.insert([newRecord])
+
+  const writeErr = writeResult?.error
+  if (writeErr) {
+    const errMsg = writeErr.message || String(writeErr)
+    const isUniqueConflict =
+      writeErr.code === '23505' ||
+      errMsg.includes('23505') ||
+      errMsg.toLowerCase().includes('duplicate')
+
+    if (isUniqueConflict) {
+      const { data: retrySlugRows } = await supabase
+        .from('supermarkets')
+        .select('id, slug, name_en, name_ar')
+        .eq('slug', targetSlug)
+        .limit(1)
+      if (Array.isArray(retrySlugRows) && retrySlugRows.length > 0) {
+        return {
+          supermarketId: String(retrySlugRows[0].id),
+          slug: retrySlugRows[0].slug || targetSlug,
+          name_en: retrySlugRows[0].name_en || targetNameEn,
+          name_ar: retrySlugRows[0].name_ar || targetNameAr,
+          created: false
+        }
+      }
+    }
+
+    throw new Error(`Failed to create supermarket '${targetNameEn}' (${targetSlug}) in database on publish: ${errMsg}`)
+  }
+
+  return {
+    supermarketId: id,
+    slug: targetSlug,
+    name_en: targetNameEn,
+    name_ar: targetNameAr,
+    created: true
+  }
 }
 
 /**

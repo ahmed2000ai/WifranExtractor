@@ -14,7 +14,10 @@ import { loadExtractionManifest, saveExtractionManifest } from '../extraction/ex
 import { loadEnvConfig } from '../config/env'
 import { checkRealPublishRehearsalGates, writeRealPublishRehearsalReport } from '../prepublish/realPublishRehearsalService'
 import { ensureCoreCatalogSeeded } from './referenceDataService'
+import { ensureConfirmedSupermarketExistsInDb } from './supermarketRegionResolutionService'
 import { validateProductIdentityCompatibility } from './productIdentityCompatibilityValidator'
+import { getLeafletMetadataService } from '../metadata/leafletMetadataService'
+import type { LeafletMetadataRecord } from '../metadata/metadataTypes'
 
 export async function syncPreparedOffers(
   input: OfferSyncInput,
@@ -44,13 +47,30 @@ export async function syncPreparedOffers(
   const supabase = (input.options as any)?.supabaseClient || getSupabaseAdminClient()
   onProgress?.({ stage: 'started', message: 'Starting final offer sync.' })
 
+  // Resolve optional page-selection scope from manifest (even if requirePrePublishApproval is false)
+  let loadedManifest: Awaited<ReturnType<typeof loadExtractionManifest>> = null
+  if (input.options.extractionPackagePath) {
+    try {
+      loadedManifest = await loadExtractionManifest(input.options.extractionPackagePath)
+    } catch {
+      loadedManifest = null
+    }
+  }
+  const selectedScopeSet =
+    loadedManifest?.processing_selection?.selectionMode === 'specific' &&
+    Array.isArray(loadedManifest.processing_selection.selectedPages) &&
+    loadedManifest.processing_selection.selectedPages.length > 0
+      ? new Set(loadedManifest.processing_selection.selectedPages)
+      : null
+
   // Safe default: publishing is always manual only and blocked until the operator explicitly presses Publish and approves.
   const requireApproval = input.options.requirePrePublishApproval !== false;
+  let gateCheckConfirmedRecord: LeafletMetadataRecord | undefined
   if (requireApproval) {
     if (!input.options.extractionPackagePath) {
       throw new Error('DB publish blocked: extractionPackagePath is required when requirePrePublishApproval is true.')
     }
-    const manifest = await loadExtractionManifest(input.options.extractionPackagePath)
+    const manifest = loadedManifest || (await loadExtractionManifest(input.options.extractionPackagePath))
     if (!manifest) {
       throw new Error('DB publish blocked: Manifest not found to verify Pre-Publish Preview approval.')
     }
@@ -64,6 +84,19 @@ export async function syncPreparedOffers(
       )
     }
 
+    // Authoritative Leaflet Metadata Confirmation Gate Enforcement (WIFRAN-EXTRACTOR-METADATA-003)
+    const metadataService = getLeafletMetadataService()
+    const gateCheck = metadataService.validatePublishReadiness({
+      workspacePath: input.options.extractionPackagePath,
+      expectedSupermarketId: manifest.supermarket?.id || input.supermarketId || undefined,
+      leafletFingerprint:
+        input.leafletId && /^[0-9a-f]{64}$/i.test(input.leafletId) ? input.leafletId : undefined
+    })
+    if (!gateCheck.ok) {
+      throw new Error(`DB publish blocked: ${gateCheck.error}`)
+    }
+    gateCheckConfirmedRecord = gateCheck.confirmedRecord
+
     // Check Rehearsal Gates if not dry run and mode is on
     if (!input.options.dryRun) {
       const config = loadEnvConfig();
@@ -75,14 +108,44 @@ export async function syncPreparedOffers(
         }
       }
     }
+  } else if (input.options.extractionPackagePath) {
+    try {
+      const wsConfirmedPath = path.join(input.options.extractionPackagePath, 'metadata', 'confirmed_metadata.json')
+      if (fs.existsSync(wsConfirmedPath)) {
+        const rawConfirmed = JSON.parse(fs.readFileSync(wsConfirmedPath, 'utf8'))
+        const rec = rawConfirmed?.record || rawConfirmed
+        if (rec?.operatorConfirmed) {
+          gateCheckConfirmedRecord = rec
+        }
+      }
+    } catch {
+      // ignore non-critical confirmed metadata read error when approval gate is bypassed
+    }
   }
 
-  // Proactively ensure core catalog is seeded in Supabase before sync
+  let effectiveSupermarketId = input.supermarketId
+  let effectiveSupermarketSlug = input.supermarketSlug
+
+  // Proactively ensure core catalog is seeded & any quick-added pending supermarket exists in Supabase before sync
   if (!input.options.dryRun) {
     try {
       await ensureCoreCatalogSeeded()
     } catch (seedErr: any) {
       console.warn('[offerSyncService] Proactive catalog seed check non-fatal warning:', seedErr.message)
+    }
+
+    if (gateCheckConfirmedRecord?.retailer?.pendingCatalogCreation === true) {
+      const ensuredSupermarket = await ensureConfirmedSupermarketExistsInDb(
+        {
+          id: gateCheckConfirmedRecord.retailer.resolvedRetailerId || effectiveSupermarketId,
+          slug: gateCheckConfirmedRecord.retailer.resolvedSlug || effectiveSupermarketSlug,
+          name_en: gateCheckConfirmedRecord.retailer.resolvedNameEn || gateCheckConfirmedRecord.retailer.detectedName || null,
+          name_ar: gateCheckConfirmedRecord.retailer.resolvedNameAr || gateCheckConfirmedRecord.retailer.detectedName || null
+        },
+        { supabaseClient: (input.options as any)?.supabaseClient }
+      )
+      effectiveSupermarketId = ensuredSupermarket.supermarketId
+      effectiveSupermarketSlug = ensuredSupermarket.slug
     }
   }
 
@@ -108,13 +171,50 @@ export async function syncPreparedOffers(
       issues: row.issues ? [...row.issues] : []
     }
 
-    if (row.status === 'skipped' || row.status === 'error' || row.status === 'duplicate') {
-      res.status = row.status === 'duplicate' ? 'duplicate' : row.status === 'skipped' ? 'skipped' : 'error'
+    const rawRowPage =
+      row.pageNumber ??
+      row.preparedPayload?.source?.source_page_number ??
+      row.preparedPayload?.source_page_number
+    const resolvedRowPage =
+      typeof rawRowPage === 'number' && Number.isFinite(rawRowPage) && rawRowPage > 0 ? rawRowPage : null
+
+    if (selectedScopeSet && (resolvedRowPage == null || !selectedScopeSet.has(resolvedRowPage))) {
+      res.status = 'skipped'
+      res.issues.push({
+        severity: 'warning',
+        code: 'OUT_OF_SELECTED_PAGE_SCOPE',
+        message:
+          resolvedRowPage == null
+            ? 'Row lacks a valid page number while Specific Pages scope is active; skipped.'
+            : `Row page ${resolvedRowPage} is outside selected processing pages; skipped.`
+      })
+      result.skippedRows++
+      onProgress?.({
+        stage: 'row_skipped',
+        message: `Skipped row ${row.rowId} (outside selected pages scope).`,
+        rowId: row.rowId,
+        current: currentCount,
+        total: input.rows.length
+      })
+      result.results.push(res)
+      continue
+    }
+
+    const isQuarantined =
+      row.preparedPayload?.quality?.publish_decision === 'skip_or_quarantine' ||
+      row.preparedPayload?.publish_decision === 'skip_or_quarantine' ||
+      row.preparedPayload?.pre_publish?.preview_group === 'skip_or_quarantine';
+
+    if (row.status === 'skipped' || row.status === 'error' || row.status === 'duplicate' || isQuarantined) {
+      res.status = row.status === 'duplicate' ? 'duplicate' : (row.status === 'error' ? 'error' : 'skipped');
+      if (isQuarantined && !res.issues.some(i => i.code === 'OFFER_QUARANTINED')) {
+        res.issues.push({ severity: 'warning', code: 'OFFER_QUARANTINED', message: 'Offer is quarantined and skipped from publishing.' });
+      }
       if (res.status === 'duplicate') result.duplicateRows++
       else if (res.status === 'skipped') result.skippedRows++
       else result.errorRows++
 
-      onProgress?.({ stage: 'row_skipped', message: `Skipped row ${row.rowId} (${res.status}).`, rowId: row.rowId, current: currentCount, total: input.rows.length })
+      onProgress?.({ stage: 'row_skipped', message: `Skipped row ${row.rowId} (${res.status}${isQuarantined ? ' - quarantined' : ''}).`, rowId: row.rowId, current: currentCount, total: input.rows.length })
       result.results.push(res)
       continue
     }
@@ -145,7 +245,7 @@ export async function syncPreparedOffers(
           const itemNumber = pageNum ? `p${String(pageNum).padStart(3, '0')}_${String(rawItemNum).padStart(3, '0')}` : String(rawItemNum)
 
           const storagePath = buildOfferImageStoragePath({
-            supermarketSlug: input.supermarketSlug,
+            supermarketSlug: effectiveSupermarketSlug,
             coverageScope: input.locationScope,
             locationSlug: input.locationSlug,
             leafletId: input.leafletId || 'unknown-leaflet',
@@ -235,7 +335,7 @@ export async function syncPreparedOffers(
           const thumbItemNumber = thumbPageNum ? `p${String(thumbPageNum).padStart(3, '0')}_${String(rawThumbItemNum).padStart(3, '0')}` : String(rawThumbItemNum)
 
           const thumbStoragePath = buildOfferImageStoragePath({
-            supermarketSlug: input.supermarketSlug,
+            supermarketSlug: effectiveSupermarketSlug,
             coverageScope: input.locationScope,
             locationSlug: input.locationSlug,
             leafletId: input.leafletId || 'unknown-leaflet',
@@ -270,8 +370,26 @@ export async function syncPreparedOffers(
     }
 
     // Build Final DB Payload with contract_v2 fields
+    const preparedPayloadForSync =
+      row.preparedPayload &&
+      (effectiveSupermarketId !== input.supermarketId || effectiveSupermarketSlug !== input.supermarketSlug)
+        ? {
+            ...row.preparedPayload,
+            supermarket_id: effectiveSupermarketId,
+            ...(row.preparedPayload.trusted_context
+              ? {
+                  trusted_context: {
+                    ...row.preparedPayload.trusted_context,
+                    supermarket_id: effectiveSupermarketId,
+                    supermarket_slug: effectiveSupermarketSlug
+                  }
+                }
+              : {})
+          }
+        : row.preparedPayload
+
     const { payload, issues } = mapPreparedPayloadToOffersInsert({
-      preparedPayload: row.preparedPayload,
+      preparedPayload: preparedPayloadForSync,
       imageUrl: uploadedImageUrl,
       storageBucket: input.storageBucket,
       storagePath: uploadedCardStoragePath,
@@ -790,7 +908,7 @@ async function updateRowAndErrors(supabase: any, res: OfferSyncRowResult, origin
 export async function syncApprovedOffers(
   target: string | OfferSyncInput,
   onProgress?: (event: OfferSyncProgressEvent) => void,
-  syncOptions?: { forceRePublish?: boolean }
+  syncOptions?: { forceRePublish?: boolean; supabaseClient?: any }
 ): Promise<OfferSyncResult> {
   if (typeof target !== 'string') {
     return syncPreparedOffers(target, onProgress)
@@ -824,10 +942,27 @@ export async function syncApprovedOffers(
     throw new Error(`No .canonical.json files found in ${jsonDir}`)
   }
 
+  const selectedScopeSet =
+    manifest.processing_selection?.selectionMode === 'specific' &&
+    Array.isArray(manifest.processing_selection.selectedPages) &&
+    manifest.processing_selection.selectedPages.length > 0
+      ? new Set(manifest.processing_selection.selectedPages)
+      : null
+
   const canonicalOffers: any[] = []
   for (const f of jsonFiles) {
     try {
       const parsed = JSON.parse(fs.readFileSync(path.join(jsonDir, f), 'utf-8'))
+      let pNum = parsed.source?.source_page_number ?? parsed.pageNumber
+      if (typeof pNum !== 'number' || !Number.isFinite(pNum) || pNum <= 0) {
+        const filePageMatch = f.match(/^page-0*(\d+)-/i) || f.match(/_0*(\d+)_/)
+        if (filePageMatch) {
+          pNum = parseInt(filePageMatch[1], 10)
+        }
+      }
+      if (selectedScopeSet && (typeof pNum !== 'number' || !selectedScopeSet.has(pNum))) {
+        continue
+      }
       canonicalOffers.push(parsed)
     } catch (e: any) {
       console.warn(`[syncApprovedOffers] Failed to parse ${f}:`, e.message)
@@ -838,22 +973,27 @@ export async function syncApprovedOffers(
     throw new Error(`No valid canonical offers could be parsed from ${jsonDir}`)
   }
 
-  const firstOffer = canonicalOffers[0]
-  const trustedContext = firstOffer.trusted_context || {}
+  // Authoritative Leaflet Metadata Confirmation Gate Enforcement (WIFRAN-EXTRACTOR-METADATA-003)
+  const metadataService = getLeafletMetadataService()
+  const gateCheck = metadataService.validatePublishReadiness({
+    workspacePath,
+    expectedSupermarketId: manifest.supermarket?.id || undefined
+  })
 
-  const supermarketId = trustedContext.supermarket_id || manifest.supermarket?.id
-  if (!supermarketId) {
-    throw new Error(`Supermarket ID could not be determined from extraction package at ${workspacePath}`)
+  if (!gateCheck.ok || !gateCheck.confirmedRecord) {
+    throw new Error(`DB publish blocked: ${gateCheck.error || 'Authoritative leaflet metadata confirmation required.'}`)
   }
 
-  const locationScope = trustedContext.location_scope || manifest.location?.location_scope || 'national'
-  const cityId = trustedContext.city_id !== undefined ? trustedContext.city_id : (manifest.location?.city_id ?? null)
-  const regionId = trustedContext.region_id !== undefined ? trustedContext.region_id : (manifest.location?.region_id ?? null)
-  const locationSlug = trustedContext.city_id ? 'jeddah' : (manifest.location?.location_slug || 'national')
-  const supermarketSlug = trustedContext.supermarket_slug || (manifest.supermarket as any)?.slug || 'supermarket'
-  const offerStartDate = trustedContext.offer_start_date || manifest.offer_dates?.valid_from || new Date().toISOString().slice(0, 10)
-  const offerEndDate = trustedContext.offer_end_date || manifest.offer_dates?.valid_to || new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10)
-  const leafletId = firstOffer.source?.leaflet_id || trustedContext.leaflet_id || manifest.location?.location_slug || 'leaflet'
+  const confirmedRecord = gateCheck.confirmedRecord
+  const supermarketId = confirmedRecord.retailer?.resolvedRetailerId!
+  const supermarketSlug = confirmedRecord.retailer?.resolvedSlug || 'supermarket'
+  const locationScope = confirmedRecord.locationScope!
+  const cityId = confirmedRecord.cityId
+  const regionId = confirmedRecord.regionId
+  const locationSlug = confirmedRecord.locationSlug || (cityId ? 'jeddah' : (regionId ? 'region' : 'national'))
+  const offerStartDate = confirmedRecord.validity?.startDate!
+  const offerEndDate = confirmedRecord.validity?.endDate!
+  const leafletId = gateCheck.resolvedFingerprint || confirmedRecord.leafletFingerprint
 
   const envConfig = loadEnvConfig()
   const storageBucket = envConfig.supabase.storageBucket || 'offer-images'
@@ -915,8 +1055,8 @@ export async function syncApprovedOffers(
     supermarketSlug,
     locationScope,
     locationSlug,
-    cityId,
-    regionId,
+    cityId: cityId || null,
+    regionId: regionId || null,
     offerStartDate,
     offerEndDate,
     leafletId,
@@ -931,7 +1071,8 @@ export async function syncApprovedOffers(
       requirePrePublishApproval: true,
       extractionPackagePath: workspacePath,
       dryRun: false,
-      forceRePublish: !!syncOptions?.forceRePublish
+      forceRePublish: !!syncOptions?.forceRePublish,
+      ...(syncOptions?.supabaseClient ? { supabaseClient: syncOptions.supabaseClient } : {})
     }
   }
 
@@ -963,12 +1104,23 @@ export async function syncApprovedOffers(
   const result = await syncPreparedOffers(syncInput, onProgress)
 
   // Update manifest with db update status
+  const isPartialSelection =
+    manifest.processing_selection?.selectionMode === 'specific' &&
+    manifest.processing_selection?.coverage === 'partial'
   const isFailed = result.errorRows > 0 && result.importedRows === 0 && result.publishedRows === 0
   const hasPartialSuccess = (result.importedRows > 0 || result.publishedRows > 0) && (result.errorRows > 0 || result.imageFailedRows > 0)
-  
-  manifest.db_update_status = isFailed ? 'failed' : 'completed'
+
+  manifest.db_update_status = isFailed
+    ? 'failed'
+    : isPartialSelection
+      ? 'in_progress'
+      : 'completed'
   if (manifest.stages) {
-    manifest.stages.db_update = isFailed ? 'failed' : (hasPartialSuccess ? 'partial' : 'completed')
+    manifest.stages.db_update = isFailed
+      ? 'failed'
+      : (hasPartialSuccess || isPartialSelection)
+        ? 'partial'
+        : 'completed'
   }
   await saveExtractionManifest(workspacePath, manifest)
 

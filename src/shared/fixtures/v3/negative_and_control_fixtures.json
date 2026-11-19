@@ -1,0 +1,918 @@
+{
+  "fixture_suite": "WIFRAN-EXTRACTOR-IDENTITY-005D-NEGATIVE-AND-CONTROL-FIXTURES",
+  "note": "Offline negative controls, conflict quarantine controls, and proposed corrected V3 representation of Godiva (not proof of live model extraction accuracy).",
+  "negative_cases": [
+    {
+      "case_id": "neg_perinna_bed_sheet_unlabeled_swatches",
+      "expected_decomposed": false,
+      "expected_retention_mode": "quarantined_do_not_publish",
+      "expected_excluded_from_default_grocery": true,
+      "record": {
+        "schema_version": "wifran.extractor.card/3.0",
+        "source_card": {
+          "leaflet_id": "alwafa-city-jeddah-2026-10-20",
+          "page_number": 3,
+          "source_offer_id": "Alwafa_Test_p003_014",
+          "source_evidence_ref_internal": "Extracts/Alwafa_Test/metadata/rev1/page-003/crops/offer-014/offer_card_crop.webp",
+          "retailer_id": "c2cc16c2-0008-4444-b000-c00000000008",
+          "retailer_name": "Alwafa",
+          "offer_start_date": "2026-10-14",
+          "offer_end_date": "2026-10-20",
+          "location_scope": "city",
+          "city_id": "a6f7b140-0002-4444-a000-000000000002",
+          "region_id": "b144b6c8-2222-4444-b000-000000000002",
+          "raw_text": {
+            "title_ar": "بيرينا شرشف سرير ٢٢٥*٢٥٠ سم",
+            "title_en": "Perinna Bed Sheet 225X250Cm",
+            "size_text": "225x250Cm",
+            "promo_badge_text": "متنوع ASSORTED (4 color dots)",
+            "price_text_candidates": ["25", "49"]
+          }
+        },
+        "pricing": {
+          "promo_price": 25,
+          "original_price": 49,
+          "currency": "SAR",
+          "currency_evidence": "printed_sar_symbol",
+          "price_basis": "each",
+          "price_role_confidence": "high",
+          "promo_conditions": null,
+          "price_conflict_flags": []
+        },
+        "assortment": {
+          "status": "visual_multiple_variants",
+          "visible_variant_count": 4,
+          "identifiable_sub_item_count": 0,
+          "assortment_evidence": ["assorted_badge", "swatch_icons"],
+          "is_enumerated_list_complete": false,
+          "all_options_linkable": false
+        },
+        "sub_items": [],
+        "quantity_and_promo": {
+          "sale_basis": "single_unit",
+          "each_size_value": 1,
+          "each_size_unit": "pcs",
+          "manufacturer_pack_count": 1,
+          "retailer_checkout_multibuy_qty": null,
+          "factory_bonus_paid_qty": null,
+          "factory_bonus_free_qty": null,
+          "customer_limit_pcs": null,
+          "shared_promotional_price": 25,
+          "quantity_price_tiers": [],
+          "is_per_weight_pricing": false,
+          "loyalty_required": false,
+          "loyalty_program_name": null
+        },
+        "non_grocery_specs": {
+          "domain": "textiles_home",
+          "textile_dimensions": "225x250cm",
+          "display_size_text": "225X250Cm",
+          "excluded_from_default_grocery_feed": true
+        },
+        "category_evidence": {
+          "commodity_tag": "bed_sheet",
+          "category_hint": "non-grocery"
+        },
+        "extraction_confidence": "high",
+        "evidence_conflicts": ["UNLABELED_SWATCH_OR_BOTTLE_VARIANTS"],
+        "evidence_ledger": [],
+        "printed_retailer_sku_codes": []
+      }
+    },
+    {
+      "case_id": "neg_galaxy_assortment_unpaired_weight_range",
+      "expected_decomposed": false,
+      "expected_conflict_code": "WEIGHT_RANGE_UNPAIRED",
+      "record": {
+        "schema_version": "wifran.extractor.card/3.0",
+        "source_card": {
+          "leaflet_id": "lulu-jeddah-2026-10-20",
+          "page_number": 3,
+          "source_offer_id": "Lulu_Test_p003_008",
+          "source_evidence_ref_internal": "Extracts/Lulu_Test/metadata/rev1/page-003/crops/offer-008/offer_card_crop.webp",
+          "retailer_id": "c2cc16c2-0002-4444-b000-c00000000002",
+          "retailer_name": "LuLu",
+          "offer_start_date": "2026-10-14",
+          "offer_end_date": "2026-10-20",
+          "location_scope": "city",
+          "city_id": null,
+          "region_id": null,
+          "raw_text": {
+            "title_ar": "جالكسي شوكولاتة ناعمة بالحليب/ بالبندق/ بالكراميل/ بقطع الكوكيز ١٣٧,٥ - ١٥٤ جرام",
+            "title_en": "Galaxy Minis Smooth /Hazelnut/Caramel/ CookieCrumble 137.5-154gm",
+            "size_text": "137.5-154gm",
+            "promo_badge_text": null,
+            "price_text_candidates": ["14.95"]
+          }
+        },
+        "pricing": {
+          "promo_price": 14.95,
+          "original_price": null,
+          "currency": "SAR",
+          "currency_evidence": "printed_sar_symbol",
+          "price_basis": "shared_assortment",
+          "price_role_confidence": "high",
+          "promo_conditions": null,
+          "price_conflict_flags": []
+        },
+        "assortment": {
+          "status": "explicit_assortment",
+          "visible_variant_count": 4,
+          "identifiable_sub_item_count": 4,
+          "assortment_evidence": ["slash_title"],
+          "is_enumerated_list_complete": false,
+          "all_options_linkable": false
+        },
+        "sub_items": [
+          {
+            "sub_item_ref": "s01",
+            "brand_en": "Galaxy",
+            "brand_ar": "جالكسي",
+            "product_name_en": "Galaxy Minis Smooth",
+            "product_name_ar": "جالكسي ناعمة بالحليب",
+            "variant_or_flavor": "Smooth Milk",
+            "product_form": "pouch",
+            "each_size_value": null,
+            "each_size_unit": "g",
+            "manufacturer_pack_count": 1,
+            "printed_retailer_sku_code": null,
+            "is_retailer_sku_only_not_gtin": true,
+            "evidence_refs": [],
+            "unknown_attributes": ["each_size_value"],
+            "conflict_attributes": ["WEIGHT_RANGE_UNPAIRED"],
+            "safe_for_catalog_matching": false
+          }
+        ],
+        "quantity_and_promo": {
+          "sale_basis": "single_unit",
+          "each_size_value": null,
+          "each_size_unit": "g",
+          "manufacturer_pack_count": 1,
+          "retailer_checkout_multibuy_qty": null,
+          "factory_bonus_paid_qty": null,
+          "factory_bonus_free_qty": null,
+          "customer_limit_pcs": null,
+          "shared_promotional_price": 14.95,
+          "quantity_price_tiers": [],
+          "is_per_weight_pricing": false,
+          "loyalty_required": false,
+          "loyalty_program_name": null
+        },
+        "non_grocery_specs": {
+          "domain": "grocery",
+          "excluded_from_default_grocery_feed": false
+        },
+        "category_evidence": {
+          "commodity_tag": "chocolate",
+          "category_hint": "snacks"
+        },
+        "extraction_confidence": "high",
+        "evidence_conflicts": ["WEIGHT_RANGE_UNPAIRED"],
+        "evidence_ledger": [],
+        "printed_retailer_sku_codes": []
+      }
+    },
+    {
+      "case_id": "neg_wafir_detergent_text_vs_image_conflict",
+      "expected_decomposed": false,
+      "expected_retention_mode": "quarantined_do_not_publish",
+      "expected_conflict_code": "TEXT_VS_IMAGE_CONFLICT",
+      "record": {
+        "schema_version": "wifran.extractor.card/3.0",
+        "source_card": {
+          "leaflet_id": "noori-jeddah-2026-11-15",
+          "page_number": 1,
+          "source_offer_id": "noori-supermarket-229798534-jeddah_p001_008",
+          "source_evidence_ref_internal": "Extracts/noori-supermarket-229798534-jeddah/metadata/rev1/page-001/crops/offer-008/offer_card_crop.webp",
+          "retailer_id": "c2cc16c2-0009-4444-b000-c00000000009",
+          "retailer_name": "Noori",
+          "offer_start_date": "2026-11-05",
+          "offer_end_date": "2026-11-15",
+          "location_scope": "city",
+          "city_id": null,
+          "region_id": null,
+          "raw_text": {
+            "title_ar": "مسحوق غسيل وفير أزرق 2.5 كجم",
+            "title_en": "Wafir Blue Detergent Powder 2.5kg",
+            "size_text": "2.5kg (caption) vs 2kg (purple pack image)",
+            "promo_badge_text": null,
+            "price_text_candidates": ["10.99", "27.95"]
+          }
+        },
+        "pricing": {
+          "promo_price": 10.99,
+          "original_price": 27.95,
+          "currency": "SAR",
+          "currency_evidence": "printed_sar_symbol",
+          "price_basis": "each",
+          "price_role_confidence": "high",
+          "promo_conditions": null,
+          "price_conflict_flags": []
+        },
+        "assortment": {
+          "status": "unknown_insufficient_evidence",
+          "visible_variant_count": 1,
+          "identifiable_sub_item_count": 0,
+          "assortment_evidence": ["printed_leaflet_text"],
+          "is_enumerated_list_complete": false,
+          "all_options_linkable": false
+        },
+        "sub_items": [],
+        "quantity_and_promo": {
+          "sale_basis": "single_unit",
+          "each_size_value": 2.5,
+          "each_size_unit": "kg",
+          "manufacturer_pack_count": 1,
+          "retailer_checkout_multibuy_qty": null,
+          "factory_bonus_paid_qty": null,
+          "factory_bonus_free_qty": null,
+          "customer_limit_pcs": null,
+          "shared_promotional_price": 10.99,
+          "quantity_price_tiers": [],
+          "is_per_weight_pricing": false,
+          "loyalty_required": false,
+          "loyalty_program_name": null
+        },
+        "non_grocery_specs": {
+          "domain": "household",
+          "excluded_from_default_grocery_feed": false
+        },
+        "category_evidence": {
+          "commodity_tag": "laundry_detergent",
+          "category_hint": "cleaning"
+        },
+        "extraction_confidence": "high",
+        "evidence_conflicts": ["TEXT_VS_IMAGE_CONFLICT"],
+        "evidence_ledger": [],
+        "printed_retailer_sku_codes": []
+      }
+    },
+    {
+      "case_id": "neg_fakieh_600g_vs_700g_conflict_with_buy2_promo",
+      "expected_decomposed": false,
+      "expected_retention_mode": "quarantined_do_not_publish",
+      "expected_conflict_code": "EN_AR_WEIGHT_VOLUME_CONFLICT",
+      "record": {
+        "schema_version": "wifran.extractor.card/3.0",
+        "source_card": {
+          "leaflet_id": "alwafa-city-jeddah-2026-10-20",
+          "page_number": 1,
+          "source_offer_id": "Alwafa_Test_p001_007",
+          "source_evidence_ref_internal": "Extracts/Alwafa_Test/metadata/rev1/page-001/crops/offer-007/offer_card_crop.webp",
+          "retailer_id": "c2cc16c2-0008-4444-b000-c00000000008",
+          "retailer_name": "Alwafa",
+          "offer_start_date": "2026-10-14",
+          "offer_end_date": "2026-10-20",
+          "location_scope": "city",
+          "city_id": null,
+          "region_id": null,
+          "raw_text": {
+            "title_ar": "دجاج فقيه مجمد ٧٠٠ ج",
+            "title_en": "Fakieh Frozen Chicken 600Gm",
+            "size_text": "600Gm vs 700g",
+            "promo_badge_text": "BUY 2 PCS | Rewards Exclusive | 2 Pc Per Customer",
+            "price_text_candidates": ["15", "21.99"]
+          }
+        },
+        "pricing": {
+          "promo_price": 15,
+          "original_price": 21.99,
+          "currency": "SAR",
+          "currency_evidence": "printed_sar_symbol",
+          "price_basis": "buy_n",
+          "price_role_confidence": "high",
+          "promo_conditions": "BUY 2 PCS (Rewards Exclusive, Limit 2 Pc Per Customer)",
+          "price_conflict_flags": []
+        },
+        "assortment": {
+          "status": "unknown_insufficient_evidence",
+          "visible_variant_count": 1,
+          "identifiable_sub_item_count": 0,
+          "assortment_evidence": ["printed_leaflet_text"],
+          "is_enumerated_list_complete": true,
+          "all_options_linkable": false
+        },
+        "sub_items": [],
+        "quantity_and_promo": {
+          "sale_basis": "multi_buy_checkout",
+          "each_size_value": null,
+          "each_size_unit": "g",
+          "manufacturer_pack_count": 1,
+          "retailer_checkout_multibuy_qty": 2,
+          "factory_bonus_paid_qty": null,
+          "factory_bonus_free_qty": null,
+          "customer_limit_pcs": 2,
+          "shared_promotional_price": 15,
+          "quantity_price_tiers": [],
+          "is_per_weight_pricing": false,
+          "loyalty_required": true,
+          "loyalty_program_name": "Rewards"
+        },
+        "non_grocery_specs": {
+          "domain": "grocery",
+          "excluded_from_default_grocery_feed": false
+        },
+        "category_evidence": {
+          "commodity_tag": "whole_chicken",
+          "category_hint": "meat-chicken"
+        },
+        "extraction_confidence": "high",
+        "evidence_conflicts": ["EN_AR_WEIGHT_VOLUME_CONFLICT"],
+        "evidence_ledger": [],
+        "printed_retailer_sku_codes": []
+      }
+    },
+    {
+      "case_id": "neg_bndw_persil_sku_codes_without_variant_names",
+      "expected_decomposed": false,
+      "expected_conflict_code": "RETAILER_SKU_WITHOUT_VARIANT_NAMES",
+      "record": {
+        "schema_version": "wifran.extractor.card/3.0",
+        "source_card": {
+          "leaflet_id": "bin-dawood-national-national-2026-10-20",
+          "page_number": 4,
+          "source_offer_id": "BNDW_Test_p004_012",
+          "source_evidence_ref_internal": "Extracts/BNDW_Test/metadata/rev1/page-004/crops/offer-012/offer_card_crop.webp",
+          "retailer_id": "c2cc16c2-0007-4444-b000-c00000000007",
+          "retailer_name": "BinDawood",
+          "offer_start_date": "2026-10-14",
+          "offer_end_date": "2026-10-20",
+          "location_scope": "national",
+          "city_id": null,
+          "region_id": null,
+          "raw_text": {
+            "title_ar": "برسيل - جل غسيل ٥ لتر",
+            "title_en": "Persil - Detergent Gel 5Ltr.",
+            "size_text": "5Ltr.",
+            "promo_badge_text": "EACH حبة | SKUs 10518945, 10518955, 10518965",
+            "price_text_candidates": ["39.99", "50.99"]
+          }
+        },
+        "pricing": {
+          "promo_price": 39.99,
+          "original_price": 50.99,
+          "currency": "SAR",
+          "currency_evidence": "printed_sar_symbol",
+          "price_basis": "each",
+          "price_role_confidence": "high",
+          "promo_conditions": null,
+          "price_conflict_flags": []
+        },
+        "assortment": {
+          "status": "visual_multiple_variants",
+          "visible_variant_count": 4,
+          "identifiable_sub_item_count": 3,
+          "assortment_evidence": ["sku_code_list", "multi_pack_image"],
+          "is_enumerated_list_complete": false,
+          "all_options_linkable": false
+        },
+        "sub_items": [
+          {
+            "sub_item_ref": "s01",
+            "brand_en": "Persil",
+            "brand_ar": "برسيل",
+            "product_name_en": "Persil Detergent Gel",
+            "product_name_ar": "برسيل جل غسيل",
+            "variant_or_flavor": null,
+            "product_form": "jug",
+            "each_size_value": 5,
+            "each_size_unit": "l",
+            "manufacturer_pack_count": 1,
+            "printed_retailer_sku_code": "10518945",
+            "is_retailer_sku_only_not_gtin": true,
+            "evidence_refs": [],
+            "unknown_attributes": ["variant_or_flavor"],
+            "conflict_attributes": ["RETAILER_SKU_WITHOUT_VARIANT_NAMES"],
+            "safe_for_catalog_matching": false
+          },
+          {
+            "sub_item_ref": "s02",
+            "brand_en": "Persil",
+            "brand_ar": "برسيل",
+            "product_name_en": "Persil Detergent Gel",
+            "product_name_ar": "برسيل جل غسيل",
+            "variant_or_flavor": null,
+            "product_form": "jug",
+            "each_size_value": 5,
+            "each_size_unit": "l",
+            "manufacturer_pack_count": 1,
+            "printed_retailer_sku_code": "10518955",
+            "is_retailer_sku_only_not_gtin": true,
+            "evidence_refs": [],
+            "unknown_attributes": ["variant_or_flavor"],
+            "conflict_attributes": ["RETAILER_SKU_WITHOUT_VARIANT_NAMES"],
+            "safe_for_catalog_matching": false
+          }
+        ],
+        "quantity_and_promo": {
+          "sale_basis": "single_unit",
+          "each_size_value": 5,
+          "each_size_unit": "l",
+          "manufacturer_pack_count": 1,
+          "retailer_checkout_multibuy_qty": null,
+          "factory_bonus_paid_qty": null,
+          "factory_bonus_free_qty": null,
+          "customer_limit_pcs": null,
+          "shared_promotional_price": 39.99,
+          "quantity_price_tiers": [],
+          "is_per_weight_pricing": false,
+          "loyalty_required": false,
+          "loyalty_program_name": null
+        },
+        "non_grocery_specs": {
+          "domain": "household",
+          "excluded_from_default_grocery_feed": false
+        },
+        "category_evidence": {
+          "commodity_tag": "laundry_detergent",
+          "category_hint": "cleaning"
+        },
+        "extraction_confidence": "high",
+        "evidence_conflicts": ["RETAILER_SKU_WITHOUT_VARIANT_NAMES"],
+        "evidence_ledger": [],
+        "printed_retailer_sku_codes": ["10518945", "10518955", "10518965"]
+      }
+    },
+    {
+      "case_id": "neg_partially_visible_assortment_4_shown_2_legible",
+      "expected_decomposed": false,
+      "expected_conflict_code": "INCOMPLETE_VISIBLE_ASSORTMENT",
+      "record": {
+        "schema_version": "wifran.extractor.card/3.0",
+        "source_card": {
+          "leaflet_id": "bin-dawood-national-national-2026-10-20",
+          "page_number": 4,
+          "source_offer_id": "BNDW_Test_p004_011_partial",
+          "source_evidence_ref_internal": "Extracts/BNDW_Test/metadata/rev1/page-004/crops/offer-011/offer_card_crop.webp",
+          "retailer_id": "c2cc16c2-0007-4444-b000-c00000000007",
+          "retailer_name": "BinDawood",
+          "offer_start_date": "2026-10-14",
+          "offer_end_date": "2026-10-20",
+          "location_scope": "national",
+          "city_id": null,
+          "region_id": null,
+          "raw_text": {
+            "title_ar": "مسحوق منظف تايد ٤ كجم",
+            "title_en": "Tide Detergent Powder 4Kg",
+            "size_text": "4 Kg",
+            "promo_badge_text": "4 packs pictured, 2 legible",
+            "price_text_candidates": ["34.95"]
+          }
+        },
+        "pricing": {
+          "promo_price": 34.95,
+          "original_price": null,
+          "currency": "SAR",
+          "currency_evidence": "printed_sar_symbol",
+          "price_basis": "shared_assortment",
+          "price_role_confidence": "high",
+          "promo_conditions": null,
+          "price_conflict_flags": []
+        },
+        "assortment": {
+          "status": "visual_multiple_variants",
+          "visible_variant_count": 4,
+          "identifiable_sub_item_count": 2,
+          "assortment_evidence": ["multi_pack_image"],
+          "is_enumerated_list_complete": false,
+          "all_options_linkable": false
+        },
+        "sub_items": [
+          {
+            "sub_item_ref": "s01",
+            "brand_en": "Tide",
+            "brand_ar": "تايد",
+            "product_name_en": "Tide Original Scent Powder",
+            "product_name_ar": "تايد الأصلي",
+            "variant_or_flavor": "Original",
+            "product_form": "bag",
+            "each_size_value": 4,
+            "each_size_unit": "kg",
+            "manufacturer_pack_count": 1,
+            "printed_retailer_sku_code": null,
+            "is_retailer_sku_only_not_gtin": true,
+            "evidence_refs": [],
+            "unknown_attributes": [],
+            "conflict_attributes": [],
+            "safe_for_catalog_matching": true
+          },
+          {
+            "sub_item_ref": "s02",
+            "brand_en": "Tide",
+            "brand_ar": "تايد",
+            "product_name_en": "Tide Lavender Touch Powder",
+            "product_name_ar": "تايد برائحة اللافندر",
+            "variant_or_flavor": "Lavender",
+            "product_form": "bag",
+            "each_size_value": 4,
+            "each_size_unit": "kg",
+            "manufacturer_pack_count": 1,
+            "printed_retailer_sku_code": null,
+            "is_retailer_sku_only_not_gtin": true,
+            "evidence_refs": [],
+            "unknown_attributes": [],
+            "conflict_attributes": [],
+            "safe_for_catalog_matching": true
+          }
+        ],
+        "quantity_and_promo": {
+          "sale_basis": "single_unit",
+          "each_size_value": 4,
+          "each_size_unit": "kg",
+          "manufacturer_pack_count": 1,
+          "retailer_checkout_multibuy_qty": null,
+          "factory_bonus_paid_qty": null,
+          "factory_bonus_free_qty": null,
+          "customer_limit_pcs": null,
+          "shared_promotional_price": 34.95,
+          "quantity_price_tiers": [],
+          "is_per_weight_pricing": false,
+          "loyalty_required": false,
+          "loyalty_program_name": null
+        },
+        "non_grocery_specs": {
+          "domain": "household",
+          "excluded_from_default_grocery_feed": false
+        },
+        "category_evidence": {
+          "commodity_tag": "laundry_detergent",
+          "category_hint": "cleaning"
+        },
+        "extraction_confidence": "high",
+        "evidence_conflicts": [],
+        "evidence_ledger": [],
+        "printed_retailer_sku_codes": []
+      }
+    },
+    {
+      "case_id": "neg_loose_produce_tomato_per_kg",
+      "expected_decomposed": false,
+      "expected_retention_mode": "unsplit_non_catalog_candidate",
+      "record": {
+        "schema_version": "wifran.extractor.card/3.0",
+        "source_card": {
+          "leaflet_id": "bin-dawood-national-national-2026-10-20",
+          "page_number": 1,
+          "source_offer_id": "BNDW_Test_p001_005",
+          "source_evidence_ref_internal": "Extracts/BNDW_Test/metadata/rev1/page-001/crops/offer-005/offer_card_crop.webp",
+          "retailer_id": "c2cc16c2-0007-4444-b000-c00000000007",
+          "retailer_name": "BinDawood",
+          "offer_start_date": "2026-10-14",
+          "offer_end_date": "2026-10-20",
+          "location_scope": "national",
+          "city_id": null,
+          "region_id": null,
+          "raw_text": {
+            "title_ar": "طماطم / كيلو",
+            "title_en": "Tomato / Kg",
+            "size_text": "1kg",
+            "promo_badge_text": "Kg / كيلو",
+            "price_text_candidates": ["4.95"]
+          }
+        },
+        "pricing": {
+          "promo_price": 4.95,
+          "original_price": null,
+          "currency": "SAR",
+          "currency_evidence": "printed_sar_symbol",
+          "price_basis": "per_kg",
+          "price_role_confidence": "high",
+          "promo_conditions": null,
+          "price_conflict_flags": []
+        },
+        "assortment": {
+          "status": "unknown_insufficient_evidence",
+          "visible_variant_count": 1,
+          "identifiable_sub_item_count": 0,
+          "assortment_evidence": ["printed_leaflet_text"],
+          "is_enumerated_list_complete": true,
+          "all_options_linkable": false
+        },
+        "sub_items": [],
+        "quantity_and_promo": {
+          "sale_basis": "weighed_per_kg",
+          "each_size_value": 1,
+          "each_size_unit": "kg",
+          "manufacturer_pack_count": null,
+          "retailer_checkout_multibuy_qty": null,
+          "factory_bonus_paid_qty": null,
+          "factory_bonus_free_qty": null,
+          "customer_limit_pcs": null,
+          "shared_promotional_price": 4.95,
+          "quantity_price_tiers": [],
+          "is_per_weight_pricing": true,
+          "loyalty_required": false,
+          "loyalty_program_name": null
+        },
+        "non_grocery_specs": {
+          "domain": "fresh_loose",
+          "excluded_from_default_grocery_feed": false
+        },
+        "category_evidence": {
+          "commodity_tag": "tomato",
+          "category_hint": "staples"
+        },
+        "extraction_confidence": "high",
+        "evidence_conflicts": [],
+        "evidence_ledger": [],
+        "printed_retailer_sku_codes": []
+      }
+    },
+    {
+      "case_id": "neg_godiva_legacy_unresolved_control",
+      "expected_decomposed": false,
+      "expected_retention_mode": "quarantined_do_not_publish",
+      "expected_conflict_code": "CURRENCY_UNVERIFIED_OR_CONFLICT",
+      "record": {
+        "schema_version": "wifran.extractor.card/3.0",
+        "source_card": {
+          "leaflet_id": "othaim-week24-2026-06-16",
+          "page_number": 6,
+          "source_offer_id": "othaim-week24_006_004",
+          "source_evidence_ref_internal": "Extracts/Othaim_week24/chunks/chunk-006-pages-006-006.pdf",
+          "retailer_id": "c2cc16c2-0006-4444-b000-c00000000006",
+          "retailer_name": "Al-Othaim",
+          "offer_start_date": "2026-06-10",
+          "offer_end_date": "2026-06-16",
+          "location_scope": "national",
+          "city_id": null,
+          "region_id": null,
+          "raw_text": {
+            "title_ar": "جوديفا ماستربيسيس بار",
+            "title_en": "Godiva Masterpieces Bar",
+            "size_text": "32g (legacy misread pack=5)",
+            "promo_badge_text": null,
+            "price_text_candidates": ["7.99", "5"]
+          }
+        },
+        "pricing": {
+          "promo_price": 7.99,
+          "original_price": 7.99,
+          "currency": "AED",
+          "currency_evidence": "legacy_extraction_error_aed",
+          "price_basis": "unknown",
+          "price_role_confidence": "conflicting",
+          "promo_conditions": "Legacy extraction confused regular price 7.99 for promo, promo 5 for pack=5, AED for SAR",
+          "price_conflict_flags": ["PRICE_ROLE_AMBIGUOUS", "CURRENCY_UNVERIFIED_OR_CONFLICT"]
+        },
+        "assortment": {
+          "status": "unknown_insufficient_evidence",
+          "visible_variant_count": null,
+          "identifiable_sub_item_count": 0,
+          "assortment_evidence": ["insufficient_evidence"],
+          "is_enumerated_list_complete": false,
+          "all_options_linkable": false
+        },
+        "sub_items": [],
+        "quantity_and_promo": {
+          "sale_basis": "unknown",
+          "each_size_value": 32,
+          "each_size_unit": "g",
+          "manufacturer_pack_count": 5,
+          "retailer_checkout_multibuy_qty": 5,
+          "factory_bonus_paid_qty": null,
+          "factory_bonus_free_qty": null,
+          "customer_limit_pcs": null,
+          "shared_promotional_price": null,
+          "quantity_price_tiers": [],
+          "is_per_weight_pricing": false,
+          "loyalty_required": false,
+          "loyalty_program_name": null
+        },
+        "non_grocery_specs": {
+          "domain": "grocery",
+          "excluded_from_default_grocery_feed": false
+        },
+        "category_evidence": {
+          "commodity_tag": "chocolate",
+          "category_hint": "snacks"
+        },
+        "extraction_confidence": "low",
+        "evidence_conflicts": ["PRICE_ROLE_AMBIGUOUS", "CURRENCY_UNVERIFIED_OR_CONFLICT"],
+        "evidence_ledger": [],
+        "printed_retailer_sku_codes": []
+      }
+    },
+    {
+      "case_id": "neg_fakieh_single_unit_inherited_caption_fails_closed",
+      "expected_decomposed": false,
+      "expected_retention_mode": "quarantined_do_not_publish",
+      "expected_conflict_code": "COMPOUND_SHARED_CAPTION_CONFLICT",
+      "record": {
+        "schema_version": "wifran.extractor.card/3.0",
+        "source_card": {
+          "leaflet_id": "noori-jeddah-2026-11-15",
+          "page_number": 1,
+          "source_offer_id": "noori-supermarket-229798534-jeddah_p001_003",
+          "source_evidence_ref_internal": "Extracts/noori-supermarket-229798534-jeddah/metadata/rev1/page-001/crops/offer-002/offer_card_crop.webp",
+          "retailer_id": "c2cc16c2-0009-4444-b000-c00000000009",
+          "retailer_name": "Noori",
+          "offer_start_date": "2026-11-05",
+          "offer_end_date": "2026-11-15",
+          "location_scope": "city",
+          "city_id": null,
+          "region_id": null,
+          "raw_text": {
+            "title_ar": "دجاج فقيه مجمد 10 × 1000 جرام",
+            "title_en": "Fakieh Frozen Chicken 1000g",
+            "size_text": "1000g",
+            "promo_badge_text": "الحبة 15.50",
+            "price_text_candidates": ["15.50"]
+          }
+        },
+        "pricing": {
+          "promo_price": 15.5,
+          "original_price": null,
+          "currency": "SAR",
+          "currency_evidence": "printed_sar_symbol",
+          "price_basis": "each",
+          "price_role_confidence": "high",
+          "promo_conditions": null,
+          "price_conflict_flags": []
+        },
+        "assortment": {
+          "status": "unknown_insufficient_evidence",
+          "visible_variant_count": 1,
+          "identifiable_sub_item_count": 0,
+          "assortment_evidence": ["printed_leaflet_text"],
+          "is_enumerated_list_complete": false,
+          "all_options_linkable": false
+        },
+        "sub_items": [],
+        "quantity_and_promo": {
+          "sale_basis": "unknown",
+          "each_size_value": 1000,
+          "each_size_unit": "g",
+          "manufacturer_pack_count": null,
+          "retailer_checkout_multibuy_qty": null,
+          "factory_bonus_paid_qty": null,
+          "factory_bonus_free_qty": null,
+          "customer_limit_pcs": null,
+          "shared_promotional_price": 15.5,
+          "quantity_price_tiers": [],
+          "is_per_weight_pricing": false,
+          "loyalty_required": false,
+          "loyalty_program_name": null
+        },
+        "non_grocery_specs": {
+          "domain": "grocery",
+          "excluded_from_default_grocery_feed": false
+        },
+        "compound_card_context": {
+          "compound_group_id": "fakieh_chicken_cell",
+          "card_shared_caption_en": "Fakieh Frozen Chicken 1000g",
+          "card_shared_caption_ar": "دجاج فقيه مجمد 10 × 1000 جرام",
+          "has_multiple_price_badges_in_card": true,
+          "has_different_packaging_across_entries": true,
+          "inherited_caption_attributes_requiring_override": ["manufacturer_pack_count"]
+        },
+        "category_evidence": {
+          "commodity_tag": "frozen_whole_chicken",
+          "category_hint": "meat-chicken"
+        },
+        "extraction_confidence": "high",
+        "evidence_conflicts": [],
+        "evidence_ledger": [],
+        "printed_retailer_sku_codes": []
+      }
+    }
+  ],
+  "godiva_proposed_v3_offline_fixture": {
+    "disclaimer": "Proposed offline V3 representation built from visual PDF inspection of chunk-006-pages-006-006.pdf. NOT proof of live Gemini V3 model accuracy.",
+    "legacy_record_reference": "Extracts/Othaim_week24/json/page-006/othaim-week24_006_004.json",
+    "proposed_v3_record": {
+      "schema_version": "wifran.extractor.card/3.0",
+      "source_card": {
+        "leaflet_id": "othaim-week24-2026-06-16",
+        "page_number": 6,
+        "source_offer_id": "othaim-week24_006_004_v3_proposed",
+        "source_evidence_ref_internal": "Extracts/Othaim_week24/chunks/chunk-006-pages-006-006.pdf",
+        "retailer_id": "c2cc16c2-0006-4444-b000-c00000000006",
+        "retailer_name": "Al-Othaim",
+        "offer_start_date": "2026-06-10",
+        "offer_end_date": "2026-06-16",
+        "location_scope": "national",
+        "city_id": null,
+        "region_id": null,
+        "raw_text": {
+          "title_ar": "جوديفا ماستربيسيس بار",
+          "title_en": "Godiva Masterpieces Bar",
+          "size_text": "32g Each / للحبة",
+          "promo_badge_text": "أو Or (3 variants) | 5 ريال | كان 7.99",
+          "price_text_candidates": ["5", "7.99"]
+        }
+      },
+      "pricing": {
+        "promo_price": 5,
+        "original_price": 7.99,
+        "currency": "SAR",
+        "currency_evidence": "printed_riyal_arabia_footer_2026_06_10_to_16",
+        "price_basis": "shared_assortment",
+        "price_role_confidence": "high",
+        "promo_conditions": "Each 32g / للحبة, choose 1 of 3 flavors",
+        "price_conflict_flags": []
+      },
+      "assortment": {
+        "status": "explicit_assortment",
+        "visible_variant_count": 3,
+        "identifiable_sub_item_count": 3,
+        "assortment_evidence": ["choice_or_separator", "multi_pack_image"],
+        "is_enumerated_list_complete": true,
+        "all_options_linkable": true
+      },
+      "sub_items": [
+        {
+          "sub_item_ref": "s01",
+          "brand_en": "GODIVA",
+          "brand_ar": "جوديفا",
+          "product_name_en": "Godiva Masterpieces Milk Chocolate Cafe au Lait",
+          "product_name_ar": "جوديفا ماستربيسيس شوكولاتة بالحليب",
+          "variant_or_flavor": "Milk Chocolate Cafe au Lait de Belgique",
+          "product_form": "bar",
+          "each_size_value": 32,
+          "each_size_unit": "g",
+          "manufacturer_pack_count": 1,
+          "printed_retailer_sku_code": null,
+          "is_retailer_sku_only_not_gtin": true,
+          "evidence_refs": ["ev_godiva_pdf"],
+          "unknown_attributes": [],
+          "conflict_attributes": [],
+          "safe_for_catalog_matching": true
+        },
+        {
+          "sub_item_ref": "s02",
+          "brand_en": "GODIVA",
+          "brand_ar": "جوديفا",
+          "product_name_en": "Godiva Masterpieces Dark Chocolate Ganache Noir",
+          "product_name_ar": "جوديفا ماستربيسيس شوكولاتة داكنة",
+          "variant_or_flavor": "Dark Chocolate Ganache Noir",
+          "product_form": "bar",
+          "each_size_value": 32,
+          "each_size_unit": "g",
+          "manufacturer_pack_count": 1,
+          "printed_retailer_sku_code": null,
+          "is_retailer_sku_only_not_gtin": true,
+          "evidence_refs": ["ev_godiva_pdf"],
+          "unknown_attributes": [],
+          "conflict_attributes": [],
+          "safe_for_catalog_matching": true
+        },
+        {
+          "sub_item_ref": "s03",
+          "brand_en": "GODIVA",
+          "brand_ar": "جوديفا",
+          "product_name_en": "Godiva Masterpieces Milk Chocolate Hazelnut Crisp",
+          "product_name_ar": "جوديفا ماستربيسيس شوكولاتة بالبندق",
+          "variant_or_flavor": "Milk Chocolate Hazelnut Crisp",
+          "product_form": "bar",
+          "each_size_value": 32,
+          "each_size_unit": "g",
+          "manufacturer_pack_count": 1,
+          "printed_retailer_sku_code": null,
+          "is_retailer_sku_only_not_gtin": true,
+          "evidence_refs": ["ev_godiva_pdf"],
+          "unknown_attributes": [],
+          "conflict_attributes": [],
+          "safe_for_catalog_matching": true
+        }
+      ],
+      "quantity_and_promo": {
+        "sale_basis": "single_unit",
+        "each_size_value": 32,
+        "each_size_unit": "g",
+        "manufacturer_pack_count": 1,
+        "retailer_checkout_multibuy_qty": null,
+        "factory_bonus_paid_qty": null,
+        "factory_bonus_free_qty": null,
+        "customer_limit_pcs": null,
+        "shared_promotional_price": 5,
+        "quantity_price_tiers": [],
+        "is_per_weight_pricing": false,
+        "loyalty_required": false,
+        "loyalty_program_name": null
+      },
+      "non_grocery_specs": {
+        "domain": "grocery",
+        "excluded_from_default_grocery_feed": false
+      },
+      "category_evidence": {
+        "commodity_tag": "chocolate",
+        "category_hint": "snacks"
+      },
+      "extraction_confidence": "high",
+      "evidence_conflicts": [],
+      "evidence_ledger": [
+        {
+          "evidence_id": "ev_godiva_pdf",
+          "target_field": "pricing.promo_price",
+          "evidence_type": "printed_leaflet_text",
+          "extracted_value": 5,
+          "original_source_evidence": "chunk-006-pages-006-006.pdf: 5 ريال promo badge, 7.99 crossed out, 32g Each, Or / أو",
+          "normalized_value": 5,
+          "confidence": "high"
+        }
+      ],
+      "printed_retailer_sku_codes": []
+    }
+  }
+}

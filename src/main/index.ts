@@ -1,14 +1,29 @@
 import './config/env'
-import { app, shell, BrowserWindow, protocol, net } from 'electron'
+import { app, shell, BrowserWindow, protocol, net, session } from 'electron'
 import { cropLayoutTemplateService } from './templates/cropLayoutTemplateService'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import { registerIpcHandlers } from './ipc/registerIpcHandlers'
 import * as logger from './logging/logger'
+import {
+  isOfflineUatMode,
+  installOfflineUatFetchGuard,
+  isAllowedLocalUrlInOfflineUat
+} from './config/offlineUatGuard'
+
+const OFFLINE_UAT_WINDOW_TITLE = 'Wifran Offers Extractor [OFFLINE UAT - SIMULATED]'
+
+if (process.argv.includes('--offline-uat') || process.env.WIFRAN_OFFLINE_UAT === '1') {
+  process.env.WIFRAN_OFFLINE_UAT = '1';
+  installOfflineUatFetchGuard();
+  logger.info('[Main] WIFRAN_OFFLINE_UAT mode active: network providers, remote databases, and external HTTP requests strictly isolated.');
+}
 
 function createWindow(): void {
+  const isUat = isOfflineUatMode();
   // Create the browser window.
   const mainWindow = new BrowserWindow({
+    title: isUat ? OFFLINE_UAT_WINDOW_TITLE : 'Wifran Offers Extractor',
     width: 1200,
     height: 800,
     show: false,
@@ -21,12 +36,25 @@ function createWindow(): void {
     }
   })
 
+  mainWindow.on('page-title-updated', (event) => {
+    if (isOfflineUatMode()) {
+      event.preventDefault()
+      if (mainWindow.getTitle() !== OFFLINE_UAT_WINDOW_TITLE) {
+        mainWindow.setTitle(OFFLINE_UAT_WINDOW_TITLE)
+      }
+    }
+  })
+
   mainWindow.on('ready-to-show', () => {
     mainWindow.maximize()
     mainWindow.show()
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
+    if (isOfflineUatMode()) {
+      logger.warn(`[OFFLINE_UAT_GUARD] Blocked window.open / shell.openExternal for URL: ${details.url}`)
+      return { action: 'deny' }
+    }
     shell.openExternal(details.url)
     return { action: 'deny' }
   })
@@ -59,6 +87,18 @@ protocol.registerSchemesAsPrivileged([
 app.whenReady().then(() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.wifran.offersextractor')
+
+  if (isOfflineUatMode()) {
+    installOfflineUatFetchGuard()
+    session.defaultSession.webRequest.onBeforeRequest((details, callback) => {
+      if (isAllowedLocalUrlInOfflineUat(details.url)) {
+        callback({ cancel: false })
+      } else {
+        logger.warn(`[OFFLINE_UAT_GUARD] Blocked external browser session request: ${details.url}`)
+        callback({ cancel: true })
+      }
+    })
+  }
 
   protocol.handle('local-file', (request) => {
     try {

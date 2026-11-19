@@ -1,0 +1,1273 @@
+{
+  "archiveFormatVersion": 1,
+  "archiveKind": "live_provider_attempt",
+  "reconstructedFromSavedCache": false,
+  "provenanceNote": "Per-attempt archive of actual provider response fields and verbatim rawResponseText separated from parsed application extraction. Hidden model reasoning text is not exposed by the Gemini API and is never fabricated.",
+  "attemptKind": "primary",
+  "attemptSequence": 1,
+  "pageNumber": 1,
+  "correlationId": "bench-live-p1-testC-1794407503086",
+  "requestTimestamp": "2026-11-11T14:31:43.169Z",
+  "completedAt": "2026-11-11T14:33:41.896Z",
+  "cacheHit": false,
+  "providerCacheHit": false,
+  "providerCacheResource": null,
+  "providerCacheStatus": "disabled",
+  "modelId": "gemini-3.8-flash",
+  "modelVersion": "gemini-3.8-flash",
+  "requestedServiceTier": "flex",
+  "actualServiceTier": "flex",
+  "thinkingConfig": {
+    "thinkingLevel": "HIGH"
+  },
+  "requestMetadata": {
+    "fingerprintHash": "f0006eeb3eb5de31742eb123067fc94be111486a744de6349cd16ce2190f67a1",
+    "imageSha256": "d5ebb7b85c90ef82b3835222fe9589ae6fdc5a9a8388a2af432a5be7ad22fa5b",
+    "systemInstructionSha256": "ed5433f0e679629b7e91c1b1f49dddc1e1223ef91824d2fd0ab43a2748dae5cd",
+    "promptSha256": "60010e5fc0698140c0f768086d5f083e26493914a6189729f27b07dae6249b3b",
+    "schemaSha256": "e22a67aa71784546b6f7eb723ed2681e87be68771022b0ba30cd06e02e4d5384",
+    "promptProfile": "legacy_compact_v1",
+    "schemaProfile": "compact_v1",
+    "schemaVersion": "compact_v1",
+    "isDiagnosticRetry": false,
+    "failureReasons": null,
+    "backendContext": {
+      "backend": "vertex_ai",
+      "projectId": "wifran",
+      "location": "global"
+    }
+  },
+  "rawResponseText": "{\n  \"l\": false,\n  \"p\": null,\n  \"s\": \"2026-11-05\",\n  \"e\": \"2026-11-15\",\n  \"b\": [\n    \"أقل الأسعار / LOWEST PRICES Header Banner\",\n    \"Footer Terms and Dates Banner\"\n  ],\n  \"o\": [\n    {\n      \"a\": 1,\n      \"b\": \"أرز بوندي مزة هندي 10 كجم\",\n      \"c\": \"\",\n      \"d\": \"بوندي\",\n      \"e\": false,\n      \"f\": null,\n      \"g\": \"grocery\",\n      \"h\": \"staples\",\n      \"i\": \"أرز مزة هندي بوندي\",\n      \"j\": \"Bundi Mazza Rice\",\n      \"k\": \"basmati_rice\",\n      \"l\": null,\n      \"m\": \"10 كجم\",\n      \"n\": \"كيس\",\n      \"o\": 1,\n      \"p\": 10.0,\n      \"q\": \"kg\",\n      \"r\": true,\n      \"s\": 42.99,\n      \"t\": 62.99,\n      \"u\": \"STANDARD\",\n      \"v\": 0.99,\n      \"w\": {\n        \"g\": [338, 126, 483, 290],\n        \"p\": [349, 29, 373, 108],\n        \"r\": [370, 48, 388, 102],\n        \"u\": [336, 45, 353, 95],\n        \"t\": [484, 58, 502, 285]\n      }\n    },\n    {\n      \"a\": 2,\n      \"b\": \"دجاج فقيه مجمد 10 × 1000 جرام\",\n      \"c\": \"\",\n      \"d\": \"فقيه\",\n      \"e\": false,\n      \"f\": \"cell_fakieh\",\n      \"g\": \"grocery\",\n      \"h\": \"meat-chicken\",\n      \"i\": \"دجاج مجمد فقيه كرتون\",\n      \"j\": \"Fakieh Frozen Chicken Carton\",\n      \"k\": \"whole_chicken\",\n      \"l\": null,\n      \"m\": \"10 × 1000 جرام\",\n      \"n\": \"كرتون\",\n      \"o\": 10,\n      \"p\": 1000.0,\n      \"q\": \"g\",\n      \"r\": true,\n      \"s\": 141.0,\n      \"t\": 202.0,\n      \"u\": \"STANDARD\",\n      \"v\": 0.99,\n      \"w\": {\n        \"g\": [340, 424, 489, 624],\n        \"p\": [350, 347, 374, 429],\n        \"r\": [371, 358, 388, 422],\n        \"u\": [336, 365, 353, 413],\n        \"t\": [487, 375, 504, 614]\n      }\n    },\n    {\n      \"a\": 3,\n      \"b\": \"دجاج فقيه مجمد 10 × 1000 جرام\",\n      \"c\": \"\",\n      \"d\": \"فقيه\",\n      \"e\": false,\n      \"f\": \"cell_fakieh\",\n      \"g\": \"grocery\",\n      \"h\": \"meat-chicken\",\n      \"i\": \"دجاج مجمد فقيه حبة\",\n      \"j\": \"Fakieh Frozen Chicken Single\",\n      \"k\": \"whole_chicken\",\n      \"l\": null,\n      \"m\": \"1000 جرام\",\n      \"n\": \"الحبة\",\n      \"o\": 1,\n      \"p\": 1000.0,\n      \"q\": \"g\",\n      \"r\": true,\n      \"s\": 15.5,\n      \"t\": null,\n      \"u\": \"STANDARD\",\n      \"v\": 0.98,\n      \"w\": {\n        \"g\": [340, 424, 489, 624],\n        \"p\": [405, 400, 419, 447],\n        \"r\": null,\n        \"u\": [396, 398, 429, 452],\n        \"t\": [487, 375, 504, 614]\n      }\n    },\n    {\n      \"a\": 4,\n      \"b\": \"بيض لؤلؤة المزارع مغلف 30 حبة\",\n      \"c\": \"\",\n      \"d\": \"لؤلؤة المزارع\",\n      \"e\": false,\n      \"f\": null,\n      \"g\": \"grocery\",\n      \"h\": \"eggs\",\n      \"i\": \"بيض لؤلؤة المزارع\",\n      \"j\": \"Pearl of Farms Eggs\",\n      \"k\": \"white_eggs\",\n      \"l\": null,\n      \"m\": \"30 حبة\",\n      \"n\": \"طبق\",\n      \"o\": 1,\n      \"p\": 30.0,\n      \"q\": \"pcs\",\n      \"r\": true,\n      \"s\": 13.25,\n      \"t\": 15.0,\n      \"u\": \"STANDARD\",\n      \"v\": 0.99,\n      \"w\": {\n        \"g\": [353, 777, 474, 946],\n        \"p\": [350, 665, 374, 747],\n        \"r\": [370, 683, 387, 739],\n        \"u\": [336, 686, 353, 726],\n        \"t\": [473, 670, 501, 796]\n      }\n    },\n    {\n      \"a\": 5,\n      \"b\": \"سكر فاصكو ناعم 5 كيلو\",\n      \"c\": \"\",\n      \"d\": \"فاصكو\",\n      \"e\": false,\n      \"f\": null,\n      \"g\": \"grocery\",\n      \"h\": \"staples\",\n      \"i\": \"سكر ناعم فاصكو\",\n      \"j\": \"Fazco Fine Sugar\",\n      \"k\": \"sugar\",\n      \"l\": null,\n      \"m\": \"5 كيلو\",\n      \"n\": \"كيس\",\n      \"o\": 1,\n      \"p\": 5.0,\n      \"q\": \"kg\",\n      \"r\": true,\n      \"s\": 16.5,\n      \"t\": 25.0,\n      \"u\": \"STANDARD\",\n      \"v\": 0.99,\n      \"w\": {\n        \"g\": [510, 137, 650, 265],\n        \"p\": [523, 29, 546, 108],\n        \"r\": [544, 48, 560, 102],\n        \"u\": [508, 47, 524, 95],\n        \"t\": [656, 103, 673, 281]\n      }\n    },\n    {\n      \"a\": 6,\n      \"b\": \"لبنة برايد كريمي\",\n      \"c\": \"\",\n      \"d\": \"برايد\",\n      \"e\": false,\n      \"f\": null,\n      \"g\": \"grocery\",\n      \"h\": \"dairy\",\n      \"i\": \"لبنة كريمي برايد\",\n      \"j\": \"Pride Creamy Labneh\",\n      \"k\": \"labneh\",\n      \"l\": null,\n      \"m\": \"الكيلو\",\n      \"n\": \"الكيلو\",\n      \"o\": 1,\n      \"p\": 1.0,\n      \"q\": \"kg\",\n      \"r\": true,\n      \"s\": 18.99,\n      \"t\": 32.95,\n      \"u\": \"STANDARD\",\n      \"v\": 0.99,\n      \"w\": {\n        \"g\": [537, 417, 656, 615],\n        \"p\": [522, 348, 544, 428],\n        \"r\": [541, 366, 558, 421],\n        \"u\": [508, 365, 524, 411],\n        \"t\": [657, 406, 672, 517]\n      }\n    },\n    {\n      \"a\": 7,\n      \"b\": \"دقيق قوت أند روت فاخر 1 كيلو\",\n      \"c\": \"\",\n      \"d\": \"قوت أند روت\",\n      \"e\": false,\n      \"f\": null,\n      \"g\": \"grocery\",\n      \"h\": \"staples\",\n      \"i\": \"دقيق فاخر قوت أند روت\",\n      \"j\": \"Qoot & Root Flour\",\n      \"k\": \"flour\",\n      \"l\": null,\n      \"m\": \"1 كيلو\",\n      \"n\": \"9 حبات\",\n      \"o\": 9,\n      \"p\": 1.0,\n      \"q\": \"kg\",\n      \"r\": true,\n      \"s\": 9.99,\n      \"t\": 26.55,\n      \"u\": \"STANDARD\",\n      \"v\": 0.99,\n      \"w\": {\n        \"g\": [521, 749, 646, 977],\n        \"p\": [522, 666, 544, 746],\n        \"r\": [542, 683, 558, 739],\n        \"u\": [508, 681, 524, 732],\n        \"t\": [647, 738, 673, 901]\n      }\n    },\n    {\n      \"a\": 8,\n      \"b\": \"مسحوق غسيل وفير أزرق 2.5 كجم\",\n      \"c\": \"\",\n      \"d\": \"وفير\",\n      \"e\": false,\n      \"f\": null,\n      \"g\": \"grocery\",\n      \"h\": \"cleaning\",\n      \"i\": \"مسحوق غسيل وفير\",\n      \"j\": \"Wafir Detergent Powder\",\n      \"k\": \"laundry_detergent\",\n      \"l\": null,\n      \"m\": \"2.5 كجم\",\n      \"n\": \"كيس\",\n      \"o\": 1,\n      \"p\": 2.5,\n      \"q\": \"kg\",\n      \"r\": true,\n      \"s\": 10.99,\n      \"t\": 27.95,\n      \"u\": \"STANDARD\",\n      \"v\": 0.99,\n      \"w\": {\n        \"g\": [688, 128, 814, 280],\n        \"p\": [691, 28, 714, 108],\n        \"r\": [710, 48, 726, 101],\n        \"u\": [677, 47, 693, 94],\n        \"t\": [813, 31, 842, 246]\n      }\n    },\n    {\n      \"a\": 9,\n      \"b\": \"مناديل سوفتي الوجه كيس (7+3 مجانا) 10×130 منديل\",\n      \"c\": \"\",\n      \"d\": \"سوفتي\",\n      \"e\": false,\n      \"f\": null,\n      \"g\": \"grocery\",\n      \"h\": \"cleaning\",\n      \"i\": \"مناديل وجه سوفتي\",\n      \"j\": \"Softy Facial Tissues\",\n      \"k\": \"facial_tissue\",\n      \"l\": null,\n      \"m\": \"10×130 منديل\",\n      \"n\": \"ربطة\",\n      \"o\": 10,\n      \"p\": 130.0,\n      \"q\": \"sheet\",\n      \"r\": true,\n      \"s\": 13.99,\n      \"t\": 23.95,\n      \"u\": \"STANDARD\",\n      \"v\": 0.99,\n      \"w\": {\n        \"g\": [693, 467, 819, 621],\n        \"p\": [691, 348, 713, 429],\n        \"r\": [711, 366, 727, 421],\n        \"u\": [677, 368, 693, 409],\n        \"t\": [816, 350, 842, 541]\n      }\n    },\n    {\n      \"a\": 10,\n      \"b\": \"مكسرات باجة فول سوداني مملح 18×25 جرام\",\n      \"c\": \"\",\n      \"d\": \"باجة\",\n      \"e\": false,\n      \"f\": null,\n      \"g\": \"grocery\",\n      \"h\": \"staples\",\n      \"i\": \"فول سوداني مملح باجة\",\n      \"j\": \"Baja Salted Peanuts\",\n      \"k\": \"peanuts\",\n      \"l\": null,\n      \"m\": \"18×25 جرام\",\n      \"n\": \"ربطة\",\n      \"o\": 18,\n      \"p\": 25.0,\n      \"q\": \"g\",\n      \"r\": true,\n      \"s\": 11.99,\n      \"t\": 26.99,\n      \"u\": \"STANDARD\",\n      \"v\": 0.99,\n      \"w\": {\n        \"g\": [680, 794, 812, 933],\n        \"p\": [691, 666, 714, 747],\n        \"r\": [711, 683, 728, 739],\n        \"u\": [677, 686, 693, 727],\n        \"t\": [812, 708, 842, 936]\n      }\n    }\n  ]\n}",
+  "rawResponseReconstructed": false,
+  "providerSdkResponse": {
+    "responseId": "UXz0aqf2DeDmvNkPwNDa6Ak",
+    "modelVersion": "gemini-3.8-flash",
+    "createTime": "2026-11-11T14:31:45.228135Z",
+    "candidates": [
+      {
+        "content": {
+          "role": "model",
+          "parts": [
+            {
+              "text": "{\n  \"l\": false,\n  \"p\": null,\n  \"s\": \"2026-11-05\",\n  \"e\": \"2026-11-15\",\n  \"b\": [\n    \"أقل الأسعار / LOWEST PRICES Header Banner\",\n    \"Footer Terms and Dates Banner\"\n  ],\n  \"o\": [\n    {\n      \"a\": 1,\n      \"b\": \"أرز بوندي مزة هندي 10 كجم\",\n      \"c\": \"\",\n      \"d\": \"بوندي\",\n      \"e\": false,\n      \"f\": null,\n      \"g\": \"grocery\",\n      \"h\": \"staples\",\n      \"i\": \"أرز مزة هندي بوندي\",\n      \"j\": \"Bundi Mazza Rice\",\n      \"k\": \"basmati_rice\",\n      \"l\": null,\n      \"m\": \"10 كجم\",\n      \"n\": \"كيس\",\n      \"o\": 1,\n      \"p\": 10.0,\n      \"q\": \"kg\",\n      \"r\": true,\n      \"s\": 42.99,\n      \"t\": 62.99,\n      \"u\": \"STANDARD\",\n      \"v\": 0.99,\n      \"w\": {\n        \"g\": [338, 126, 483, 290],\n        \"p\": [349, 29, 373, 108],\n        \"r\": [370, 48, 388, 102],\n        \"u\": [336, 45, 353, 95],\n        \"t\": [484, 58, 502, 285]\n      }\n    },\n    {\n      \"a\": 2,\n      \"b\": \"دجاج فقيه مجمد 10 × 1000 جرام\",\n      \"c\": \"\",\n      \"d\": \"فقيه\",\n      \"e\": false,\n      \"f\": \"cell_fakieh\",\n      \"g\": \"grocery\",\n      \"h\": \"meat-chicken\",\n      \"i\": \"دجاج مجمد فقيه كرتون\",\n      \"j\": \"Fakieh Frozen Chicken Carton\",\n      \"k\": \"whole_chicken\",\n      \"l\": null,\n      \"m\": \"10 × 1000 جرام\",\n      \"n\": \"كرتون\",\n      \"o\": 10,\n      \"p\": 1000.0,\n      \"q\": \"g\",\n      \"r\": true,\n      \"s\": 141.0,\n      \"t\": 202.0,\n      \"u\": \"STANDARD\",\n      \"v\": 0.99,\n      \"w\": {\n        \"g\": [340, 424, 489, 624],\n        \"p\": [350, 347, 374, 429],\n        \"r\": [371, 358, 388, 422],\n        \"u\": [336, 365, 353, 413],\n        \"t\": [487, 375, 504, 614]\n      }\n    },\n    {\n      \"a\": 3,\n      \"b\": \"دجاج فقيه مجمد 10 × 1000 جرام\",\n      \"c\": \"\",\n      \"d\": \"فقيه\",\n      \"e\": false,\n      \"f\": \"cell_fakieh\",\n      \"g\": \"grocery\",\n      \"h\": \"meat-chicken\",\n      \"i\": \"دجاج مجمد فقيه حبة\",\n      \"j\": \"Fakieh Frozen Chicken Single\",\n      \"k\": \"whole_chicken\",\n      \"l\": null,\n      \"m\": \"1000 جرام\",\n      \"n\": \"الحبة\",\n      \"o\": 1,\n      \"p\": 1000.0,\n      \"q\": \"g\",\n      \"r\": true,\n      \"s\": 15.5,\n      \"t\": null,\n      \"u\": \"STANDARD\",\n      \"v\": 0.98,\n      \"w\": {\n        \"g\": [340, 424, 489, 624],\n        \"p\": [405, 400, 419, 447],\n        \"r\": null,\n        \"u\": [396, 398, 429, 452],\n        \"t\": [487, 375, 504, 614]\n      }\n    },\n    {\n      \"a\": 4,\n      \"b\": \"بيض لؤلؤة المزارع مغلف 30 حبة\",\n      \"c\": \"\",\n      \"d\": \"لؤلؤة المزارع\",\n      \"e\": false,\n      \"f\": null,\n      \"g\": \"grocery\",\n      \"h\": \"eggs\",\n      \"i\": \"بيض لؤلؤة المزارع\",\n      \"j\": \"Pearl of Farms Eggs\",\n      \"k\": \"white_eggs\",\n      \"l\": null,\n      \"m\": \"30 حبة\",\n      \"n\": \"طبق\",\n      \"o\": 1,\n      \"p\": 30.0,\n      \"q\": \"pcs\",\n      \"r\": true,\n      \"s\": 13.25,\n      \"t\": 15.0,\n      \"u\": \"STANDARD\",\n      \"v\": 0.99,\n      \"w\": {\n        \"g\": [353, 777, 474, 946],\n        \"p\": [350, 665, 374, 747],\n        \"r\": [370, 683, 387, 739],\n        \"u\": [336, 686, 353, 726],\n        \"t\": [473, 670, 501, 796]\n      }\n    },\n    {\n      \"a\": 5,\n      \"b\": \"سكر فاصكو ناعم 5 كيلو\",\n      \"c\": \"\",\n      \"d\": \"فاصكو\",\n      \"e\": false,\n      \"f\": null,\n      \"g\": \"grocery\",\n      \"h\": \"staples\",\n      \"i\": \"سكر ناعم فاصكو\",\n      \"j\": \"Fazco Fine Sugar\",\n      \"k\": \"sugar\",\n      \"l\": null,\n      \"m\": \"5 كيلو\",\n      \"n\": \"كيس\",\n      \"o\": 1,\n      \"p\": 5.0,\n      \"q\": \"kg\",\n      \"r\": true,\n      \"s\": 16.5,\n      \"t\": 25.0,\n      \"u\": \"STANDARD\",\n      \"v\": 0.99,\n      \"w\": {\n        \"g\": [510, 137, 650, 265],\n        \"p\": [523, 29, 546, 108],\n        \"r\": [544, 48, 560, 102],\n        \"u\": [508, 47, 524, 95],\n        \"t\": [656, 103, 673, 281]\n      }\n    },\n    {\n      \"a\": 6,\n      \"b\": \"لبنة برايد كريمي\",\n      \"c\": \"\",\n      \"d\": \"برايد\",\n      \"e\": false,\n      \"f\": null,\n      \"g\": \"grocery\",\n      \"h\": \"dairy\",\n      \"i\": \"لبنة كريمي برايد\",\n      \"j\": \"Pride Creamy Labneh\",\n      \"k\": \"labneh\",\n      \"l\": null,\n      \"m\": \"الكيلو\",\n      \"n\": \"الكيلو\",\n      \"o\": 1,\n      \"p\": 1.0,\n      \"q\": \"kg\",\n      \"r\": true,\n      \"s\": 18.99,\n      \"t\": 32.95,\n      \"u\": \"STANDARD\",\n      \"v\": 0.99,\n      \"w\": {\n        \"g\": [537, 417, 656, 615],\n        \"p\": [522, 348, 544, 428],\n        \"r\": [541, 366, 558, 421],\n        \"u\": [508, 365, 524, 411],\n        \"t\": [657, 406, 672, 517]\n      }\n    },\n    {\n      \"a\": 7,\n      \"b\": \"دقيق قوت أند روت فاخر 1 كيلو\",\n      \"c\": \"\",\n      \"d\": \"قوت أند روت\",\n      \"e\": false,\n      \"f\": null,\n      \"g\": \"grocery\",\n      \"h\": \"staples\",\n      \"i\": \"دقيق فاخر قوت أند روت\",\n      \"j\": \"Qoot & Root Flour\",\n      \"k\": \"flour\",\n      \"l\": null,\n      \"m\": \"1 كيلو\",\n      \"n\": \"9 حبات\",\n      \"o\": 9,\n      \"p\": 1.0,\n      \"q\": \"kg\",\n      \"r\": true,\n      \"s\": 9.99,\n      \"t\": 26.55,\n      \"u\": \"STANDARD\",\n      \"v\": 0.99,\n      \"w\": {\n        \"g\": [521, 749, 646, 977],\n        \"p\": [522, 666, 544, 746],\n        \"r\": [542, 683, 558, 739],\n        \"u\": [508, 681, 524, 732],\n        \"t\": [647, 738, 673, 901]\n      }\n    },\n    {\n      \"a\": 8,\n      \"b\": \"مسحوق غسيل وفير أزرق 2.5 كجم\",\n      \"c\": \"\",\n      \"d\": \"وفير\",\n      \"e\": false,\n      \"f\": null,\n      \"g\": \"grocery\",\n      \"h\": \"cleaning\",\n      \"i\": \"مسحوق غسيل وفير\",\n      \"j\": \"Wafir Detergent Powder\",\n      \"k\": \"laundry_detergent\",\n      \"l\": null,\n      \"m\": \"2.5 كجم\",\n      \"n\": \"كيس\",\n      \"o\": 1,\n      \"p\": 2.5,\n      \"q\": \"kg\",\n      \"r\": true,\n      \"s\": 10.99,\n      \"t\": 27.95,\n      \"u\": \"STANDARD\",\n      \"v\": 0.99,\n      \"w\": {\n        \"g\": [688, 128, 814, 280],\n        \"p\": [691, 28, 714, 108],\n        \"r\": [710, 48, 726, 101],\n        \"u\": [677, 47, 693, 94],\n        \"t\": [813, 31, 842, 246]\n      }\n    },\n    {\n      \"a\": 9,\n      \"b\": \"مناديل سوفتي الوجه كيس (7+3 مجانا) 10×130 منديل\",\n      \"c\": \"\",\n      \"d\": \"سوفتي\",\n      \"e\": false,\n      \"f\": null,\n      \"g\": \"grocery\",\n      \"h\": \"cleaning\",\n      \"i\": \"مناديل وجه سوفتي\",\n      \"j\": \"Softy Facial Tissues\",\n      \"k\": \"facial_tissue\",\n      \"l\": null,\n      \"m\": \"10×130 منديل\",\n      \"n\": \"ربطة\",\n      \"o\": 10,\n      \"p\": 130.0,\n      \"q\": \"sheet\",\n      \"r\": true,\n      \"s\": 13.99,\n      \"t\": 23.95,\n      \"u\": \"STANDARD\",\n      \"v\": 0.99,\n      \"w\": {\n        \"g\": [693, 467, 819, 621],\n        \"p\": [691, 348, 713, 429],\n        \"r\": [711, 366, 727, 421],\n        \"u\": [677, 368, 693, 409],\n        \"t\": [816, 350, 842, 541]\n      }\n    },\n    {\n      \"a\": 10,\n      \"b\": \"مكسرات باجة فول سوداني مملح 18×25 جرام\",\n      \"c\": \"\",\n      \"d\": \"باجة\",\n      \"e\": false,\n      \"f\": null,\n      \"g\": \"grocery\",\n      \"h\": \"staples\",\n      \"i\": \"فول سوداني مملح باجة\",\n      \"j\": \"Baja Salted Peanuts\",\n      \"k\": \"peanuts\",\n      \"l\": null,\n      \"m\": \"18×25 جرام\",\n      \"n\": \"ربطة\",\n      \"o\": 18,\n      \"p\": 25.0,\n      \"q\": \"g\",\n      \"r\": true,\n      \"s\": 11.99,\n      \"t\": 26.99,\n      \"u\": \"STANDARD\",\n      \"v\": 0.99,\n      \"w\": {\n        \"g\": [680, 794, 812, 933],\n        \"p\": [691, 666, 714, 747],\n        \"r\": [711, 683, 728, 739],\n        \"u\": [677, 686, 693, 727],\n        \"t\": [812, 708, 842, 936]\n      }\n    }\n  ]\n}",
+              "thoughtSignature": "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"
+            }
+          ]
+        },
+        "finishReason": "STOP"
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 5425,
+      "candidatesTokenCount": 3652,
+      "totalTokenCount": 19483,
+      "trafficType": "ON_DEMAND_FLEX",
+      "promptTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1092
+        },
+        {
+          "modality": "TEXT",
+          "tokenCount": 4333
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 3652
+        }
+      ],
+      "thoughtsTokenCount": 10406
+    }
+  },
+  "providerUsageMetadata": {
+    "promptTokenCount": 5425,
+    "candidatesTokenCount": 3652,
+    "totalTokenCount": 19483,
+    "trafficType": "ON_DEMAND_FLEX",
+    "promptTokensDetails": [
+      {
+        "modality": "IMAGE",
+        "tokenCount": 1092
+      },
+      {
+        "modality": "TEXT",
+        "tokenCount": 4333
+      }
+    ],
+    "candidatesTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 3652
+      }
+    ],
+    "thoughtsTokenCount": 10406
+  },
+  "localUsageSummary": {
+    "totalDurationMs": 118714,
+    "retriesCount": 0,
+    "usageReported": true,
+    "promptTokenCount": 5425,
+    "candidatesTokenCount": 3652,
+    "thoughtsTokenCount": 10406,
+    "cachedContentTokenCount": 0,
+    "totalTokenCount": 19483,
+    "costEstimate": {
+      "currency": "USD",
+      "effectiveDate": "2026-11-07",
+      "modelId": "gemini-3.8-flash",
+      "tier": "flex",
+      "ratesApplied": {
+        "inputPerMillion": 0.375,
+        "outputPerMillion": 1.875,
+        "cachedInputPerMillion": 0.0375
+      },
+      "inputCostUsd": 0.00203438,
+      "outputCostUsd": 0.0068475,
+      "thinkingCostUsd": 0.01951125,
+      "cachedInputCostUsd": 0,
+      "totalCostUsd": 0.02839313,
+      "isEstimate": true,
+      "metadataMissing": false
+    },
+    "costNote": "Locally estimated USD cost from pricing table (isEstimate=true), not official provider billing."
+  },
+  "parsedApplicationResponse": {
+    "rawParsedJson": {
+      "l": false,
+      "p": null,
+      "s": "2026-11-05",
+      "e": "2026-11-15",
+      "b": [
+        "أقل الأسعار / LOWEST PRICES Header Banner",
+        "Footer Terms and Dates Banner"
+      ],
+      "o": [
+        {
+          "a": 1,
+          "b": "أرز بوندي مزة هندي 10 كجم",
+          "c": "",
+          "d": "بوندي",
+          "e": false,
+          "f": null,
+          "g": "grocery",
+          "h": "staples",
+          "i": "أرز مزة هندي بوندي",
+          "j": "Bundi Mazza Rice",
+          "k": "basmati_rice",
+          "l": null,
+          "m": "10 كجم",
+          "n": "كيس",
+          "o": 1,
+          "p": 10,
+          "q": "kg",
+          "r": true,
+          "s": 42.99,
+          "t": 62.99,
+          "u": "STANDARD",
+          "v": 0.99,
+          "w": {
+            "g": [
+              338,
+              126,
+              483,
+              290
+            ],
+            "p": [
+              349,
+              29,
+              373,
+              108
+            ],
+            "r": [
+              370,
+              48,
+              388,
+              102
+            ],
+            "u": [
+              336,
+              45,
+              353,
+              95
+            ],
+            "t": [
+              484,
+              58,
+              502,
+              285
+            ]
+          }
+        },
+        {
+          "a": 2,
+          "b": "دجاج فقيه مجمد 10 × 1000 جرام",
+          "c": "",
+          "d": "فقيه",
+          "e": false,
+          "f": "cell_fakieh",
+          "g": "grocery",
+          "h": "meat-chicken",
+          "i": "دجاج مجمد فقيه كرتون",
+          "j": "Fakieh Frozen Chicken Carton",
+          "k": "whole_chicken",
+          "l": null,
+          "m": "10 × 1000 جرام",
+          "n": "كرتون",
+          "o": 10,
+          "p": 1000,
+          "q": "g",
+          "r": true,
+          "s": 141,
+          "t": 202,
+          "u": "STANDARD",
+          "v": 0.99,
+          "w": {
+            "g": [
+              340,
+              424,
+              489,
+              624
+            ],
+            "p": [
+              350,
+              347,
+              374,
+              429
+            ],
+            "r": [
+              371,
+              358,
+              388,
+              422
+            ],
+            "u": [
+              336,
+              365,
+              353,
+              413
+            ],
+            "t": [
+              487,
+              375,
+              504,
+              614
+            ]
+          }
+        },
+        {
+          "a": 3,
+          "b": "دجاج فقيه مجمد 10 × 1000 جرام",
+          "c": "",
+          "d": "فقيه",
+          "e": false,
+          "f": "cell_fakieh",
+          "g": "grocery",
+          "h": "meat-chicken",
+          "i": "دجاج مجمد فقيه حبة",
+          "j": "Fakieh Frozen Chicken Single",
+          "k": "whole_chicken",
+          "l": null,
+          "m": "1000 جرام",
+          "n": "الحبة",
+          "o": 1,
+          "p": 1000,
+          "q": "g",
+          "r": true,
+          "s": 15.5,
+          "t": null,
+          "u": "STANDARD",
+          "v": 0.98,
+          "w": {
+            "g": [
+              340,
+              424,
+              489,
+              624
+            ],
+            "p": [
+              405,
+              400,
+              419,
+              447
+            ],
+            "r": null,
+            "u": [
+              396,
+              398,
+              429,
+              452
+            ],
+            "t": [
+              487,
+              375,
+              504,
+              614
+            ]
+          }
+        },
+        {
+          "a": 4,
+          "b": "بيض لؤلؤة المزارع مغلف 30 حبة",
+          "c": "",
+          "d": "لؤلؤة المزارع",
+          "e": false,
+          "f": null,
+          "g": "grocery",
+          "h": "eggs",
+          "i": "بيض لؤلؤة المزارع",
+          "j": "Pearl of Farms Eggs",
+          "k": "white_eggs",
+          "l": null,
+          "m": "30 حبة",
+          "n": "طبق",
+          "o": 1,
+          "p": 30,
+          "q": "pcs",
+          "r": true,
+          "s": 13.25,
+          "t": 15,
+          "u": "STANDARD",
+          "v": 0.99,
+          "w": {
+            "g": [
+              353,
+              777,
+              474,
+              946
+            ],
+            "p": [
+              350,
+              665,
+              374,
+              747
+            ],
+            "r": [
+              370,
+              683,
+              387,
+              739
+            ],
+            "u": [
+              336,
+              686,
+              353,
+              726
+            ],
+            "t": [
+              473,
+              670,
+              501,
+              796
+            ]
+          }
+        },
+        {
+          "a": 5,
+          "b": "سكر فاصكو ناعم 5 كيلو",
+          "c": "",
+          "d": "فاصكو",
+          "e": false,
+          "f": null,
+          "g": "grocery",
+          "h": "staples",
+          "i": "سكر ناعم فاصكو",
+          "j": "Fazco Fine Sugar",
+          "k": "sugar",
+          "l": null,
+          "m": "5 كيلو",
+          "n": "كيس",
+          "o": 1,
+          "p": 5,
+          "q": "kg",
+          "r": true,
+          "s": 16.5,
+          "t": 25,
+          "u": "STANDARD",
+          "v": 0.99,
+          "w": {
+            "g": [
+              510,
+              137,
+              650,
+              265
+            ],
+            "p": [
+              523,
+              29,
+              546,
+              108
+            ],
+            "r": [
+              544,
+              48,
+              560,
+              102
+            ],
+            "u": [
+              508,
+              47,
+              524,
+              95
+            ],
+            "t": [
+              656,
+              103,
+              673,
+              281
+            ]
+          }
+        },
+        {
+          "a": 6,
+          "b": "لبنة برايد كريمي",
+          "c": "",
+          "d": "برايد",
+          "e": false,
+          "f": null,
+          "g": "grocery",
+          "h": "dairy",
+          "i": "لبنة كريمي برايد",
+          "j": "Pride Creamy Labneh",
+          "k": "labneh",
+          "l": null,
+          "m": "الكيلو",
+          "n": "الكيلو",
+          "o": 1,
+          "p": 1,
+          "q": "kg",
+          "r": true,
+          "s": 18.99,
+          "t": 32.95,
+          "u": "STANDARD",
+          "v": 0.99,
+          "w": {
+            "g": [
+              537,
+              417,
+              656,
+              615
+            ],
+            "p": [
+              522,
+              348,
+              544,
+              428
+            ],
+            "r": [
+              541,
+              366,
+              558,
+              421
+            ],
+            "u": [
+              508,
+              365,
+              524,
+              411
+            ],
+            "t": [
+              657,
+              406,
+              672,
+              517
+            ]
+          }
+        },
+        {
+          "a": 7,
+          "b": "دقيق قوت أند روت فاخر 1 كيلو",
+          "c": "",
+          "d": "قوت أند روت",
+          "e": false,
+          "f": null,
+          "g": "grocery",
+          "h": "staples",
+          "i": "دقيق فاخر قوت أند روت",
+          "j": "Qoot & Root Flour",
+          "k": "flour",
+          "l": null,
+          "m": "1 كيلو",
+          "n": "9 حبات",
+          "o": 9,
+          "p": 1,
+          "q": "kg",
+          "r": true,
+          "s": 9.99,
+          "t": 26.55,
+          "u": "STANDARD",
+          "v": 0.99,
+          "w": {
+            "g": [
+              521,
+              749,
+              646,
+              977
+            ],
+            "p": [
+              522,
+              666,
+              544,
+              746
+            ],
+            "r": [
+              542,
+              683,
+              558,
+              739
+            ],
+            "u": [
+              508,
+              681,
+              524,
+              732
+            ],
+            "t": [
+              647,
+              738,
+              673,
+              901
+            ]
+          }
+        },
+        {
+          "a": 8,
+          "b": "مسحوق غسيل وفير أزرق 2.5 كجم",
+          "c": "",
+          "d": "وفير",
+          "e": false,
+          "f": null,
+          "g": "grocery",
+          "h": "cleaning",
+          "i": "مسحوق غسيل وفير",
+          "j": "Wafir Detergent Powder",
+          "k": "laundry_detergent",
+          "l": null,
+          "m": "2.5 كجم",
+          "n": "كيس",
+          "o": 1,
+          "p": 2.5,
+          "q": "kg",
+          "r": true,
+          "s": 10.99,
+          "t": 27.95,
+          "u": "STANDARD",
+          "v": 0.99,
+          "w": {
+            "g": [
+              688,
+              128,
+              814,
+              280
+            ],
+            "p": [
+              691,
+              28,
+              714,
+              108
+            ],
+            "r": [
+              710,
+              48,
+              726,
+              101
+            ],
+            "u": [
+              677,
+              47,
+              693,
+              94
+            ],
+            "t": [
+              813,
+              31,
+              842,
+              246
+            ]
+          }
+        },
+        {
+          "a": 9,
+          "b": "مناديل سوفتي الوجه كيس (7+3 مجانا) 10×130 منديل",
+          "c": "",
+          "d": "سوفتي",
+          "e": false,
+          "f": null,
+          "g": "grocery",
+          "h": "cleaning",
+          "i": "مناديل وجه سوفتي",
+          "j": "Softy Facial Tissues",
+          "k": "facial_tissue",
+          "l": null,
+          "m": "10×130 منديل",
+          "n": "ربطة",
+          "o": 10,
+          "p": 130,
+          "q": "sheet",
+          "r": true,
+          "s": 13.99,
+          "t": 23.95,
+          "u": "STANDARD",
+          "v": 0.99,
+          "w": {
+            "g": [
+              693,
+              467,
+              819,
+              621
+            ],
+            "p": [
+              691,
+              348,
+              713,
+              429
+            ],
+            "r": [
+              711,
+              366,
+              727,
+              421
+            ],
+            "u": [
+              677,
+              368,
+              693,
+              409
+            ],
+            "t": [
+              816,
+              350,
+              842,
+              541
+            ]
+          }
+        },
+        {
+          "a": 10,
+          "b": "مكسرات باجة فول سوداني مملح 18×25 جرام",
+          "c": "",
+          "d": "باجة",
+          "e": false,
+          "f": null,
+          "g": "grocery",
+          "h": "staples",
+          "i": "فول سوداني مملح باجة",
+          "j": "Baja Salted Peanuts",
+          "k": "peanuts",
+          "l": null,
+          "m": "18×25 جرام",
+          "n": "ربطة",
+          "o": 18,
+          "p": 25,
+          "q": "g",
+          "r": true,
+          "s": 11.99,
+          "t": 26.99,
+          "u": "STANDARD",
+          "v": 0.99,
+          "w": {
+            "g": [
+              680,
+              794,
+              812,
+              933
+            ],
+            "p": [
+              691,
+              666,
+              714,
+              747
+            ],
+            "r": [
+              711,
+              683,
+              728,
+              739
+            ],
+            "u": [
+              677,
+              686,
+              693,
+              727
+            ],
+            "t": [
+              812,
+              708,
+              842,
+              936
+            ]
+          }
+        }
+      ]
+    },
+    "decodedExtraction": {
+      "is_loyalty_page": false,
+      "loyalty_program_name": null,
+      "validity_start_date": "2026-11-05",
+      "validity_end_date": "2026-11-15",
+      "ignored_banners": [
+        "أقل الأسعار / LOWEST PRICES Header Banner",
+        "Footer Terms and Dates Banner"
+      ],
+      "offers": [
+        {
+          "offer_number": 1,
+          "arabic_title": "أرز بوندي مزة هندي 10 كجم",
+          "english_title": "",
+          "brand": "بوندي",
+          "is_multi_brand_or_variant": false,
+          "compound_group_id": null,
+          "item_domain": "grocery",
+          "category_slug": "staples",
+          "normalized_product_name_ar": "أرز مزة هندي بوندي",
+          "normalized_product_name_en": "Bundi Mazza Rice",
+          "commodity_tag": "basmati_rice",
+          "quantity_limit": null,
+          "size_value": "10 كجم",
+          "unit_type": "كيس",
+          "pack_quantity": 1,
+          "each_size_value": 10,
+          "each_size_unit": "kg",
+          "is_uniform_size_across_variants": true,
+          "promo_price": 42.99,
+          "original_price": 62.99,
+          "promo_condition": "STANDARD",
+          "confidence": 0.99,
+          "components": {
+            "product_graphic_box": [
+              338,
+              126,
+              483,
+              290
+            ],
+            "promo_price_box": [
+              349,
+              29,
+              373,
+              108
+            ],
+            "original_price_box": [
+              370,
+              48,
+              388,
+              102
+            ],
+            "unit_and_size_badge_box": [
+              336,
+              45,
+              353,
+              95
+            ],
+            "title_text_box": [
+              484,
+              58,
+              502,
+              285
+            ]
+          }
+        },
+        {
+          "offer_number": 2,
+          "arabic_title": "دجاج فقيه مجمد 10 × 1000 جرام",
+          "english_title": "",
+          "brand": "فقيه",
+          "is_multi_brand_or_variant": false,
+          "compound_group_id": "cell_fakieh",
+          "item_domain": "grocery",
+          "category_slug": "meat-chicken",
+          "normalized_product_name_ar": "دجاج مجمد فقيه كرتون",
+          "normalized_product_name_en": "Fakieh Frozen Chicken Carton",
+          "commodity_tag": "whole_chicken",
+          "quantity_limit": null,
+          "size_value": "10x1000 جرام",
+          "unit_type": "كرتون",
+          "pack_quantity": 10,
+          "each_size_value": 1000,
+          "each_size_unit": "g",
+          "is_uniform_size_across_variants": true,
+          "promo_price": 141,
+          "original_price": 202,
+          "promo_condition": "STANDARD",
+          "confidence": 0.99,
+          "components": {
+            "product_graphic_box": [
+              340,
+              424,
+              489,
+              624
+            ],
+            "promo_price_box": [
+              350,
+              347,
+              374,
+              429
+            ],
+            "original_price_box": [
+              371,
+              358,
+              388,
+              422
+            ],
+            "unit_and_size_badge_box": [
+              336,
+              365,
+              353,
+              413
+            ],
+            "title_text_box": [
+              487,
+              375,
+              504,
+              614
+            ]
+          }
+        },
+        {
+          "offer_number": 3,
+          "arabic_title": "دجاج فقيه مجمد 10 × 1000 جرام",
+          "english_title": "",
+          "brand": "فقيه",
+          "is_multi_brand_or_variant": false,
+          "compound_group_id": "cell_fakieh",
+          "item_domain": "grocery",
+          "category_slug": "meat-chicken",
+          "normalized_product_name_ar": "دجاج مجمد فقيه حبة",
+          "normalized_product_name_en": "Fakieh Frozen Chicken Single",
+          "commodity_tag": "whole_chicken",
+          "quantity_limit": null,
+          "size_value": "1000 جرام",
+          "unit_type": "الحبة",
+          "pack_quantity": 1,
+          "each_size_value": 1000,
+          "each_size_unit": "g",
+          "is_uniform_size_across_variants": true,
+          "promo_price": 15.5,
+          "original_price": null,
+          "promo_condition": "STANDARD",
+          "confidence": 0.98,
+          "components": {
+            "product_graphic_box": [
+              340,
+              424,
+              489,
+              624
+            ],
+            "promo_price_box": [
+              405,
+              400,
+              419,
+              447
+            ],
+            "original_price_box": null,
+            "unit_and_size_badge_box": [
+              396,
+              398,
+              429,
+              452
+            ],
+            "title_text_box": [
+              487,
+              375,
+              504,
+              614
+            ]
+          }
+        },
+        {
+          "offer_number": 4,
+          "arabic_title": "بيض لؤلؤة المزارع مغلف 30 حبة",
+          "english_title": "",
+          "brand": "لؤلؤة المزارع",
+          "is_multi_brand_or_variant": false,
+          "compound_group_id": null,
+          "item_domain": "grocery",
+          "category_slug": "eggs",
+          "normalized_product_name_ar": "بيض لؤلؤة المزارع",
+          "normalized_product_name_en": "Pearl of Farms Eggs",
+          "commodity_tag": "white_eggs",
+          "quantity_limit": null,
+          "size_value": "30 حبة",
+          "unit_type": "طبق",
+          "pack_quantity": 1,
+          "each_size_value": 30,
+          "each_size_unit": "pcs",
+          "is_uniform_size_across_variants": true,
+          "promo_price": 13.25,
+          "original_price": 15,
+          "promo_condition": "STANDARD",
+          "confidence": 0.99,
+          "components": {
+            "product_graphic_box": [
+              353,
+              777,
+              474,
+              946
+            ],
+            "promo_price_box": [
+              350,
+              665,
+              374,
+              747
+            ],
+            "original_price_box": [
+              370,
+              683,
+              387,
+              739
+            ],
+            "unit_and_size_badge_box": [
+              336,
+              686,
+              353,
+              726
+            ],
+            "title_text_box": [
+              473,
+              670,
+              501,
+              796
+            ]
+          }
+        },
+        {
+          "offer_number": 5,
+          "arabic_title": "سكر فاصكو ناعم 5 كيلو",
+          "english_title": "",
+          "brand": "فاصكو",
+          "is_multi_brand_or_variant": false,
+          "compound_group_id": null,
+          "item_domain": "grocery",
+          "category_slug": "staples",
+          "normalized_product_name_ar": "سكر ناعم فاصكو",
+          "normalized_product_name_en": "Fazco Fine Sugar",
+          "commodity_tag": "sugar",
+          "quantity_limit": null,
+          "size_value": "5 كيلو",
+          "unit_type": "كيس",
+          "pack_quantity": 1,
+          "each_size_value": 5,
+          "each_size_unit": "kg",
+          "is_uniform_size_across_variants": true,
+          "promo_price": 16.5,
+          "original_price": 25,
+          "promo_condition": "STANDARD",
+          "confidence": 0.99,
+          "components": {
+            "product_graphic_box": [
+              510,
+              137,
+              650,
+              265
+            ],
+            "promo_price_box": [
+              523,
+              29,
+              546,
+              108
+            ],
+            "original_price_box": [
+              544,
+              48,
+              560,
+              102
+            ],
+            "unit_and_size_badge_box": [
+              508,
+              47,
+              524,
+              95
+            ],
+            "title_text_box": [
+              656,
+              103,
+              673,
+              281
+            ]
+          }
+        },
+        {
+          "offer_number": 6,
+          "arabic_title": "لبنة برايد كريمي",
+          "english_title": "",
+          "brand": "برايد",
+          "is_multi_brand_or_variant": false,
+          "compound_group_id": null,
+          "item_domain": "grocery",
+          "category_slug": "dairy",
+          "normalized_product_name_ar": "لبنة كريمي برايد",
+          "normalized_product_name_en": "Pride Creamy Labneh",
+          "commodity_tag": "labneh",
+          "quantity_limit": null,
+          "size_value": "الكيلو",
+          "unit_type": "الكيلو",
+          "pack_quantity": 1,
+          "each_size_value": 1,
+          "each_size_unit": "kg",
+          "is_uniform_size_across_variants": true,
+          "promo_price": 18.99,
+          "original_price": 32.95,
+          "promo_condition": "STANDARD",
+          "confidence": 0.99,
+          "components": {
+            "product_graphic_box": [
+              537,
+              417,
+              656,
+              615
+            ],
+            "promo_price_box": [
+              522,
+              348,
+              544,
+              428
+            ],
+            "original_price_box": [
+              541,
+              366,
+              558,
+              421
+            ],
+            "unit_and_size_badge_box": [
+              508,
+              365,
+              524,
+              411
+            ],
+            "title_text_box": [
+              657,
+              406,
+              672,
+              517
+            ]
+          }
+        },
+        {
+          "offer_number": 7,
+          "arabic_title": "دقيق قوت أند روت فاخر 1 كيلو",
+          "english_title": "",
+          "brand": "قوت أند روت",
+          "is_multi_brand_or_variant": false,
+          "compound_group_id": null,
+          "item_domain": "grocery",
+          "category_slug": "staples",
+          "normalized_product_name_ar": "دقيق فاخر قوت أند روت",
+          "normalized_product_name_en": "Qoot & Root Flour",
+          "commodity_tag": "flour",
+          "quantity_limit": null,
+          "size_value": "1 كيلو",
+          "unit_type": "9 حبات",
+          "pack_quantity": 9,
+          "each_size_value": 1,
+          "each_size_unit": "kg",
+          "is_uniform_size_across_variants": true,
+          "promo_price": 9.99,
+          "original_price": 26.55,
+          "promo_condition": "STANDARD",
+          "confidence": 0.99,
+          "components": {
+            "product_graphic_box": [
+              521,
+              749,
+              646,
+              977
+            ],
+            "promo_price_box": [
+              522,
+              666,
+              544,
+              746
+            ],
+            "original_price_box": [
+              542,
+              683,
+              558,
+              739
+            ],
+            "unit_and_size_badge_box": [
+              508,
+              681,
+              524,
+              732
+            ],
+            "title_text_box": [
+              647,
+              738,
+              673,
+              901
+            ]
+          }
+        },
+        {
+          "offer_number": 8,
+          "arabic_title": "مسحوق غسيل وفير أزرق 2.5 كجم",
+          "english_title": "",
+          "brand": "وفير",
+          "is_multi_brand_or_variant": false,
+          "compound_group_id": null,
+          "item_domain": "grocery",
+          "category_slug": "cleaning",
+          "normalized_product_name_ar": "مسحوق غسيل وفير",
+          "normalized_product_name_en": "Wafir Detergent Powder",
+          "commodity_tag": "laundry_detergent",
+          "quantity_limit": null,
+          "size_value": "2.5 كجم",
+          "unit_type": "كيس",
+          "pack_quantity": 1,
+          "each_size_value": 2.5,
+          "each_size_unit": "kg",
+          "is_uniform_size_across_variants": true,
+          "promo_price": 10.99,
+          "original_price": 27.95,
+          "promo_condition": "STANDARD",
+          "confidence": 0.99,
+          "components": {
+            "product_graphic_box": [
+              688,
+              128,
+              814,
+              280
+            ],
+            "promo_price_box": [
+              691,
+              28,
+              714,
+              108
+            ],
+            "original_price_box": [
+              710,
+              48,
+              726,
+              101
+            ],
+            "unit_and_size_badge_box": [
+              677,
+              47,
+              693,
+              94
+            ],
+            "title_text_box": [
+              813,
+              31,
+              842,
+              246
+            ]
+          }
+        },
+        {
+          "offer_number": 9,
+          "arabic_title": "مناديل سوفتي الوجه كيس (7+3 مجانا) 10×130 منديل",
+          "english_title": "",
+          "brand": "سوفتي",
+          "is_multi_brand_or_variant": false,
+          "compound_group_id": null,
+          "item_domain": "grocery",
+          "category_slug": "cleaning",
+          "normalized_product_name_ar": "مناديل وجه سوفتي",
+          "normalized_product_name_en": "Softy Facial Tissues",
+          "commodity_tag": "facial_tissue",
+          "quantity_limit": null,
+          "size_value": "10x130 منديل",
+          "unit_type": "ربطة",
+          "pack_quantity": 10,
+          "each_size_value": 130,
+          "each_size_unit": "sheet",
+          "is_uniform_size_across_variants": true,
+          "promo_price": 13.99,
+          "original_price": 23.95,
+          "promo_condition": "STANDARD",
+          "confidence": 0.99,
+          "components": {
+            "product_graphic_box": [
+              693,
+              467,
+              819,
+              621
+            ],
+            "promo_price_box": [
+              691,
+              348,
+              713,
+              429
+            ],
+            "original_price_box": [
+              711,
+              366,
+              727,
+              421
+            ],
+            "unit_and_size_badge_box": [
+              677,
+              368,
+              693,
+              409
+            ],
+            "title_text_box": [
+              816,
+              350,
+              842,
+              541
+            ]
+          }
+        },
+        {
+          "offer_number": 10,
+          "arabic_title": "مكسرات باجة فول سوداني مملح 18×25 جرام",
+          "english_title": "",
+          "brand": "باجة",
+          "is_multi_brand_or_variant": false,
+          "compound_group_id": null,
+          "item_domain": "grocery",
+          "category_slug": "staples",
+          "normalized_product_name_ar": "فول سوداني مملح باجة",
+          "normalized_product_name_en": "Baja Salted Peanuts",
+          "commodity_tag": "peanuts",
+          "quantity_limit": null,
+          "size_value": "18x25 جرام",
+          "unit_type": "ربطة",
+          "pack_quantity": 18,
+          "each_size_value": 25,
+          "each_size_unit": "g",
+          "is_uniform_size_across_variants": true,
+          "promo_price": 11.99,
+          "original_price": 26.99,
+          "promo_condition": "STANDARD",
+          "confidence": 0.99,
+          "components": {
+            "product_graphic_box": [
+              680,
+              794,
+              812,
+              933
+            ],
+            "promo_price_box": [
+              691,
+              666,
+              714,
+              747
+            ],
+            "original_price_box": [
+              711,
+              683,
+              728,
+              739
+            ],
+            "unit_and_size_badge_box": [
+              677,
+              686,
+              693,
+              727
+            ],
+            "title_text_box": [
+              812,
+              708,
+              842,
+              936
+            ]
+          }
+        }
+      ],
+      "page_number": 1
+    }
+  }
+}

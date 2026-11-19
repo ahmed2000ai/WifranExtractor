@@ -1,0 +1,356 @@
+{
+  "source": {
+    "leaflet_id": "default_leaflet",
+    "source_page_number": 1,
+    "source_item_number": "009",
+    "external_image_id": "noori-supermarket-229798534-jeddah_p001_009",
+    "crop_path": null,
+    "thumbnail_path": null,
+    "page_area_share_pct": 4.47,
+    "json_path": ""
+  },
+  "trusted_context": {},
+  "product": {
+    "title_ar": "مناديل سوفتي الوجه كيس (3+7 مجانا) 10×130 منديل",
+    "title_en": "Softy Facial Tissue Pack (7+3 Free) 10 x 130 Sheets",
+    "normalized_title_ar": "مناديل سوفتي الوجه كيس",
+    "normalized_title_en": "Softy Facial Tissue Pack",
+    "commodity_tag": "facial_tissue",
+    "brand_text": "Softy",
+    "category_hint": "cleaning",
+    "item_domain": "grocery",
+    "description_ar": null,
+    "description_en": null
+  },
+  "prices": {
+    "offer_price": 13.99,
+    "original_price": 23.95,
+    "currency": "SAR",
+    "discount_amount": null,
+    "discount_percentage": null,
+    "price_basis": "each",
+    "price_condition_text": null,
+    "all_price_candidates": [
+      {
+        "raw_text": "13.99",
+        "normalized_value": 13.99,
+        "currency": "SAR",
+        "visual_role": "current_offer_price",
+        "classified_as": "offer_price",
+        "confidence": "high",
+        "evidence": "13.99",
+        "visual_evidence": {}
+      }
+    ]
+  },
+  "content": {
+    "size_text": "10x130 منديل",
+    "pack_quantity": 10,
+    "bundle_quantity": 10,
+    "each_size_value": 130,
+    "each_size_unit": "other",
+    "total_content_value": 1300,
+    "total_content_unit": "other"
+  },
+  "promotion": {
+    "mechanic": "standard_price",
+    "special_offer": "7+3 Free",
+    "condition_text": null,
+    "quantity_limit": null,
+    "bundle_quantity": 10
+  },
+  "comparison": {
+    "comparison_eligible": false,
+    "comparison_unit": null,
+    "comparison_unit_price": null,
+    "comparison_confidence": "low",
+    "comparison_exclusion_reason": "unsupported_comparison_unit"
+  },
+  "image": {
+    "image_bucket": null,
+    "image_path": null,
+    "image_url": null,
+    "thumbnail_path": null,
+    "thumbnail_url": null,
+    "image_source_type": "leaflet_crop"
+  },
+  "display": {
+    "show_display_unit_price": false,
+    "display_unit_price": null,
+    "display_unit_basis_value": null,
+    "display_unit_basis_unit": null,
+    "display_unit_family": null,
+    "display_unit_price_label_ar": null,
+    "display_unit_price_label_en": null,
+    "below_min_display_price_threshold": false,
+    "min_display_unit_price_sar": 0.5,
+    "hidden_reason": "comparison_not_eligible"
+  },
+  "quality": {
+    "publish_decision": "publish_but_exclude_from_comparison",
+    "extraction_confidence": "high",
+    "validation_confidence": "high",
+    "comparison_confidence": "low",
+    "blocking_errors": [],
+    "non_blocking_warnings": []
+  },
+  "style_validation": {
+    "validation_result": "pass",
+    "visual_evidence": {},
+    "corrected_fields": {},
+    "style_profile_scope": "page"
+  },
+  "pre_publish": {
+    "preview_eligible": true,
+    "preview_group": "publish_but_exclude_from_comparison",
+    "display_in_preview": true
+  },
+  "raw": {
+    "raw_ocr_json": {},
+    "raw_validation_json": null,
+    "raw_ocr_text": null,
+    "raw_attributes": {
+      "raw_offer_extraction": {
+        "offer_number": 9,
+        "arabic_title": "مناديل سوفتي الوجه كيس (3+7 مجانا) 10×130 منديل",
+        "english_title": "Softy Facial Tissue Pack (7+3 Free) 10 x 130 Sheets",
+        "brand": "Softy",
+        "is_multi_brand_or_variant": false,
+        "compound_group_id": null,
+        "item_domain": "grocery",
+        "category_slug": "cleaning",
+        "normalized_product_name_ar": "مناديل سوفتي الوجه كيس",
+        "normalized_product_name_en": "Softy Facial Tissue Pack",
+        "commodity_tag": "facial_tissue",
+        "quantity_limit": null,
+        "size_value": "10x130 منديل",
+        "unit_type": "ربطة",
+        "pack_quantity": 10,
+        "each_size_value": 130,
+        "each_size_unit": "sheet",
+        "is_uniform_size_across_variants": true,
+        "promo_price": 13.99,
+        "original_price": 23.95,
+        "promo_condition": "STANDARD",
+        "confidence": 0.99,
+        "components": {
+          "product_graphic_box": [
+            694,
+            469,
+            818,
+            620
+          ],
+          "promo_price_box": [
+            691,
+            349,
+            712,
+            429
+          ],
+          "title_text_box": [
+            814,
+            351,
+            843,
+            539
+          ],
+          "original_price_box": [
+            712,
+            368,
+            726,
+            421
+          ],
+          "unit_and_size_badge_box": [
+            678,
+            376,
+            692,
+            401
+          ]
+        }
+      },
+      "spatial_prominence": {
+        "page_area_share_pct": 4.47,
+        "is_front_page": true,
+        "is_hero_offer": true,
+        "normalized_union_box": [
+          678,
+          349,
+          843,
+          620
+        ]
+      },
+      "completeness_status": "complete",
+      "evidence_linking_status": "linked",
+      "is_retry_pass": false,
+      "page_first": {
+        "current_price_anchor_block_id": "rev1_price_anchor_p001_009",
+        "evidence_link_confidence": 1,
+        "completeness_status": "pass",
+        "crop_confidence": 0.99,
+        "is_retry": false
+      }
+    }
+  },
+  "schema_version": "wifran.extractor.offer/2.0",
+  "contract_v2": {
+    "record_metadata": {
+      "schema_version": "wifran.extractor.offer/2.0",
+      "source_offer_id": "default_leaflet:p001:i009:s01",
+      "source_revision": 1,
+      "semantic_checksum": "649df6fedc1886a9f083b897abb1305ee47bfd96ddf04b07140d245d078929f1",
+      "producer_model": "wifran-extractor-2.0",
+      "supersedes_source_offer_id": null
+    },
+    "product_facts": {
+      "exact_identity_status": "product_family_only",
+      "verified_product_id": null,
+      "gtin": null,
+      "brand_assertion": {
+        "value": "Softy",
+        "state": "supported",
+        "candidate_unverified": null,
+        "provenance": "extracted_brand"
+      },
+      "derived_subcategory_slug": "facial_tissue",
+      "attributes": {
+        "scent": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "flavor": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "fat_level": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "milk_processing_type": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "product_form": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "model": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "power_watts": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "dimensions": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        }
+      }
+    },
+    "assortment": {
+      "status": "single_product",
+      "composition_type": "single",
+      "known_options": [],
+      "is_uniform_size": true,
+      "source_assertions": []
+    },
+    "quantity_semantics": {
+      "sale_unit": "pack",
+      "inner_count": 10,
+      "per_inner_content": {
+        "value": 130,
+        "unit": "other"
+      },
+      "total_content": {
+        "value": 1300,
+        "unit": "other"
+      },
+      "is_indivisible_sale_unit": true
+    },
+    "price_terms": {
+      "currency": "SAR",
+      "source_reported_offer_price": "13.99",
+      "source_reported_price_basis": "each",
+      "source_reported_original_price": "23.95",
+      "verified_current_non_member_price": null
+    },
+    "promotion_terms": {
+      "mechanic": "bonus_pack",
+      "bonus_wording": "7+3 Free",
+      "bonus_fulfillment": "unresolved",
+      "bonus_already_included_in_inner_count": true,
+      "structured_checkout_rule": null
+    },
+    "eligibility": {
+      "loyalty": {
+        "requirement": "unknown",
+        "program_id": null,
+        "source_path": null,
+        "restriction_coverage": "not_stated_in_inspected_source"
+      },
+      "sales_channel": "unknown",
+      "quantity_limit": {
+        "value": null,
+        "unit": null,
+        "scope": null
+      }
+    },
+    "evidence": {
+      "coordinate_system": "normalized_0_1000_ymin_xmin_ymax_xmax",
+      "offer_price_evidence_complete": true,
+      "original_price_evidence_complete": false
+    },
+    "assessments": {
+      "capabilities": {
+        "offer_display": "supported",
+        "save_to_list": "supported",
+        "selected_offer_subtotal": "supported",
+        "unit_price_calculation": "blocked",
+        "exact_product_comparison": "blocked",
+        "automatic_list_fulfillment": "needs_review"
+      },
+      "structural_capabilities": {
+        "offer_display": "supported",
+        "save_to_list": "supported",
+        "selected_offer_subtotal": "supported",
+        "unit_price_calculation": "blocked",
+        "exact_product_comparison": "blocked",
+        "automatic_list_fulfillment": "needs_review"
+      },
+      "confidence": {
+        "extraction_confidence": "high",
+        "unit_math_confidence": "low",
+        "identity_confidence": "high"
+      },
+      "reason_codes": [
+        "BONUS_FULFILLMENT_NOT_ESTABLISHED",
+        "CHANNEL_UNKNOWN",
+        "PRICE_EVIDENCE_INCOMPLETE",
+        "LEGACY_COMPARISON_RESTRICTION",
+        "MEDIA_UPLOAD_PENDING"
+      ]
+    },
+    "assets": {
+      "offer_card": {
+        "local_path_internal": null,
+        "storage_bucket": null,
+        "storage_object_path": null,
+        "subject_scope": "offer_group",
+        "upload_state": "pending"
+      },
+      "product_thumbnail": {
+        "local_path_internal": null,
+        "storage_bucket": null,
+        "storage_object_path": null,
+        "subject_scope": "offer_group",
+        "upload_state": "pending"
+      }
+    }
+  }
+}

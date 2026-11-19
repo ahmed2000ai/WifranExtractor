@@ -82,6 +82,8 @@ export type StreamingPdfRenderInput = {
   pageCount?: number | null;
   originalFileName?: string;
   metadata?: any;
+  selectedPages?: number[];
+  selectionMode?: 'all' | 'specific';
 };
 
 export type StreamingPdfRenderProgressEvent = {
@@ -120,6 +122,9 @@ export type StreamingPdfRenderState = {
     | 'failed';
 
   totalPages: number;
+  totalDocumentPages?: number;
+  selectedPages?: number[];
+  selectionMode?: 'all' | 'specific';
   renderedPages: number;
   failedPages: number;
   pages: RenderedPageInfo[];

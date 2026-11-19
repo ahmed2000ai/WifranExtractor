@@ -8,7 +8,7 @@ export type AtomicOfferComponents = {
   title_text_box: NormalizedBox2D | null;
 };
 
-export type PromoCondition = 'STANDARD' | 'LOYALTY_CARD_REQUIRED' | 'MULTI_BUY';
+export type PromoCondition = 'STANDARD' | 'LOYALTY_CARD_REQUIRED' | 'MULTI_BUY' | 'UNKNOWN';
 
 export type CanonicalExtractionUnit = 'g' | 'kg' | 'ml' | 'l' | 'pcs' | 'roll' | 'sheet';
 
@@ -56,7 +56,7 @@ export type ExtractedOfferRev1 = {
   is_uniform_size_across_variants?: boolean;
   promo_price: number;
   original_price: number | null;
-  promo_condition: PromoCondition;
+  promo_condition?: PromoCondition | null;
   confidence: number;
   components: AtomicOfferComponents;
 };

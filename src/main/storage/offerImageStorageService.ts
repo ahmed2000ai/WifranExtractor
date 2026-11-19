@@ -1,41 +1,55 @@
-import fs from 'fs'
-import { getSupabaseAdminClient } from '../db/supabaseAdminClient'
+import { readFile } from 'fs/promises'
+import { getGuardedSupabaseClient, type DatabaseContext } from '../db/databaseEnvironmentResolver'
+import { info, error as logError } from '../logging/logger'
 
-export async function uploadOfferImage(input: {
-  localImagePath: string
-  storageBucket: string
+export interface UploadOfferImageInput {
+  localFilePath?: string
+  localImagePath?: string
+  bucket?: string
+  storageBucket?: string
   storagePath: string
-  contentType: string
-}): Promise<{
-  imageUrl: string
-  storagePath: string
-}> {
-  if (!fs.existsSync(input.localImagePath)) {
-    throw new Error(`Local file not found: ${input.localImagePath}`)
+  contentType?: string
+  databaseContext?: DatabaseContext
+}
+
+export async function uploadOfferImage(
+  input: UploadOfferImageInput
+): Promise<{ imageUrl: string; publicUrl?: string; storagePath: string }> {
+  const context: DatabaseContext = input.databaseContext || 'PRODUCTION_UI'
+  const localPath = input.localFilePath || input.localImagePath
+  const bucketName = input.bucket || input.storageBucket
+  if (!localPath || !bucketName) {
+    throw new Error('uploadOfferImage requires localFilePath/localImagePath and bucket/storageBucket.')
   }
+  const supabase = getGuardedSupabaseClient(context)
+  const fileBuffer = await readFile(localPath)
 
-  const fileBuffer = fs.readFileSync(input.localImagePath)
-  const supabase = getSupabaseAdminClient()
+  const cleanStoragePath = input.storagePath.replace(/^\/+/, '')
+  const contentType = input.contentType || 'image/webp'
+
+  info(
+    `Uploading offer image (${context}) to bucket "${bucketName}" at "${cleanStoragePath}"...`
+  )
 
   const { error } = await supabase.storage
-    .from(input.storageBucket)
-    .upload(input.storagePath, fileBuffer, {
-      contentType: input.contentType,
-      upsert: true // Deterministic paths so we can overwrite safely on retry
+    .from(bucketName)
+    .upload(cleanStoragePath, fileBuffer, {
+      contentType,
+      upsert: false
     })
 
-  if (error) {
-    console.error('Supabase Storage upload error:', error)
-    throw new Error(`STORAGE_UPLOAD_FAILED: ${error.message}`)
+  if (error && !/already exists|duplicate/i.test(error.message || '')) {
+    logError(`Supabase storage upload error (${context}): ${error.message}`)
+    throw new Error(`Storage upload failed: ${error.message}`)
   }
 
-  // Wifran uses public URLs
   const { data: publicUrlData } = supabase.storage
-    .from(input.storageBucket)
-    .getPublicUrl(input.storagePath)
+    .from(bucketName)
+    .getPublicUrl(cleanStoragePath)
 
   return {
     imageUrl: publicUrlData.publicUrl,
-    storagePath: input.storagePath
+    publicUrl: publicUrlData.publicUrl,
+    storagePath: cleanStoragePath
   }
 }

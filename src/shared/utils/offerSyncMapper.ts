@@ -1,9 +1,32 @@
 import { OfferSyncIssue } from '../../shared/types/offerSync'
+import {
+  sanitizeConsumerContractV2Assets,
+  sanitizePublicConsumerImageUrl
+} from './nonCatalogPublicationPolicy'
 
 function sanitizeStorageValue(val: string | null | undefined): string | null {
   if (!val) return null
-  // EX-36: Ensure no local Windows path is ever written to storage or image URL fields
-  if (/^[a-zA-Z]:[\\/]/.test(val) || val.includes('\\Work\\') || val.includes('/Work/')) {
+  let decoded = val
+  for (let i = 0; i < 3; i++) {
+    try {
+      const next = decodeURIComponent(decoded)
+      if (next === decoded) break
+      decoded = next
+    } catch {
+      break
+    }
+  }
+  // EX-36: Ensure no local Windows path or private crop/evidence key is ever written to storage or image URL fields
+  if (
+    /^[a-zA-Z]:[\\/]/.test(decoded) ||
+    decoded.includes('\\Work\\') ||
+    decoded.includes('/Work/') ||
+    decoded.includes('/Extracts/') ||
+    decoded.includes('\\Extracts\\') ||
+    /(?:^|[\\/])\.\.(?:[\\/]|$)/.test(decoded) ||
+    /(?:^|[\\/])offer[-_]images(?:[\\/]|$)/i.test(decoded) ||
+    /offer_card_crop|product_thumb_crop|_crop\.(?:webp|png|jpe?g|avif)$/i.test(decoded)
+  ) {
     return null
   }
   return val
@@ -92,25 +115,34 @@ export function mapPreparedPayloadToOffersInsert(input: {
     return { payload: null, issues }
   }
 
-  const v2 = prep.contract_v2 ? JSON.parse(JSON.stringify(prep.contract_v2)) : null
-  const sanitizedImageUrl = sanitizeStorageValue(input.imageUrl)
+  let v2 = prep.contract_v2 ? sanitizeConsumerContractV2Assets(prep.contract_v2) : null
+  const sanitizedImageUrl = sanitizePublicConsumerImageUrl(input.imageUrl)
   const sanitizedStoragePath = sanitizeStorageValue(input.storagePath)
-  const sanitizedThumbUrl = sanitizeStorageValue(input.thumbnailUrl || prep.thumbnail_url)
+  const sanitizedThumbUrl = sanitizePublicConsumerImageUrl(input.thumbnailUrl || prep.thumbnail_url)
   const sanitizedThumbStoragePath = sanitizeStorageValue(input.thumbnailStoragePath || prep.thumbnail_storage_path)
+  const safeBucket =
+    input.storageBucket && !/^offer[-_]images$/i.test(input.storageBucket.trim())
+      ? input.storageBucket
+      : null
 
-  // B-09 / MEDIA-01: Reconcile contract_v2 assets when uploaded
+  // B-09 / MEDIA-01: Reconcile contract_v2 assets when uploaded (and strip private/crop leaks)
   const isMediaUploaded = Boolean(sanitizedImageUrl || sanitizedStoragePath || sanitizedThumbUrl || sanitizedThumbStoragePath)
   if (v2?.assets) {
     if (v2.assets.offer_card) {
       if (sanitizedImageUrl) {
         v2.assets.offer_card.upload_state = 'uploaded'
         v2.assets.offer_card.delivery_url = sanitizedImageUrl
+      } else {
+        v2.assets.offer_card.delivery_url = null
+        v2.assets.offer_card.upload_state = 'pending'
       }
       if (sanitizedStoragePath) {
         v2.assets.offer_card.storage_object_path = sanitizedStoragePath
       }
-      if (input.storageBucket) {
-        v2.assets.offer_card.storage_bucket = input.storageBucket
+      if (safeBucket) {
+        v2.assets.offer_card.storage_bucket = safeBucket
+      } else if (!sanitizedImageUrl) {
+        v2.assets.offer_card.storage_bucket = null
       }
       v2.assets.offer_card.local_path_internal = null
     }
@@ -119,12 +151,17 @@ export function mapPreparedPayloadToOffersInsert(input: {
       if (sanitizedThumbUrl) {
         v2.assets.product_thumbnail.upload_state = 'uploaded'
         v2.assets.product_thumbnail.delivery_url = sanitizedThumbUrl
+      } else {
+        v2.assets.product_thumbnail.delivery_url = null
+        v2.assets.product_thumbnail.upload_state = 'pending'
       }
       if (sanitizedThumbStoragePath) {
         v2.assets.product_thumbnail.storage_object_path = sanitizedThumbStoragePath
       }
-      if (input.storageBucket) {
-        v2.assets.product_thumbnail.storage_bucket = input.storageBucket
+      if (safeBucket) {
+        v2.assets.product_thumbnail.storage_bucket = safeBucket
+      } else if (!sanitizedThumbUrl) {
+        v2.assets.product_thumbnail.storage_bucket = null
       }
       v2.assets.product_thumbnail.local_path_internal = null
     }
@@ -177,7 +214,7 @@ export function mapPreparedPayloadToOffersInsert(input: {
 
     image_url: sanitizedImageUrl,
     image_path: sanitizedStoragePath,
-    image_bucket: input.storageBucket || null,
+    image_bucket: safeBucket,
     image_source_type: prep.image_source_type || 'external_tool',
     // B-05: Use only the canonical public.offers column source_id (not offer_source_id)
     source_id: prep.source_id || prep.offer_source_id || input.sourceId || null,
@@ -229,7 +266,9 @@ export function mapPreparedPayloadToOffersInsert(input: {
     payload.assortment_status = v2?.assortment?.status || prep.assortment_status || 'unknown_composition'
     payload.known_options = v2?.assortment?.known_options || prep.known_options || []
     payload.sale_unit_type = v2?.quantity_semantics?.sale_unit || prep.sale_unit_type || 'pack'
-    payload.inner_pack_count = v2 ? (v2.quantity_semantics.inner_count ?? null) : (prep.inner_pack_count !== undefined ? prep.inner_pack_count : (prep.sale_unit_type === 'kg' ? null : 1))
+    payload.inner_pack_count = v2?.quantity_semantics
+      ? (v2.quantity_semantics.inner_count ?? null)
+      : (prep.inner_pack_count !== undefined ? prep.inner_pack_count : (prep.sale_unit_type === 'kg' ? null : 1))
     payload.each_size_value = v2?.quantity_semantics?.per_inner_content?.value ?? prep.each_size_value ?? null
     payload.each_size_unit = v2?.quantity_semantics?.per_inner_content?.unit ?? prep.each_size_unit ?? null
     payload.total_content_value = v2?.quantity_semantics?.total_content?.value ?? prep.total_content_value ?? null
@@ -258,7 +297,11 @@ export function mapPreparedPayloadToOffersInsert(input: {
     payload.is_front_page = prep.is_front_page ?? false
     payload.is_hero_offer = prep.is_hero_offer ?? false
 
-    payload.scoped_assessments = v2?.assessments?.capabilities || v2?.assessments?.structural_capabilities || prep.scoped_assessments || {}
+    const rawScoped = v2?.assessments?.capabilities || v2?.assessments?.structural_capabilities || prep.scoped_assessments || {}
+    payload.scoped_assessments =
+      !payload.product_id && rawScoped?.exact_product_comparison === 'supported'
+        ? { ...rawScoped, exact_product_comparison: 'blocked' }
+        : rawScoped
     payload.reason_codes = reasonCodes
     payload.contract_v2 = v2 || null
 

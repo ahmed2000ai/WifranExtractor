@@ -19,7 +19,8 @@ export type PdfWorkspacePaths = {
 export async function createPdfWorkspace(originalFilePath: string, originalFileName: string): Promise<PdfWorkspacePaths> {
   const workspaceId = `import-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`
   const pdfNameWithoutExt = originalFileName.replace(/\.[^/.]+$/, '')
-  const basePath = join(process.cwd(), 'Extracts', pdfNameWithoutExt)
+  const workspaceFolder = process.env.WIFRAN_OFFLINE_UAT === '1' ? 'workspaces_uat' : 'Extracts'
+  const basePath = join(process.cwd(), workspaceFolder, pdfNameWithoutExt)
   
   try {
     if (originalFilePath !== join(basePath, originalFileName)) {

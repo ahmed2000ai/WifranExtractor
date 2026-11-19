@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterAll } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach, afterAll } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import sharp from 'sharp';
@@ -9,6 +9,11 @@ import type { PageFirstProgressEvent } from '../pageFirstPipelineService';
 describe('HOTFIX: Test Current Page Page-First Pipeline Wiring & Diagnostics', () => {
   const createdDirs: string[] = [];
   let testWorkspace: string;
+  let workspaceSeq = 0;
+
+  // Pinned reference dates & Date-only fake clock ensure timezone- and future-date determinism
+  const activeOfferStartDate = '2026-10-10';
+  const activeOfferEndDate = '2026-10-17';
 
   const mockAnnotation = {
     schema_version: 1,
@@ -125,12 +130,15 @@ describe('HOTFIX: Test Current Page Page-First Pipeline Wiring & Diagnostics', (
     locationScope: 'national' as const,
     cityId: null,
     regionId: null,
-    offerStartDate: '2026-10-01',
-    offerEndDate: '2026-10-15'
+    offerStartDate: activeOfferStartDate,
+    offerEndDate: activeOfferEndDate
   };
 
   beforeEach(async () => {
-    testWorkspace = path.join(process.cwd(), 'tmp', `test-page-first-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`);
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-10-12T12:00:00.000Z'));
+    workspaceSeq += 1;
+    testWorkspace = path.join(process.cwd(), 'tmp', `test-page-first-${Date.now()}-${workspaceSeq}-${Math.random().toString(36).slice(2, 6)}`);
     createdDirs.push(testWorkspace);
 
     fs.mkdirSync(path.join(testWorkspace, 'pages'), { recursive: true });
@@ -147,7 +155,7 @@ describe('HOTFIX: Test Current Page Page-First Pipeline Wiring & Diagnostics', (
       extraction_folder_path: testWorkspace,
       supermarket: { id: 'sm-danube', slug: 'danube', name_en: 'Danube', name_ar: 'الدانوب' },
       location: { location_scope: 'national', location_slug: 'national', city_id: null, region_id: null, label: 'National' },
-      validity: { start_date: '2026-10-01', end_date: '2026-10-15' },
+      validity: { start_date: activeOfferStartDate, end_date: activeOfferEndDate },
       paths: {
         pages_dir: path.join(testWorkspace, 'pages'),
         crops_dir: path.join(testWorkspace, 'crops'),
@@ -174,6 +182,10 @@ describe('HOTFIX: Test Current Page Page-First Pipeline Wiring & Diagnostics', (
     };
     fs.writeFileSync(path.join(testWorkspace, 'extraction_manifest.json'), JSON.stringify(initialManifest, null, 2), 'utf8');
     fs.writeFileSync(path.join(testWorkspace, 'metadata', 'metadata.json'), JSON.stringify(initialManifest, null, 2), 'utf8');
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   afterAll(() => {
@@ -228,53 +240,164 @@ describe('HOTFIX: Test Current Page Page-First Pipeline Wiring & Diagnostics', (
     expect(result.offersLinked).toBe(1);
     expect(result.cropsGenerated).toBe(1);
 
-    // 2. Progression verification: Primary OCR progresses 0/1 -> 1/1
+    // 2. Progression verification: Primary OCR progresses 0/1 -> 1/1 and reaches completed
     const ocrRunningEvent = progressEvents.find(p => p.stage === 'ocr_running');
     expect(ocrRunningEvent).toBeDefined();
     expect(ocrRunningEvent?.primaryCompletedPages).toBe(0);
     expect(ocrRunningEvent?.totalPages).toBe(1);
 
-    const linkingEvent = progressEvents.find(p => p.stage === 'linking');
-    expect(linkingEvent).toBeDefined();
-    expect(linkingEvent?.primaryCompletedPages).toBe(1);
-    expect(linkingEvent?.totalPages).toBe(1);
+    const croppingEvent = progressEvents.find(p => p.stage === 'cropping');
+    expect(croppingEvent).toBeDefined();
+    expect(croppingEvent?.primaryCompletedPages).toBe(1);
+    expect(croppingEvent?.completedPages).toBe(0);
+    expect(croppingEvent?.totalPages).toBe(1);
 
-    // 3. Log events emitted in order
+    const completedEvent = progressEvents.find(p => p.stage === 'completed' && p.logCode === 'PAGE_FIRST_TEST_COMPLETE');
+    expect(completedEvent).toBeDefined();
+    expect(completedEvent?.primaryCompletedPages).toBe(1);
+    expect(completedEvent?.completedPages).toBe(1);
+    expect(completedEvent?.totalPages).toBe(1);
+
+    // 3. Log events emitted in order by the Rev1 Page-First pipeline
     const logCodes = logEvents.map(e => e.code);
     expect(logCodes).toContain('PAGE_FIRST_TEST_START');
-    expect(logCodes).toContain('PAGE_FIRST_REQUEST_QUEUED');
-    expect(logCodes).toContain('MISTRAL_OCR_REQUEST_START');
-    expect(logCodes).toContain('MISTRAL_OCR_REQUEST_SUCCESS');
-    expect(logCodes).toContain('PAGE_FIRST_ANNOTATION_PARSED');
-    expect(logCodes).toContain('PAGE_FIRST_EVIDENCE_LINKED');
-    expect(logCodes).toContain('PAGE_FIRST_CROPS_GENERATED');
     expect(logCodes).toContain('PAGE_FIRST_TEST_COMPLETE');
+    expect(logCodes.indexOf('PAGE_FIRST_TEST_START')).toBeLessThan(logCodes.indexOf('PAGE_FIRST_TEST_COMPLETE'));
 
-    // 5. Workspace artifacts persisted under expected directories
-    const rawRespPath = path.join(testWorkspace, 'metadata', 'page-first-ocr', 'page-001', 'raw-response.json');
-    const annotationPath = path.join(testWorkspace, 'metadata', 'page-first-ocr', 'page-001', 'annotation.json');
-    const blocksPath = path.join(testWorkspace, 'metadata', 'page-first-ocr', 'page-001', 'blocks.json');
-    const linksPath = path.join(testWorkspace, 'metadata', 'page-offer-links', 'page-001.json');
-    const compPath = path.join(testWorkspace, 'metadata', 'page-completeness', 'page-001.json');
-    const cropsPath = path.join(testWorkspace, 'metadata', 'automatic-crops', 'page-001.json');
+    // 4. Workspace artifacts persisted under expected Rev1 directories
+    const pageStatePath = path.join(testWorkspace, 'metadata', 'page-first-ocr', 'page-state.json');
+    const extractionReportJsonPath = path.join(testWorkspace, 'metadata', 'reports', 'page-first-extraction-report.json');
+    const extractionReportMdPath = path.join(testWorkspace, 'metadata', 'reports', 'page-first-extraction-report.md');
     const previewSummaryPath = path.join(testWorkspace, 'metadata', 'reports', 'pre-publish-preview-summary.json');
     const canonicalPath = path.join(testWorkspace, 'json', 'page-001-001.canonical.json');
 
-    expect(fs.existsSync(rawRespPath)).toBe(true);
-    expect(fs.existsSync(annotationPath)).toBe(true);
-    expect(fs.existsSync(blocksPath)).toBe(true);
-    expect(fs.existsSync(linksPath)).toBe(true);
-    expect(fs.existsSync(compPath)).toBe(true);
-    expect(fs.existsSync(cropsPath)).toBe(true);
+    expect(fs.existsSync(pageStatePath)).toBe(true);
+    expect(fs.existsSync(extractionReportJsonPath)).toBe(true);
+    expect(fs.existsSync(extractionReportMdPath)).toBe(true);
     expect(fs.existsSync(previewSummaryPath)).toBe(true);
     expect(fs.existsSync(canonicalPath)).toBe(true);
 
-    // 6. Verify Pre-Publish Preview summary content
+    const pageStates = JSON.parse(fs.readFileSync(pageStatePath, 'utf8'));
+    expect(pageStates.length).toBe(1);
+    expect(pageStates[0].pageNumber).toBe(1);
+    expect(pageStates[0].status).toBe('completed');
+
+    // 5. Verify Pre-Publish Preview summary content
     const summaryData = JSON.parse(fs.readFileSync(previewSummaryPath, 'utf8'));
     expect(summaryData.counts.total_items).toBe(1);
     expect(summaryData.counts.publish).toBe(1);
     expect(summaryData.items.length).toBe(1);
     expect(summaryData.items[0].source_page_number).toBe(1);
+  });
+
+  it('Reports accurate selected-page progress and original PDF page numbers when extracting a subset [2, 5] of a 6-page leaflet', async () => {
+    const subsetWorkspace = path.join(process.cwd(), 'tmp', `test-page-first-subset-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`);
+    createdDirs.push(subsetWorkspace);
+    fs.mkdirSync(path.join(subsetWorkspace, 'pages'), { recursive: true });
+    fs.mkdirSync(path.join(subsetWorkspace, 'metadata'), { recursive: true });
+
+    for (const p of [2, 5]) {
+      await sharp({
+        create: { width: 600, height: 800, channels: 3, background: { r: 255, g: 255, b: 255 } }
+      }).png().toFile(path.join(subsetWorkspace, 'pages', `page.${p}.png`));
+    }
+
+    const subsetManifest: any = {
+      manifest_version: '2.0.0',
+      extraction_folder_path: subsetWorkspace,
+      supermarket: { id: 'sm-danube', slug: 'danube', name_en: 'Danube', name_ar: 'الدانوب' },
+      location: { location_scope: 'national', location_slug: 'national', city_id: null, region_id: null, label: 'National' },
+      validity: { start_date: activeOfferStartDate, end_date: activeOfferEndDate },
+      paths: {
+        pages_dir: 'pages',
+        crops_dir: 'crops',
+        json_dir: 'json',
+        reports_dir: 'reports'
+      },
+      page_count: 6,
+      processing_selection: {
+        pdfFingerprint: 'fp-subset-test-6p',
+        totalDocumentPages: 6,
+        selectionMode: 'specific',
+        selectedPages: [2, 5],
+        processingStatus: 'in_progress',
+        coverage: 'partial'
+      },
+      processing_scope: {
+        mode: 'selected_pages',
+        pages: [2, 5]
+      }
+    };
+    fs.writeFileSync(path.join(subsetWorkspace, 'extraction_manifest.json'), JSON.stringify(subsetManifest, null, 2), 'utf8');
+
+    const progressEvents: PageFirstProgressEvent[] = [];
+    const mockSubsetResponses = new Map<number, any>([
+      [2, {
+        ...mockOcrResponse,
+        document_annotation: {
+          ...mockAnnotation,
+          page_number: 2
+        }
+      }],
+      [5, {
+        ...mockOcrResponse,
+        document_annotation: {
+          ...mockAnnotation,
+          page_number: 5,
+          offers: [{
+            ...mockAnnotation.offers[0],
+            temporary_offer_id: 'page5_off_01'
+          }]
+        }
+      }]
+    ]);
+
+    const result = await sharedPageFirstPipelineService.runPipeline({
+      packageDir: subsetWorkspace,
+      pdfBaseName: 'subset-leaflet',
+      pages: [2, 5],
+      trustedContext: mockTrustedContext,
+      rolloutMode: 'pilot',
+      onProgress: (p) => progressEvents.push(p),
+      mockPageResponses: mockSubsetResponses
+    });
+
+    expect(result.ok).toBe(true);
+    expect(result.totalPages).toBe(2);
+    expect(result.completedPages).toBe(2);
+    expect(result.offersDetected).toBe(2);
+
+    // Every emitted progress event must count ONLY the 2 selected pages, not 6 document pages
+    expect(progressEvents.length).toBeGreaterThanOrEqual(6);
+    expect(progressEvents.every(e => e.totalPages === 2)).toBe(true);
+
+    const ocrEvents = progressEvents.filter(e => e.stage === 'ocr_running');
+    expect(ocrEvents.map(e => ({ page: e.currentPage, primary: e.primaryCompletedPages, completed: e.completedPages }))).toEqual([
+      { page: 2, primary: 0, completed: 0 },
+      { page: 5, primary: 1, completed: 1 }
+    ]);
+
+    const croppingEvents = progressEvents.filter(e => e.stage === 'cropping');
+    expect(croppingEvents.map(e => ({ page: e.currentPage, primary: e.primaryCompletedPages }))).toEqual([
+      { page: 2, primary: 1 },
+      { page: 5, primary: 2 }
+    ]);
+
+    const finalCompleted = progressEvents.find(e => e.stage === 'completed' && e.logCode === 'PAGE_FIRST_TEST_COMPLETE');
+    expect(finalCompleted?.primaryCompletedPages).toBe(2);
+    expect(finalCompleted?.completedPages).toBe(2);
+    expect(finalCompleted?.totalPages).toBe(2);
+
+    // Original PDF page numbers (2 and 5) preserved everywhere
+    expect(result.items.map(i => i.source.source_page_number)).toEqual([2, 5]);
+    expect(result.items[0].source.external_image_id).toContain('_p002_');
+    expect(result.items[1].source.external_image_id).toContain('_p005_');
+
+    const updatedManifest = JSON.parse(fs.readFileSync(path.join(subsetWorkspace, 'extraction_manifest.json'), 'utf8'));
+    expect(updatedManifest.page_first_ocr.total_pages).toBe(2);
+    expect(updatedManifest.page_first_ocr.completed_pages).toBe(2);
+    expect(updatedManifest.processing_selection.totalDocumentPages).toBe(6);
+    expect(updatedManifest.processing_selection.selectedPages).toEqual([2, 5]);
   });
 
   it('Surfaces visible error when page image is missing', async () => {

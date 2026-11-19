@@ -1,0 +1,31 @@
+{
+  "testId": "test-a-legacy",
+  "model": "gemini-3.8-flash",
+  "backend": "vertex_ai",
+  "location": "global",
+  "promptProfile": "legacy",
+  "schemaProfile": "legacy",
+  "thinkingLevel": "HIGH",
+  "executionMode": "flex",
+  "imageSha256": "d5ebb7b85c90ef82b3835222fe9589ae6fdc5a9a8388a2af432a5be7ad22fa5b",
+  "trafficType": "ON_DEMAND_FLEX",
+  "requestDurationMs": 75330,
+  "tokens": {
+    "promptTokenCount": 5460,
+    "candidatesTokenCount": 4676,
+    "thoughtsTokenCount": 8153,
+    "cachedContentTokenCount": 0,
+    "totalTokenCount": 18289
+  },
+  "cost": {
+    "totalCostUsd": 0.02610188,
+    "inputCostUsd": 0.0020475,
+    "outputCostUsd": 0.0087675,
+    "thinkingCostUsd": 0.01528688,
+    "cachedInputCostUsd": 0,
+    "tier": "flex"
+  },
+  "offersCount": 10,
+  "responseId": "8MDzaqW7JKOBtfAPiJ3rkQE",
+  "status": "SUCCESS"
+}

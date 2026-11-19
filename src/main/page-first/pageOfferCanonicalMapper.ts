@@ -4,6 +4,7 @@ import type { PageFirstExtractedOffer } from '../../shared/types/pageFirstOfferE
 import type { AutomaticOfferCrop } from '../../shared/types/automaticOfferCrop';
 import type { PageOfferEvidenceLink } from '../../shared/types/pageOfferEvidenceLink';
 import type { CanonicalOffer, CanonicalPriceCandidate, CanonicalQualityIssue } from '../../shared/types/canonicalOffer';
+import type { PageExceptionResolution } from '../../shared/types/leafletMetadata';
 import { runDeterministicOfferChecks } from '../../shared/utils/deterministicOfferChecks';
 import { evaluateComparisonSafety } from '../../shared/utils/comparisonSafety';
 import { decidePublishAction, applyPublishDecisionToCanonicalOffer } from '../../shared/utils/publishDecisionEngine';
@@ -21,6 +22,11 @@ export type TrustedLeafletContext = {
   offerStartDate: string | null;
   offerEndDate: string | null;
   leafletId: string | null;
+  pageExceptions?: Array<{
+    pageNumber: number;
+    validity: any;
+  }>;
+  resolvedExceptions?: PageExceptionResolution[];
 };
 
 export type MapPageOfferToCanonicalInput = {
@@ -98,6 +104,121 @@ export function mapPageOfferToCanonical(input: MapPageOfferToCanonicalInput): Ca
     initialWarnings.push({ code: 'EVIDENCE_LINK_WARNING', message: lw, severity: 'warning' });
   }
 
+  // Check page-specific validity exception (WIFRAN-EXTRACTOR-METADATA-003 / 004)
+  const pageException = trustedContext.pageExceptions?.find(ex => ex.pageNumber === pageNumber);
+  const pageResolution = trustedContext.resolvedExceptions?.find(rx => rx.pageNumber === pageNumber);
+
+  let effectiveStartDate = trustedContext.offerStartDate;
+  let effectiveEndDate = trustedContext.offerEndDate;
+  let isQuarantinedDueToException = false;
+
+  if (pageException || pageResolution) {
+    if (pageException) {
+      initialWarnings.push({
+        code: 'PAGE_VALIDITY_EXCEPTION',
+        message: `Offer is on Page ${pageNumber} which has exceptional validity dates (${pageException.validity?.startDate} to ${pageException.validity?.endDate}): "${pageException.validity?.rawPrintedText || 'Exception'}". Requires operator verification before publishing.`,
+        severity: 'warning'
+      });
+    }
+
+    if (!pageResolution) {
+      // Unresolved exception! Acknowledging alone cannot publish incorrect dates!
+      isQuarantinedDueToException = true;
+      initialBlocking.push({
+        code: 'PAGE_EXCEPTION_UNRESOLVED',
+        message: `Offer on Page ${pageNumber} has an unresolved validity exception (${pageException?.validity?.rawPrintedText || 'Exception'}). Cannot publish with general dates without operator resolution.`,
+        severity: 'error'
+      });
+    } else {
+      const scope = pageResolution.scope || 'page_wide';
+      let isOfferAffected = true;
+
+      if (scope === 'specific_offers') {
+        if (!pageResolution.affectedOfferIds || pageResolution.affectedOfferIds.length === 0) {
+          isQuarantinedDueToException = true;
+          initialBlocking.push({
+            code: 'PAGE_EXCEPTION_EMPTY_OFFER_LIST',
+            message: `Specific-offers scoped exception on Page ${pageNumber} has an empty offer ID list. Offer quarantined fail-closed.`,
+            severity: 'error'
+          });
+          isOfferAffected = true;
+        } else {
+          const candidateIds = [
+            String(itemNumber).toLowerCase(),
+            String(offer.temporary_offer_id || '').toLowerCase(),
+            String(crop.source_item_number || '').toLowerCase(),
+            String(crop.source_offer_key || '').toLowerCase()
+          ].filter(Boolean);
+
+          isOfferAffected = (pageResolution.affectedOfferIds || []).some(id => {
+            const clean = String(id).toLowerCase().trim();
+            // Disallow matching if the ID explicitly specifies a different page (e.g. p001_ on page 4)
+            const pageMatch = clean.match(/p(?:age)?_?0*(\d+)/i);
+            if (pageMatch && parseInt(pageMatch[1], 10) !== pageNumber) {
+              return false;
+            }
+            return candidateIds.some(cid => cid === clean || cid.endsWith(`_${clean}`) || clean.endsWith(`_${cid}`));
+          });
+        }
+      } else if (scope === 'category') {
+        const catHint = (pageResolution.categoryHint || '').toLowerCase().trim();
+        const titleEn = (offer.product?.title_en || '').toLowerCase();
+        const titleAr = (offer.product?.title_ar || '').toLowerCase();
+        const domain = (offer.product?.item_domain || '').toLowerCase();
+        isOfferAffected = Boolean(catHint && (titleEn.includes(catHint) || titleAr.includes(catHint) || domain.includes(catHint)));
+      }
+
+      if (isOfferAffected) {
+        if (pageResolution.resolution === 'applied') {
+          // Category matching is a suggestion, not unquestionable proof: requires explicit operator confirmation
+          if (scope === 'category' && pageResolution.operatorConfirmedMatches !== true) {
+            isQuarantinedDueToException = true;
+            initialBlocking.push({
+              code: 'PAGE_EXCEPTION_CATEGORY_MATCH_UNCONFIRMED',
+              message: `Offer on Page ${pageNumber} matched category '${pageResolution.categoryHint}' but operator has not explicitly confirmed matched offers. Quarantined fail-closed until operator confirmation.`,
+              severity: 'error'
+            });
+          } else if (pageResolution.startDate && pageResolution.endDate) {
+            effectiveStartDate = pageResolution.startDate;
+            effectiveEndDate = pageResolution.endDate;
+            initialWarnings.push({
+              code: 'PAGE_VALIDITY_EXCEPTION_APPLIED',
+              message: `Offer on Page ${pageNumber} inherited page-specific validity dates (${pageResolution.startDate} to ${pageResolution.endDate}) from operator-resolved exception (scope: ${scope}).`,
+              severity: 'warning'
+            });
+          } else {
+            isQuarantinedDueToException = true;
+            initialBlocking.push({
+              code: 'PAGE_EXCEPTION_INVALID_DATES',
+              message: `Offer on Page ${pageNumber} has applied exception with missing or invalid dates.`,
+              severity: 'error'
+            });
+          }
+        } else if (pageResolution.resolution === 'exempt') {
+          initialWarnings.push({
+            code: 'PAGE_VALIDITY_EXCEPTION_EXEMPT',
+            message: `Offer on Page ${pageNumber} inherits general leaflet dates. Page exception marked exempt: ${pageResolution.reason || 'Documented review'}.`,
+            severity: 'warning'
+          });
+        } else if (pageResolution.resolution === 'quarantined') {
+          isQuarantinedDueToException = true;
+          initialBlocking.push({
+            code: 'PAGE_EXCEPTION_QUARANTINE',
+            message: `Offer on Page ${pageNumber} quarantined by operator decision: ${pageResolution.reason || 'Exception unresolved'}.`,
+            severity: 'error'
+          });
+        }
+      } else {
+        // Unaffected offer in mixed-page case: retains general dates safely and is NOT quarantined
+        initialWarnings.push({
+          code: 'PAGE_VALIDITY_EXCEPTION_UNAFFECTED',
+          message: `Offer on Page ${pageNumber} is unaffected by scoped exception '${pageResolution.reason || scope}'; safely inherits general leaflet dates (${effectiveStartDate} to ${effectiveEndDate}).`,
+          severity: 'warning'
+        });
+      }
+    }
+  }
+
   // Critical gate: if no anchor block is linked
   if (!link.current_price_anchor_block_id) {
     initialBlocking.push({
@@ -138,8 +259,8 @@ export function mapPageOfferToCanonical(input: MapPageOfferToCanonicalInput): Ca
       location_scope: trustedContext.locationScope,
       city_id: trustedContext.cityId,
       region_id: trustedContext.regionId,
-      offer_start_date: trustedContext.offerStartDate,
-      offer_end_date: trustedContext.offerEndDate
+      offer_start_date: effectiveStartDate,
+      offer_end_date: effectiveEndDate
     },
 
     product: {
@@ -289,6 +410,12 @@ export function mapPageOfferToCanonical(input: MapPageOfferToCanonicalInput): Ca
   canonical.quality.comparison_confidence = comparisonResult.comparison_confidence;
 
   applyPublishDecisionToCanonicalOffer(canonical, decisionResult);
+
+  if (isQuarantinedDueToException) {
+    canonical.quality.publish_decision = 'skip_or_quarantine';
+    canonical.pre_publish.preview_eligible = false;
+    canonical.pre_publish.preview_group = 'skip_or_quarantine';
+  }
 
   // Attach contract_v2 and schema_version per WIFRAN-04
   canonical.schema_version = 'wifran.extractor.offer/2.0';
@@ -598,7 +725,11 @@ export function mapRev1OfferToCanonical(input: MapRev1OfferToCanonicalInput): Ca
   const resolvedDomain = detectItemDomainFromTitle(
     offer.english_title,
     offer.arabic_title,
-    offer.item_domain
+    offer.item_domain,
+    {
+      commodityTag: offer.commodity_tag,
+      categoryHint: offer.category_slug
+    }
   );
 
   const resolvedCategorySlug = inferCategorySlug(offer, resolvedDomain);
@@ -614,7 +745,9 @@ export function mapRev1OfferToCanonical(input: MapRev1OfferToCanonicalInput): Ca
       ? 'loyalty_required'
       : offer.promo_condition === 'MULTI_BUY'
         ? 'multi_buy'
-        : 'standard_price';
+        : offer.promo_condition === 'STANDARD'
+          ? 'standard_price'
+          : 'unknown';
 
   const quantityNorm = parseAndNormalizeQuantity({
     size_text: offer.size_value,
@@ -663,6 +796,112 @@ export function mapRev1OfferToCanonical(input: MapRev1OfferToCanonicalInput): Ca
   const isFrontPage = pageNumber === 1;
   const isHeroOffer = isFrontPage || pageAreaSharePct >= 12.0;
 
+  // Evaluate page-specific validity exceptions strictly for this pageNumber (WIFRAN-EXTRACTOR-METADATA-004 / IMPORT-PAGES-001)
+  const initialBlocking: CanonicalQualityIssue[] = [];
+  const initialWarnings: CanonicalQualityIssue[] = [];
+  const pageException = trustedContext.pageExceptions?.find(ex => ex.pageNumber === pageNumber);
+  const pageResolution = trustedContext.resolvedExceptions?.find(rx => rx.pageNumber === pageNumber);
+
+  let effectiveStartDate = trustedContext.offerStartDate;
+  let effectiveEndDate = trustedContext.offerEndDate;
+  let isQuarantinedDueToException = false;
+
+  if (pageException || pageResolution) {
+    if (pageException) {
+      initialWarnings.push({
+        code: 'PAGE_VALIDITY_EXCEPTION',
+        message: `Offer is on Page ${pageNumber} which has exceptional validity dates (${pageException.validity?.startDate} to ${pageException.validity?.endDate}): "${pageException.validity?.rawPrintedText || 'Exception'}". Requires operator verification before publishing.`,
+        severity: 'warning'
+      });
+    }
+
+    if (!pageResolution) {
+      isQuarantinedDueToException = true;
+      initialBlocking.push({
+        code: 'PAGE_EXCEPTION_UNRESOLVED',
+        message: `Offer on Page ${pageNumber} has an unresolved validity exception (${pageException?.validity?.rawPrintedText || 'Exception'}). Cannot publish with general dates without operator resolution.`,
+        severity: 'error'
+      });
+    } else {
+      const scope = pageResolution.scope || 'page_wide';
+      let isOfferAffected = true;
+
+      if (scope === 'specific_offers') {
+        if (!pageResolution.affectedOfferIds || pageResolution.affectedOfferIds.length === 0) {
+          isQuarantinedDueToException = true;
+          initialBlocking.push({
+            code: 'PAGE_EXCEPTION_EMPTY_OFFER_LIST',
+            message: `Specific-offers scoped exception on Page ${pageNumber} has an empty offer ID list. Offer quarantined fail-closed.`,
+            severity: 'error'
+          });
+          isOfferAffected = true;
+        } else {
+          const candidateIds = [
+            String(itemNumber).toLowerCase(),
+            String(cropRect.offer_number).toLowerCase(),
+            `${pdfBaseName}_p${pagePadded}_${itemNumber}`.toLowerCase()
+          ].filter(Boolean);
+
+          isOfferAffected = (pageResolution.affectedOfferIds || []).some(id => {
+            const clean = String(id).toLowerCase().trim();
+            const pageMatch = clean.match(/p(?:age)?_?0*(\d+)/i);
+            if (pageMatch && parseInt(pageMatch[1], 10) !== pageNumber) {
+              return false;
+            }
+            return candidateIds.some(cid => cid === clean || cid.endsWith(`_${clean}`) || clean.endsWith(`_${cid}`));
+          });
+        }
+      } else if (scope === 'category') {
+        const catHint = (pageResolution.categoryHint || '').toLowerCase().trim();
+        const titleEn = (offer.english_title || '').toLowerCase();
+        const titleAr = (offer.arabic_title || '').toLowerCase();
+        const domain = (offer.item_domain || '').toLowerCase();
+        isOfferAffected = Boolean(catHint && (titleEn.includes(catHint) || titleAr.includes(catHint) || domain.includes(catHint)));
+      }
+
+      if (isOfferAffected) {
+        if (pageResolution.resolution === 'applied') {
+          if (scope === 'category' && pageResolution.operatorConfirmedMatches !== true) {
+            isQuarantinedDueToException = true;
+            initialBlocking.push({
+              code: 'PAGE_EXCEPTION_CATEGORY_MATCH_UNCONFIRMED',
+              message: `Offer on Page ${pageNumber} matched category '${pageResolution.categoryHint}' but operator has not explicitly confirmed matched offers.`,
+              severity: 'error'
+            });
+          } else if (pageResolution.startDate && pageResolution.endDate) {
+            effectiveStartDate = pageResolution.startDate;
+            effectiveEndDate = pageResolution.endDate;
+            initialWarnings.push({
+              code: 'PAGE_VALIDITY_EXCEPTION_APPLIED',
+              message: `Offer on Page ${pageNumber} inherited page-specific validity dates (${pageResolution.startDate} to ${pageResolution.endDate}) from operator-resolved exception (scope: ${scope}).`,
+              severity: 'warning'
+            });
+          } else {
+            isQuarantinedDueToException = true;
+            initialBlocking.push({
+              code: 'PAGE_EXCEPTION_INVALID_DATES',
+              message: `Offer on Page ${pageNumber} has applied exception with missing or invalid dates.`,
+              severity: 'error'
+            });
+          }
+        } else if (pageResolution.resolution === 'exempt') {
+          initialWarnings.push({
+            code: 'PAGE_VALIDITY_EXCEPTION_EXEMPT',
+            message: `Offer on Page ${pageNumber} inherits general leaflet dates. Page exception marked exempt: ${pageResolution.reason || 'Documented review'}.`,
+            severity: 'warning'
+          });
+        } else if (pageResolution.resolution === 'quarantined') {
+          isQuarantinedDueToException = true;
+          initialBlocking.push({
+            code: 'PAGE_EXCEPTION_QUARANTINE',
+            message: `Offer on Page ${pageNumber} quarantined by operator decision: ${pageResolution.reason || 'Exception unresolved'}.`,
+            severity: 'error'
+          });
+        }
+      }
+    }
+  }
+
   const canonical: CanonicalOffer = {
     source: {
       leaflet_id: trustedContext.leafletId || 'default_leaflet',
@@ -680,8 +919,8 @@ export function mapRev1OfferToCanonical(input: MapRev1OfferToCanonicalInput): Ca
       location_scope: trustedContext.locationScope,
       city_id: trustedContext.cityId,
       region_id: trustedContext.regionId,
-      offer_start_date: trustedContext.offerStartDate,
-      offer_end_date: trustedContext.offerEndDate
+      offer_start_date: effectiveStartDate,
+      offer_end_date: effectiveEndDate
     },
     product: {
       title_ar: offer.arabic_title,
@@ -768,8 +1007,8 @@ export function mapRev1OfferToCanonical(input: MapRev1OfferToCanonicalInput): Ca
       extraction_confidence: offer.confidence >= 0.9 ? 'high' : 'medium',
       validation_confidence: 'high',
       comparison_confidence: 'medium',
-      blocking_errors: [],
-      non_blocking_warnings: []
+      blocking_errors: initialBlocking,
+      non_blocking_warnings: initialWarnings
     },
     style_validation: {
       validation_result: 'pass',
@@ -826,6 +1065,12 @@ export function mapRev1OfferToCanonical(input: MapRev1OfferToCanonicalInput): Ca
   canonical.quality.comparison_confidence = comparisonResult.comparison_confidence;
 
   applyPublishDecisionToCanonicalOffer(canonical, decision);
+
+  if (isQuarantinedDueToException) {
+    canonical.quality.publish_decision = 'skip_or_quarantine';
+    canonical.pre_publish.preview_eligible = false;
+    canonical.pre_publish.preview_group = 'skip_or_quarantine';
+  }
 
   // Attach contract_v2 and schema_version per WIFRAN-04
   canonical.schema_version = 'wifran.extractor.offer/2.0';

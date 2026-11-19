@@ -6,17 +6,6 @@ keys/
 Supabase.txt
 
 # Local Processing, Leaflets & Large Extracts
-Extracts/
-Extracts_QA/
-Leaflets/
-*.pdf
-training-data/
-training_data/
-ocr-test-output/
-tmp/
-release/
-json/
-metadata/
 
 # Dependencies & Python Runtimes
 node_modules/
@@ -40,3 +29,23 @@ mistral-ocr-test.json
 # System files
 .DS_Store
 Thumbs.db
+
+# Testing Backups
+My_Backups/
+
+# Temporary files and test data
+temp/
+tmp/
+test-fixtures/
+tests/
+training_data/
+training-data/
+workspaces_uat/
+Extracts/
+Extracts_QA/
+Leaflets/
+*.pdf
+ocr-test-output/
+release/
+json/
+metadata/

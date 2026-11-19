@@ -42,12 +42,31 @@ export function isGeminiConfigured(): boolean {
 }
 
 export function getGeminiClient(customApiKey?: string): GoogleGenAI {
+  if (process.env.WIFRAN_OFFLINE_UAT === '1') {
+    throw new Error('OFFLINE_UAT_GUARD: Live Gemini API network calls are strictly blocked in Offline UAT Mode.');
+  }
   const credsPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
   const projectId = process.env.GCP_PROJECT_ID;
   const location = process.env.GCP_LOCATION || 'global';
+  const backendPreference = process.env.GEMINI_API_BACKEND; // Optional explicit override: 'developer' | 'vertex'
 
-  // 1. IF GOOGLE_APPLICATION_CREDENTIALS and GCP_PROJECT_ID exist -> Vertex AI configuration
-  if (credsPath && projectId && !customApiKey) {
+  // 1. IF explicitly requested Developer API, or customApiKey provided
+  if (customApiKey || backendPreference === 'developer') {
+    const apiKey = customApiKey || getGeminiApiKey();
+    if (!apiKey || apiKey.includes('your_actual_gemini_api_key_here')) {
+      throw new Error('MISSING_GEMINI_API_KEY: Developer API backend requested but GEMINI_API_KEY is not configured.');
+    }
+    const cacheKey = `api_${apiKey}`;
+    if (cachedClient && cachedClientMode === cacheKey) {
+      return cachedClient;
+    }
+    cachedClient = new GoogleGenAI({ apiKey });
+    cachedClientMode = cacheKey;
+    return cachedClient;
+  }
+
+  // 2. DEFAULT OPERATIONAL CONFIGURATION: Vertex AI via Service Account
+  if (credsPath && projectId) {
     let resolvedCredsPath = credsPath;
     if (!isAbsolute(resolvedCredsPath)) {
       resolvedCredsPath = resolve(process.cwd(), resolvedCredsPath);
@@ -79,14 +98,13 @@ export function getGeminiClient(customApiKey?: string): GoogleGenAI {
     return cachedClient;
   }
 
-  // 2. ELSE IF GEMINI_API_KEY exists -> Fallback to standard initialization
-  const apiKey = customApiKey || getGeminiApiKey();
+  // 3. Fallback to GEMINI_API_KEY if Vertex credentials are not present
+  const apiKey = getGeminiApiKey();
   if (apiKey && !apiKey.includes('your_actual_gemini_api_key_here')) {
     const cacheKey = `api_${apiKey}`;
     if (cachedClient && cachedClientMode === cacheKey) {
       return cachedClient;
     }
-
     cachedClient = new GoogleGenAI({ apiKey });
     cachedClientMode = cacheKey;
     return cachedClient;

@@ -1,10 +1,23 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { PageOfferCanonicalMapper } from '../pageOfferCanonicalMapper';
 import type { PageFirstExtractedOffer } from '../../../shared/types/pageFirstOfferExtraction';
 import type { PageOfferEvidenceLink } from '../../../shared/types/pageOfferEvidenceLink';
 import type { AutomaticOfferCrop } from '../../../shared/types/automaticOfferCrop';
 
 describe('Page-First End-to-End Local Chain & Integration Tests (Sections 53 & 55)', () => {
+  // Pinned reference dates & Date-only fake clock ensure timezone- and future-date determinism
+  const activeOfferStartDate = '2026-10-10';
+  const activeOfferEndDate = '2026-10-17';
+
+  beforeEach(() => {
+    vi.useFakeTimers({ toFake: ['Date'] });
+    vi.setSystemTime(new Date('2026-10-12T12:00:00.000Z'));
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('Complete Local Chain: mock OCR -> annotation -> evidence link -> crops -> CanonicalOffer -> deterministic safety', () => {
     // 1. Mock Raw OCR & Annotation
     const mockOffer: PageFirstExtractedOffer = {
@@ -120,8 +133,8 @@ describe('Page-First End-to-End Local Chain & Integration Tests (Sections 53 & 5
         locationScope: 'national',
         cityId: null,
         regionId: null,
-        offerStartDate: '2026-10-15',
-        offerEndDate: '2026-10-22'
+        offerStartDate: activeOfferStartDate,
+        offerEndDate: activeOfferEndDate
       },
       rawMetadata: {
         isRetry: false,
@@ -198,8 +211,8 @@ describe('Page-First End-to-End Local Chain & Integration Tests (Sections 53 & 5
         locationScope: 'national',
         cityId: null,
         regionId: null,
-        offerStartDate: '2026-10-15',
-        offerEndDate: '2026-10-22'
+        offerStartDate: activeOfferStartDate,
+        offerEndDate: activeOfferEndDate
       },
       rawMetadata: {
         isRetry: false,

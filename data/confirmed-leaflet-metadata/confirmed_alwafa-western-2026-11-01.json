@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "2.0",
+  "leafletFingerprint": "alwafa-western-2026-11-01",
+  "sourceFileName": "wifran-phase4-test-b2LiQe",
+  "record": {
+    "schemaVersion": "2.0",
+    "leafletFingerprint": "alwafa-western-2026-11-01",
+    "sourceFileName": "wifran-phase4-test-b2LiQe",
+    "retailer": {
+      "detectedName": "alwafa",
+      "resolvedRetailerId": "alwafa",
+      "resolvedSlug": null,
+      "resolvedNameEn": null,
+      "resolvedNameAr": null,
+      "status": "confirmed",
+      "confidence": 1,
+      "sourcePage": 1,
+      "evidenceText": "Migrated from operator-confirmed staged draft header",
+      "isAmbiguous": false
+    },
+    "validity": {
+      "startDate": "2026-11-01",
+      "endDate": "2026-11-07",
+      "status": "confirmed",
+      "confidence": 1,
+      "sourcePage": 1,
+      "rawPrintedText": "2026-11-01 to 2026-11-07",
+      "isAmbiguous": false,
+      "calendarType": "gregorian",
+      "isException": false
+    },
+    "locationScope": "region",
+    "cityId": null,
+    "regionId": "b144b6c8-2222-4444-b000-000000000002",
+    "locationSlug": "Western",
+    "conflictingValidity": [],
+    "pageExceptions": [],
+    "operatorConfirmed": true,
+    "confirmedAt": "2026-11-08T20:22:37.010Z",
+    "confirmedBy": "operator_migration",
+    "discoveryMethod": "operator_manual",
+    "rawEvidence": [],
+    "operatorEdits": {
+      "editedRetailerId": "alwafa",
+      "editedStartDate": "2026-11-01",
+      "editedEndDate": "2026-11-07",
+      "editedAt": "2026-11-08T20:22:37.010Z"
+    }
+  },
+  "savedAt": "2026-11-08T20:22:37.010Z"
+}

@@ -1,5 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
-import { loadEnvConfig } from '../config/env'
+import { resolveDatabaseConfig } from './databaseEnvironmentResolver'
 import { error as logError } from '../logging/logger'
 import WebSocket from 'ws'
 
@@ -18,29 +18,32 @@ export function setSupabaseAdminClient(client: SupabaseClient | null | any): voi
 }
 
 export function getSupabaseAdminClient(): SupabaseClient {
+  if (process.env.WIFRAN_OFFLINE_UAT === '1') {
+    throw new Error('OFFLINE_UAT_GUARD: Remote Supabase database operations are strictly blocked in Offline UAT Mode.')
+  }
+
   if (supabaseAdminClient) {
     return supabaseAdminClient
   }
 
-  const config = loadEnvConfig()
-  const cleanUrl = config.supabase.url.trim().replace(/\/rest\/v1\/?$/, '').replace(/\/+$/, '')
-  
-  if (!cleanUrl || !config.supabase.serviceRoleKey) {
-    const errorMsg = 'Supabase URL or Service Role Key is missing in environment variables. Database operations will fail.'
+  try {
+    const config = resolveDatabaseConfig('PRODUCTION_UI')
+
+    supabaseAdminClient = createClient(
+      config.cleanUrl,
+      config.serviceRoleKey,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false
+        }
+      }
+    )
+
+    return supabaseAdminClient
+  } catch (err: any) {
+    const errorMsg = `[SupabaseAdminClient] Failed to initialize guarded PRODUCTION client: ${err?.message || err}`
     logError(errorMsg)
     throw new Error(errorMsg)
   }
-
-  supabaseAdminClient = createClient(
-    cleanUrl,
-    config.supabase.serviceRoleKey,
-    {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false
-      }
-    }
-  )
-
-  return supabaseAdminClient
 }

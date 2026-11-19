@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import type { StagedLeafletHeader, StagedLeafletDraft } from '../../../../shared/types/productImageEnrichment'
+import { mergeSupermarketCatalogLists } from '../../../../shared/utils/supermarketCandidateUtils'
 
 export interface MetadataCompletionModalProps {
   jobDir: string
   currentHeader: StagedLeafletHeader
+  pendingSupermarkets?: SupermarketOption[]
   missingFields?: Array<'supermarket' | 'region' | 'validFrom' | 'validTo'>
   validationWarnings?: string[]
   onClose: () => void
@@ -15,6 +17,7 @@ interface SupermarketOption {
   name_en: string
   name_ar: string
   slug?: string
+  pendingCatalogCreation?: boolean
 }
 
 interface RegionOption {
@@ -27,6 +30,7 @@ interface RegionOption {
 export function MetadataCompletionModal({
   jobDir,
   currentHeader,
+  pendingSupermarkets = [],
   missingFields = [],
   validationWarnings = [],
   onClose,
@@ -74,13 +78,14 @@ export function MetadataCompletionModal({
 
         if (!isMounted) return
 
-        setSupermarkets(sms)
+        const mergedSms = mergeSupermarketCatalogLists(sms, pendingSupermarkets)
+        setSupermarkets(mergedSms)
         setRegions(regs)
 
         // Pre-fill supermarket
         const currentSm = (currentHeader.supermarketId || '').trim()
         if (currentSm) {
-          const found = sms.find((s) => s.id === currentSm || s.slug === currentSm || s.name_en?.toLowerCase() === currentSm.toLowerCase())
+          const found = mergedSms.find((s) => s.id === currentSm || s.slug === currentSm || s.name_en?.toLowerCase() === currentSm.toLowerCase())
           if (found) {
             setSelectedSupermarket(found.id)
           } else {
@@ -131,23 +136,23 @@ export function MetadataCompletionModal({
     const isNewSm = selectedSupermarket === '__ADD_NEW__'
     const smVal = isNewSm ? customSupermarket.trim() : selectedSupermarket.trim()
     if (!smVal) {
-      setFormError('Please select or specify a supermarket (SMN).')
+      setFormError('Please select or specify a supermarket.')
       return
     }
 
     const isNewReg = selectedRegion === '__ADD_NEW__'
     const regVal = isNewReg ? customRegion.trim() : selectedRegion.trim()
     if (!regVal) {
-      setFormError('Please select or specify a region (REG).')
+      setFormError('Please select or specify a region.')
       return
     }
 
     if (!validFrom) {
-      setFormError('Please select a valid Offer Start Date (SD).')
+      setFormError('Please select a valid Offer Start Date.')
       return
     }
     if (!validTo) {
-      setFormError('Please select a valid Offer End Date (ED).')
+      setFormError('Please select a valid Offer End Date.')
       return
     }
     if (new Date(validTo).getTime() < new Date(validFrom).getTime()) {
@@ -276,7 +281,7 @@ export function MetadataCompletionModal({
                 <span>Review & Confirm Leaflet Metadata</span>
               </div>
               <p style={{ margin: 0, fontSize: '0.8rem', color: '#1d4ed8' }}>
-                Supermarket and Region were derived from the PDF filename, and Offer Dates were imported from the Step 2 CSV. Please review and confirm below before publishing to the database.
+                Review and confirm the discovered or operator-entered Supermarket, Region/Scope, and Offer Validity Dates below before publishing to the database.
               </p>
             </div>
           ) : (
@@ -296,7 +301,7 @@ export function MetadataCompletionModal({
                   <span>Missing or Unverified Metadata Detected</span>
                 </div>
                 <p style={{ margin: '0 0 6px 0', fontSize: '0.8rem', color: '#b45309' }}>
-                  The imported Step 2 CSV lacks complete header metadata. Candidate images have been successfully staged; please verify or supply the missing fields below before publishing.
+                  Leaflet header metadata is incomplete. Candidate product/offer images remain staged; please verify or supply the missing metadata below before publishing.
                 </p>
                 {validationWarnings.length > 0 && (
                   <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '0.8rem' }}>
@@ -324,7 +329,7 @@ export function MetadataCompletionModal({
             </div>
           )}
 
-          {/* 1. Supermarket (SMN) */}
+          {/* 1. Supermarket */}
           <div
             style={{
               padding: isFieldMissing('supermarket') ? '10px' : '0',
@@ -335,7 +340,7 @@ export function MetadataCompletionModal({
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
               <label style={{ fontSize: '0.85rem', fontWeight: 600, color: '#334155' }}>
-                Supermarket (SMN)
+                Supermarket
               </label>
               {isFieldMissing('supermarket') && (
                 <span style={{ fontSize: '0.75rem', color: '#c2410c', fontWeight: 600 }}>Required</span>
@@ -351,12 +356,12 @@ export function MetadataCompletionModal({
               style={{ width: '100%', fontSize: '0.9rem', marginBottom: selectedSupermarket === '__ADD_NEW__' ? '8px' : '0' }}
             >
               <option value="">{loadingData ? 'Loading supermarkets...' : 'Select a supermarket...'}</option>
-              <option value="__ADD_NEW__">➕ Add New Supermarket...</option>
               {supermarkets.map((sm) => (
                 <option key={sm.id} value={sm.id}>
-                  {sm.name_en || sm.slug} {sm.name_ar ? `(${sm.name_ar})` : ''}
+                  {sm.name_en || sm.slug} {sm.name_ar ? `(${sm.name_ar})` : ''}{sm.pendingCatalogCreation ? ' [New — Save on Publish]' : ''}
                 </option>
               ))}
+              <option value="__ADD_NEW__">New supermarket...</option>
             </select>
 
             {selectedSupermarket === '__ADD_NEW__' && (
@@ -374,7 +379,7 @@ export function MetadataCompletionModal({
             )}
           </div>
 
-          {/* 2. Region (REG) */}
+          {/* 2. Region */}
           <div
             style={{
               padding: isFieldMissing('region') ? '10px' : '0',
@@ -385,7 +390,7 @@ export function MetadataCompletionModal({
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
               <label style={{ fontSize: '0.85rem', fontWeight: 600, color: '#334155' }}>
-                Region / City (REG)
+                Region / City
               </label>
               {isFieldMissing('region') && (
                 <span style={{ fontSize: '0.75rem', color: '#c2410c', fontWeight: 600 }}>Required</span>
@@ -423,7 +428,7 @@ export function MetadataCompletionModal({
             )}
           </div>
 
-          {/* 3. Dates (SD & ED) */}
+          {/* 3. Offer Dates */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
             <div
               style={{
@@ -435,7 +440,7 @@ export function MetadataCompletionModal({
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
                 <label style={{ fontSize: '0.85rem', fontWeight: 600, color: '#334155' }}>
-                  Start Date (SD)
+                  Start Date
                 </label>
                 {isFieldMissing('validFrom') && (
                   <span style={{ fontSize: '0.7rem', color: '#c2410c', fontWeight: 600 }}>Required</span>
@@ -462,7 +467,7 @@ export function MetadataCompletionModal({
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
                 <label style={{ fontSize: '0.85rem', fontWeight: 600, color: '#334155' }}>
-                  End Date (ED)
+                  End Date
                 </label>
                 {isFieldMissing('validTo') && (
                   <span style={{ fontSize: '0.7rem', color: '#c2410c', fontWeight: 600 }}>Required</span>

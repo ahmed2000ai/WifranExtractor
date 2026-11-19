@@ -11,6 +11,11 @@ export function registerPageFirstIpcHandlers(): void {
     trustedContext: any;
     overrideModel?: string;
     maxOffers?: number;
+    promptProfile?: import('../../shared/schemas/leafletPageExtractionSchema').LeafletPromptProfile;
+    schemaProfile?: import('../../shared/schemas/leafletPageExtractionSchema').LeafletSchemaProfile;
+    schemaVersion?: import('../../shared/schemas/leafletPageExtractionSchema').LeafletSchemaVersion;
+    executionMode?: 'standard' | 'flex';
+    forceReextract?: boolean;
   }) => {
     const win = BrowserWindow.fromWebContents(event.sender);
     const onProgress = (p: PageFirstProgressEvent) => {
@@ -33,6 +38,11 @@ export function registerPageFirstIpcHandlers(): void {
         rolloutMode: 'pilot',
         overrideModel: input.overrideModel,
         maxOffers: input.maxOffers,
+        promptProfile: input.promptProfile,
+        schemaProfile: input.schemaProfile,
+        schemaVersion: input.schemaVersion,
+        executionMode: input.executionMode,
+        forceReextract: input.forceReextract,
         onProgress,
         onLog
       });
@@ -55,6 +65,11 @@ export function registerPageFirstIpcHandlers(): void {
     pageNumber: number;
     trustedContext: any;
     maxOffers?: number;
+    promptProfile?: import('../../shared/schemas/leafletPageExtractionSchema').LeafletPromptProfile;
+    schemaProfile?: import('../../shared/schemas/leafletPageExtractionSchema').LeafletSchemaProfile;
+    schemaVersion?: import('../../shared/schemas/leafletPageExtractionSchema').LeafletSchemaVersion;
+    executionMode?: 'standard' | 'flex';
+    forceReextract?: boolean;
   }) => {
     const win = BrowserWindow.fromWebContents(event.sender);
     const onProgress = (p: PageFirstProgressEvent) => {
@@ -78,6 +93,11 @@ export function registerPageFirstIpcHandlers(): void {
         trustedContext: input.trustedContext,
         rolloutMode: 'pilot',
         maxOffers: input.maxOffers ?? 2,
+        promptProfile: input.promptProfile,
+        schemaProfile: input.schemaProfile,
+        schemaVersion: input.schemaVersion,
+        executionMode: input.executionMode,
+        forceReextract: input.forceReextract,
         onProgress,
         onLog
       });
@@ -102,6 +122,11 @@ export function registerPageFirstIpcHandlers(): void {
     trustedContext: any;
     overrideModel?: string;
     rolloutMode?: 'pilot' | 'primary';
+    promptProfile?: import('../../shared/schemas/leafletPageExtractionSchema').LeafletPromptProfile;
+    schemaProfile?: import('../../shared/schemas/leafletPageExtractionSchema').LeafletSchemaProfile;
+    schemaVersion?: import('../../shared/schemas/leafletPageExtractionSchema').LeafletSchemaVersion;
+    executionMode?: 'standard' | 'flex';
+    forceReextract?: boolean;
   }) => {
     const win = BrowserWindow.fromWebContents(event.sender);
     const onProgress = (p: PageFirstProgressEvent) => {
@@ -123,6 +148,11 @@ export function registerPageFirstIpcHandlers(): void {
         trustedContext: input.trustedContext,
         rolloutMode: input.rolloutMode || 'pilot',
         overrideModel: input.overrideModel,
+        promptProfile: input.promptProfile,
+        schemaProfile: input.schemaProfile,
+        schemaVersion: input.schemaVersion,
+        executionMode: input.executionMode,
+        forceReextract: input.forceReextract,
         onProgress,
         onLog
       });
@@ -142,7 +172,12 @@ export function registerPageFirstIpcHandlers(): void {
   ipcMain.handle('pageFirst:resume', async (event, input: {
     packageDir: string;
     pdfBaseName: string;
+    pages?: number[];
     trustedContext: any;
+    promptProfile?: import('../../shared/schemas/leafletPageExtractionSchema').LeafletPromptProfile;
+    schemaProfile?: import('../../shared/schemas/leafletPageExtractionSchema').LeafletSchemaProfile;
+    schemaVersion?: import('../../shared/schemas/leafletPageExtractionSchema').LeafletSchemaVersion;
+    executionMode?: 'standard' | 'flex';
   }) => {
     const win = BrowserWindow.fromWebContents(event.sender);
     const onProgress = (p: PageFirstProgressEvent) => {
@@ -160,8 +195,13 @@ export function registerPageFirstIpcHandlers(): void {
       return await sharedPageFirstPipelineService.runPipeline({
         packageDir: input.packageDir,
         pdfBaseName: input.pdfBaseName,
+        pages: input.pages,
         trustedContext: input.trustedContext,
         rolloutMode: 'pilot',
+        promptProfile: input.promptProfile,
+        schemaProfile: input.schemaProfile,
+        schemaVersion: input.schemaVersion,
+        executionMode: input.executionMode,
         onProgress,
         onLog
       });

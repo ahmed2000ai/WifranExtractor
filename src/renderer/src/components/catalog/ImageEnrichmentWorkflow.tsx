@@ -205,7 +205,13 @@ export function ImageEnrichmentWorkflow({ onSuccess }: ImageEnrichmentWorkflowPr
   // Filtered rows for preview table
   const displayedRows: ValidatedCsvRow[] = (validationSummary?.rows || []).filter((r) => {
     if (tableFilter === 'valid') return r.status === 'valid'
-    if (tableFilter === 'skipped') return r.status === 'blank_skipped' || r.status === 'already_has_image'
+    if (tableFilter === 'skipped') {
+      return (
+        r.status === 'blank_skipped' ||
+        r.status === 'already_has_image' ||
+        r.status === 'legacy_ignored'
+      )
+    }
     if (tableFilter === 'errors')
       return (
         r.status === 'invalid_url' ||
@@ -490,6 +496,21 @@ export function ImageEnrichmentWorkflow({ onSuccess }: ImageEnrichmentWorkflowPr
               </div>
             </div>
 
+            {/* Non-blocking Warnings Alert (e.g. Ignored Legacy Metadata/Page Rows) */}
+            {validationSummary.warnings && validationSummary.warnings.length > 0 && (
+              <div className="p-3 bg-amber-950/50 border border-amber-800 rounded-lg text-xs space-y-1">
+                <div className="font-bold text-amber-300 flex items-center gap-1.5">
+                  <span>⚠️</span>
+                  <span>Legacy Rows Ignored Cleanly ({validationSummary.warnings.length})</span>
+                </div>
+                <ul className="list-disc list-inside text-amber-200 text-[11px] space-y-0.5 max-h-32 overflow-y-auto">
+                  {validationSummary.warnings.map((w, i) => (
+                    <li key={i}>{w}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             {/* Error List Alert if any */}
             {validationSummary.errors.length > 0 && (
               <div className="p-3 bg-red-950/60 border border-red-800 rounded-lg text-xs space-y-1">
@@ -539,7 +560,7 @@ export function ImageEnrichmentWorkflow({ onSuccess }: ImageEnrichmentWorkflowPr
                       : 'text-slate-400 hover:text-slate-200'
                   }`}
                 >
-                  Skipped ({validationSummary.blankSkippedCount + validationSummary.alreadyHasImageCount})
+                  Skipped ({validationSummary.blankSkippedCount + validationSummary.alreadyHasImageCount + (validationSummary.ignoredLegacyRowsCount || 0)})
                 </button>
                 {validationSummary.errorCount > 0 && (
                   <button
@@ -612,6 +633,8 @@ export function ImageEnrichmentWorkflow({ onSuccess }: ImageEnrichmentWorkflowPr
                                 ? 'bg-emerald-950 text-emerald-300 border border-emerald-800'
                                 : r.status === 'blank_skipped'
                                 ? 'bg-slate-800 text-slate-400'
+                                : r.status === 'legacy_ignored'
+                                ? 'bg-slate-800 text-amber-300 border border-amber-800/60'
                                 : r.status === 'already_has_image'
                                 ? 'bg-amber-950 text-amber-300 border border-amber-800'
                                 : 'bg-red-950 text-red-300 border border-red-800'
@@ -621,12 +644,19 @@ export function ImageEnrichmentWorkflow({ onSuccess }: ImageEnrichmentWorkflowPr
                               ? 'Valid'
                               : r.status === 'blank_skipped'
                               ? 'Blank'
+                              : r.status === 'legacy_ignored'
+                              ? 'Legacy Ignored'
                               : r.status === 'already_has_image'
                               ? 'Has Image'
                               : r.status}
                           </span>
                           {r.issueMessage && (
-                            <div className="text-[10px] text-red-400 font-sans mt-0.5" title={r.issueMessage}>
+                            <div
+                              className={`text-[10px] font-sans mt-0.5 ${
+                                r.status === 'legacy_ignored' ? 'text-amber-300' : 'text-red-400'
+                              }`}
+                              title={r.issueMessage}
+                            >
                               {r.issueMessage}
                             </div>
                           )}

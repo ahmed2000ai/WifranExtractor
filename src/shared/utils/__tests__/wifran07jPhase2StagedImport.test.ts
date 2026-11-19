@@ -200,7 +200,7 @@ describe('WIFRAN-07J Phase 2: Ingest Step 2 CSV, AI Corrections, DB Re-Match, Lo
   })
 
   describe('1. Step 2 CSV Ingestion, 2-Column Format & Deduplicated Resolution', () => {
-    it('Ingests strictly 2-column CSV with SMN, REG, SD, ED, ignores FPTSP/LPTSP, and deletes boundary pages from tmp bucket', async () => {
+    it('Cleanly ignores legacy FPTSP/LPTSP/SMN/REG/SD/ED rows, does not mutate header or delete tmp pages, and stages candidate image', async () => {
       const initialDraft: StagedLeafletDraft = {
         schemaVersion: 'wifran.staged.draft/1.0',
         jobDir: tmpDir,
@@ -234,7 +234,7 @@ describe('WIFRAN-07J Phase 2: Ingest Step 2 CSV, AI Corrections, DB Re-Match, Lo
       }
       await saveStagedLeafletDraft(tmpDir, initialDraft)
 
-      // Strictly 2-column returned Step 2 CSV
+      // Legacy 2-column CSV containing deprecated boundary/metadata rows
       const csv = `Image_Ref,image_url
 O1,https://example.com/candidate-item.png
 FPTSP,https://storage.wifran.com/tmp/hash-abc_first.png
@@ -249,31 +249,28 @@ ED,2026-11-07
         supabaseClient: mockSupabase
       })
 
-      // SMN resolved to existing Panda ID
-      expect(res.metadataUpdated.supermarketId).toBe('c2cc16c2-0001-4444-b000-c00000000001')
-      // REG resolved to Jeddah / Western Region
-      expect(res.metadataUpdated.region).toBe('Jeddah')
-      expect(res.metadataUpdated.validFrom).toBe('2026-11-01')
-      expect(res.metadataUpdated.validTo).toBe('2026-11-07')
+      expect(res.errors).toEqual([])
+      expect(res.ignoredLegacyRowsCount).toBe(6)
+      expect(res.metadataUpdated).toEqual({})
 
       // Candidate image downloaded
       expect(res.candidateImagesDownloadedCount).toBe(1)
       const draft = await loadStagedLeafletDraft(tmpDir)
-      expect(draft?.header.supermarketId).toBe('c2cc16c2-0001-4444-b000-c00000000001')
-      expect(draft?.header.region).toBe('Jeddah')
-      expect(draft?.header.validFrom).toBe('2026-11-01')
-      expect(draft?.header.validTo).toBe('2026-11-07')
-      expect((draft?.items[0] as any).validFrom).toBe('2026-11-01')
-      expect((draft?.items[0] as any).validTo).toBe('2026-11-07')
+      // Header metadata untouched by legacy CSV rows (Stage 2 remains authoritative)
+      expect(draft?.header.supermarketId).toBeNull()
+      expect(draft?.header.region).toBeNull()
+      expect(draft?.header.validFrom).toBeNull()
+      expect(draft?.header.validTo).toBeNull()
+      expect((draft?.items[0] as any).validFrom).toBeUndefined()
+      expect((draft?.items[0] as any).validTo).toBeUndefined()
 
-      // Temporary boundary page images in 'tmp' bucket were deleted
-      expect(mockDb.removedTmpPaths).toContain('hash-abc_first.png')
-      expect(mockDb.removedTmpPaths).toContain('hash-abc_last.png')
-      expect(draft?.header.firstPageTmpPath).toBeNull()
-      expect(draft?.header.lastPageTmpPath).toBeNull()
+      // Historical 'tmp' paths are NOT automatically deleted
+      expect(mockDb.removedTmpPaths).toEqual([])
+      expect(draft?.header.firstPageTmpPath).toBe('hash-abc_first.png')
+      expect(draft?.header.lastPageTmpPath).toBe('hash-abc_last.png')
     })
 
-    it('Detects missing or invalid metadata rows (missing SMN and SD) in Step 2 CSV, flags missingMetadata: true, while successfully staging candidate images and offers', async () => {
+    it('Detects incomplete Stage 2 header metadata even when legacy CSV supplies REG/ED, while staging candidate images cleanly', async () => {
       const initialDraft: StagedLeafletDraft = {
         schemaVersion: 'wifran.staged.draft/1.0',
         jobDir: tmpDir,
@@ -303,7 +300,7 @@ ED,2026-11-07
       }
       await saveStagedLeafletDraft(tmpDir, initialDraft)
 
-      // CSV lacking SMN and SD (only REG and ED present)
+      // Legacy CSV containing REG and ED (must be ignored safely without mutating header)
       const csv = `Image_Ref,image_url
 O1,https://example.com/shampoo-candidate.png
 REG,Jeddah
@@ -314,23 +311,25 @@ ED,2026-11-20
         supabaseClient: mockSupabase
       })
 
-      // Metadata completeness checks
+      expect(res.errors).toEqual([])
+      expect(res.ignoredLegacyRowsCount).toBe(2)
+
+      // Metadata completeness checks reflect Stage 2 draft.header (not legacy CSV rows)
       expect(res.missingMetadata).toBe(true)
-      expect(res.missingFields).toContain('supermarket')
-      expect(res.missingFields).toContain('validFrom')
-      expect(res.missingFields).not.toContain('region')
-      expect(res.missingFields).not.toContain('validTo')
+      expect(res.missingFields).toEqual(expect.arrayContaining(['supermarket', 'region', 'validFrom', 'validTo']))
+      expect(res.requiresOperatorMetadataConfirmation).toBe(true)
       expect(res.validationWarnings).toBeDefined()
-      expect(res.validationWarnings?.some((w) => w.includes('SMN'))).toBe(true)
-      expect(res.validationWarnings?.some((w) => w.includes('SD'))).toBe(true)
+      expect(res.validationWarnings?.some((w) => w.includes('Supermarket'))).toBe(true)
+      expect(res.validationWarnings?.some((w) => w.includes('Start Date'))).toBe(true)
+      expect(res.validationWarnings?.some((w) => w.includes('Legacy metadata/boundary row'))).toBe(true)
 
       // Still successfully downloaded and staged the candidate image
       expect(res.candidateImagesDownloadedCount).toBe(1)
       const updatedDraft = await loadStagedLeafletDraft(tmpDir)
       expect(updatedDraft?.items[0].candidateImageUrl).toBe('https://example.com/shampoo-candidate.png')
       expect(updatedDraft?.items[0].selectedImageSource).toBe('candidate')
-      expect(updatedDraft?.header.region).toBe('Jeddah')
-      expect(updatedDraft?.header.validTo).toBe('2026-11-20')
+      expect(updatedDraft?.header.region).toBeNull()
+      expect(updatedDraft?.header.validTo).toBeNull()
     })
 
     it('Resolves slight variations in SMN (Hyper Panda, أسواق بنده, Panda Supermarket) to identical existing supermarket without creating duplicates', async () => {
@@ -429,7 +428,7 @@ O1,"L'Oreal Elvive Shampoo 400ml | لوريال الفيف شامبو ٤٠٠ م�
       expect(updatedItem?.selectedImageSource).toBe('existing_db')
     })
 
-    it('Parses M_ metadata whether values are in col 2 or col 6, ignoring page URLs', async () => {
+    it('Ignores legacy M_ metadata and M_PAGE_* rows safely without mutating header or fetching page URLs', async () => {
       const initialDraft: StagedLeafletDraft = {
         schemaVersion: 'wifran.staged.draft/1.0',
         jobDir: tmpDir,
@@ -449,7 +448,7 @@ O1,"L'Oreal Elvive Shampoo 400ml | لوريال الفيف شامبو ٤٠٠ م�
       }
       await saveStagedLeafletDraft(tmpDir, initialDraft)
 
-      // CSV with metadata values in different columns
+      // CSV with legacy M_ metadata values in different columns
       const csv = `Image_Ref,Title_EN,Title_AR,Brand,Size_Or_Weight,image_url
 M_PAGE_FIRST,,,,"https://storage.wifran.com/first.png"
 M_PAGE_LAST,,,,"https://storage.wifran.com/last.png"
@@ -463,16 +462,16 @@ M_VALID_TO,,,,,"2026-11-07"
         supabaseClient: mockSupabase
       })
 
-      expect(res.metadataUpdated.supermarketId).toBe('alwafa')
-      expect(res.metadataUpdated.region).toBe('Western')
-      expect(res.metadataUpdated.validFrom).toBe('2026-11-01')
-      expect(res.metadataUpdated.validTo).toBe('2026-11-07')
+      expect(res.errors).toEqual([])
+      expect(res.ignoredLegacyRowsCount).toBe(6)
+      expect(res.candidateImagesDownloadedCount).toBe(0)
+      expect(res.metadataUpdated).toEqual({})
 
       const draft = await loadStagedLeafletDraft(tmpDir)
-      expect(draft?.header.supermarketId).toBe('alwafa')
-      expect(draft?.header.region).toBe('Western')
-      expect(draft?.header.validFrom).toBe('2026-11-01')
-      expect(draft?.header.validTo).toBe('2026-11-07')
+      expect(draft?.header.supermarketId).toBeNull()
+      expect(draft?.header.region).toBeNull()
+      expect(draft?.header.validFrom).toBeNull()
+      expect(draft?.header.validTo).toBeNull()
       // Page URLs must remain unchanged
       expect(draft?.header.firstPagePublicUrl).toBe('https://storage.wifran.com/first.png')
     })
@@ -864,7 +863,7 @@ M_VALID_TO,,,,,"2026-11-07"
       expect(updated.header.headerModifiedByOperator).toBe(true)
     })
 
-    it('Preserves filename-derived supermarketId and region when Step 2 CSV contains only SD and ED, deletes tmp boundary pages, and returns requiresOperatorMetadataConfirmation = true', async () => {
+    it('Preserves Stage 2 metadata when legacy SD/ED rows appear, does not delete historical tmp pages, and returns requiresOperatorMetadataConfirmation = false when Stage 2 header is already complete', async () => {
       const initialDraft: StagedLeafletDraft = {
         schemaVersion: 'wifran.staged.draft/1.0',
         jobDir: tmpDir,
@@ -874,13 +873,13 @@ M_VALID_TO,,,,,"2026-11-07"
         header: {
           supermarketId: 'alwafa',
           region: 'Jeddah',
-          validFrom: null,
-          validTo: null,
+          validFrom: '2026-11-01',
+          validTo: '2026-11-07',
           firstPagePublicUrl: 'https://storage.wifran.com/tmp/alwafa_first.png',
           lastPagePublicUrl: 'https://storage.wifran.com/tmp/alwafa_last.png',
           firstPageTmpPath: 'alwafa_first.png',
           lastPageTmpPath: 'alwafa_last.png',
-          headerModifiedByOperator: false
+          headerModifiedByOperator: true
         },
         items: [
           {
@@ -899,43 +898,52 @@ M_VALID_TO,,,,,"2026-11-07"
       }
       await saveStagedLeafletDraft(tmpDir, initialDraft)
 
-      // Step 2 CSV returning ONLY SD and ED at bottom
-      const csv = `Image_Ref,image_url
+      // Legacy Step 2 CSV with different SD/ED must NOT overwrite Stage 2 confirmed header
+      const legacyCsv = `Image_Ref,image_url
 O1,https://example.com/olive-oil.png
 SD,2026-11-05
 ED,2026-11-12
 `
 
-      const res = await importStep2CsvIntoStagedDraft(tmpDir, csv, {
+      const res = await importStep2CsvIntoStagedDraft(tmpDir, legacyCsv, {
         mapFilePath: testMapPath,
         supabaseClient: mockSupabase
       })
 
-      // Filename-derived entities are preserved in draft header!
+      expect(res.errors).toEqual([])
+      expect(res.ignoredLegacyRowsCount).toBe(2)
       expect(res.draft.header.supermarketId).toBe('alwafa')
       expect(res.draft.header.region).toBe('Jeddah')
-      expect(res.draft.header.validFrom).toBe('2026-11-05')
-      expect(res.draft.header.validTo).toBe('2026-11-12')
-      expect(res.metadataUpdated.validFrom).toBe('2026-11-05')
-      expect(res.metadataUpdated.validTo).toBe('2026-11-12')
-
-      // Confirmation required gate is true
-      expect(res.requiresOperatorMetadataConfirmation).toBe(true)
+      expect(res.draft.header.validFrom).toBe('2026-11-01')
+      expect(res.draft.header.validTo).toBe('2026-11-07')
+      expect(res.requiresOperatorMetadataConfirmation).toBe(false)
       expect(res.missingMetadata).toBe(false)
       expect(res.missingFields).toEqual([])
-      expect(res.validationWarnings).toEqual([])
+      expect(res.validationWarnings).toHaveLength(2)
 
-      // Boundary pages auto-deleted from tmp bucket
-      expect(mockDb.removedTmpPaths).toContain('alwafa_first.png')
-      expect(mockDb.removedTmpPaths).toContain('alwafa_last.png')
+      // Historical tmp pages must NOT be auto-deleted
+      expect(mockDb.removedTmpPaths).toEqual([])
 
       const updatedDraft = await loadStagedLeafletDraft(tmpDir)
-      expect(updatedDraft?.header.supermarketId).toBe('alwafa')
-      expect(updatedDraft?.header.region).toBe('Jeddah')
-      expect(updatedDraft?.header.validFrom).toBe('2026-11-05')
-      expect(updatedDraft?.header.validTo).toBe('2026-11-12')
-      expect(updatedDraft?.header.firstPageTmpPath).toBeNull()
-      expect(updatedDraft?.header.lastPageTmpPath).toBeNull()
+      expect(updatedDraft?.header.validFrom).toBe('2026-11-01')
+      expect(updatedDraft?.header.validTo).toBe('2026-11-07')
+      expect(updatedDraft?.header.firstPageTmpPath).toBe('alwafa_first.png')
+      expect(updatedDraft?.header.lastPageTmpPath).toBe('alwafa_last.png')
+
+      // Modern P/O-only Step 3 CSV without SD/ED succeeds cleanly with zero warnings
+      const modernCsv = `Image_Ref,image_url
+O1,https://example.com/olive-oil.png
+`
+      const modernRes = await importStep2CsvIntoStagedDraft(tmpDir, modernCsv, {
+        mapFilePath: testMapPath,
+        supabaseClient: mockSupabase
+      })
+      expect(modernRes.errors).toEqual([])
+      expect(modernRes.ignoredLegacyRowsCount).toBe(0)
+      expect(modernRes.missingMetadata).toBe(false)
+      expect(modernRes.missingFields).toEqual([])
+      expect(modernRes.validationWarnings).toEqual([])
+      expect(modernRes.requiresOperatorMetadataConfirmation).toBe(false)
     })
   })
 })

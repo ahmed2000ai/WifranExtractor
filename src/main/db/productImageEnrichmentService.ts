@@ -2,6 +2,7 @@ import * as crypto from 'crypto'
 import * as dns from 'dns/promises'
 import * as net from 'net'
 import { getSupabaseAdminClient } from './supabaseAdminClient'
+import { assertNotOfflineUat } from '../config/offlineUatGuard'
 import {
   ValidatedCsvRow,
   CsvValidationSummary,
@@ -686,6 +687,16 @@ export async function validateProductImageCsvImport(
   const supabase = getSupabaseAdminClient()
   const dataRows = parsedRows.slice(1)
   const refMap = await loadOfferRefMap(options?.mapFilePath)
+  const LEGACY_SOURCING_ROW_REFS = new Set([
+    'FPTSP',
+    'LPTSP',
+    'M_PAGE_FIRST',
+    'M_PAGE_LAST',
+    'SD',
+    'ED',
+    'SMN',
+    'REG'
+  ])
 
   // Parse identifiers: P<id> / <id> (bigint) vs O<n> / O<uuid> / <uuid>
   const rawProductIds: number[] = []
@@ -694,6 +705,11 @@ export async function validateProductImageCsvImport(
   for (const r of dataRows) {
     const rawVal = (r[0] || '').trim()
     if (!rawVal) continue
+
+    const upperVal = rawVal.toUpperCase()
+    if (LEGACY_SOURCING_ROW_REFS.has(upperVal) || upperVal.startsWith('M_')) {
+      continue
+    }
 
     const parsedRef = parseImageRef(rawVal, refMap)
     if (parsedRef.kind === 'product' && parsedRef.productId) {
@@ -755,10 +771,12 @@ export async function validateProductImageCsvImport(
 
   const validatedRows: ValidatedCsvRow[] = []
   const seenRefs = new Set<string>()
+  const warnings: string[] = []
 
   let validCount = 0
   let blankCount = 0
   let alreadyHasImageCount = 0
+  let ignoredLegacyRowsCount = 0
   let errCount = 0
 
   for (let i = 0; i < dataRows.length; i++) {
@@ -766,6 +784,22 @@ export async function validateProductImageCsvImport(
     const row = dataRows[i]
     const rawRef = (row[0] || '').trim()
     const imageUrl = (row[1] || '').trim()
+    const upperRef = rawRef.toUpperCase()
+
+    if (rawRef && (LEGACY_SOURCING_ROW_REFS.has(upperRef) || upperRef.startsWith('M_'))) {
+      const legacyMsg = `Row ${rowNum}: Legacy metadata/boundary row '${rawRef}' was ignored cleanly (leaflet metadata is confirmed in Stage 2).`
+      ignoredLegacyRowsCount++
+      warnings.push(legacyMsg)
+      validatedRows.push({
+        rowNumber: rowNum,
+        imageRef: rawRef,
+        targetKind: 'offer',
+        imageUrl: null,
+        status: 'legacy_ignored',
+        issueMessage: legacyMsg
+      })
+      continue
+    }
 
     const parsedRef = parseImageRef(rawRef, refMap)
     const targetKind: 'product' | 'offer' = parsedRef.kind === 'offer' ? 'offer' : 'product'
@@ -801,7 +835,7 @@ export async function validateProductImageCsvImport(
       continue
     }
 
-    if (seenRefs.has(rawRef)) {
+    if (seenRefs.has(upperRef)) {
       item.status = 'duplicate_product'
       item.issueMessage = `Duplicate reference '${rawRef}' in CSV.`
       errCount++
@@ -809,7 +843,7 @@ export async function validateProductImageCsvImport(
       validatedRows.push(item)
       continue
     }
-    seenRefs.add(rawRef)
+    seenRefs.add(upperRef)
 
     const entityKey = `${targetKind}:${resolvedId}`
     if (seenRefs.has(entityKey)) {
@@ -938,8 +972,10 @@ export async function validateProductImageCsvImport(
     validRowsCount: validCount,
     blankSkippedCount: blankCount,
     alreadyHasImageCount,
+    ignoredLegacyRowsCount,
     errorCount: errCount,
     rows: validatedRows,
+    warnings,
     errors
   }
 }
@@ -987,6 +1023,23 @@ export async function uploadApprovedProductImagesToDb(
   let index = 0
   for (const row of validation.rows) {
     index++
+    if (row.status === 'legacy_ignored') {
+      result.skippedCount++
+      result.results.push({
+        imageRef: row.imageRef,
+        targetKind: row.targetKind,
+        status: 'skipped',
+        error: row.issueMessage || 'Legacy metadata/boundary row ignored cleanly'
+      })
+      input.onProgress?.({
+        current: index,
+        total: validation.rows.length,
+        message: `Ignored legacy row ${row.imageRef}`,
+        stage: 'skipped'
+      })
+      continue
+    }
+
     if (row.status === 'blank_skipped' || !row.imageUrl) {
       result.skippedCount++
       result.results.push({
@@ -1053,6 +1106,7 @@ export async function uploadApprovedProductImagesToDb(
           stage: 'downloading'
         })
       } else {
+        assertNotOfflineUat('Remote Product Image Download')
         // 1. SSRF Guard
         const ssrfCheck = await validateSsrfSafeUrl(row.imageUrl)
         if (!ssrfCheck.valid) {

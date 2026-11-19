@@ -1,6 +1,8 @@
 import { ipcMain, dialog } from 'electron'
 import { promises as fs } from 'fs'
 import { getSupabaseAdminClient } from '../db/supabaseAdminClient'
+import { isOfflineUatMode } from '../config/offlineUatGuard'
+import { loadSupermarkets, loadRegions } from '../db/referenceDataService'
 import {
   analyzeOfferCatalogCandidates,
   approveCatalogProductCandidates,
@@ -23,6 +25,22 @@ import {
   resolveOrCreateSupermarket,
   resolveOrCreateRegion
 } from '../db/productImageEnrichmentService'
+
+function stripUntrustedSupabaseClient(options?: any): any {
+  if (!options || typeof options !== 'object') return options
+  const { supabaseClient: _ignoredClient, ...safeOptions } = options
+  return safeOptions
+}
+
+export function sanitizePublishStagedDraftOptions(options?: any): any {
+  if (!options || typeof options !== 'object') return {}
+  const {
+    supabaseClient: _ignoredClient,
+    authorizedCanaryAutoLink: _ignoredCanary,
+    ...safeOptions
+  } = options
+  return safeOptions
+}
 
 export function registerProductEnrichmentIpcHandlers(): void {
   ipcMain.handle('catalog:analyzeCandidates', async (_event, options) => {
@@ -93,11 +111,11 @@ export function registerProductEnrichmentIpcHandlers(): void {
 
   // Phase 2: Local-First Staged Draft Handlers
   ipcMain.handle('productEnrichment:import-step2-csv', async (_event, jobDir: string, csvContent: string, options?: any) => {
-    return await importStep2CsvIntoStagedDraft(jobDir, csvContent, options)
+    return await importStep2CsvIntoStagedDraft(jobDir, csvContent, stripUntrustedSupabaseClient(options))
   })
 
   ipcMain.handle('catalog:importStep2Csv', async (_event, jobDir: string, csvContent: string, options?: any) => {
-    return await importStep2CsvIntoStagedDraft(jobDir, csvContent, options)
+    return await importStep2CsvIntoStagedDraft(jobDir, csvContent, stripUntrustedSupabaseClient(options))
   })
 
   ipcMain.handle('productEnrichment:update-header', async (_event, jobDir: string, headerPatch: any) => {
@@ -121,16 +139,16 @@ export function registerProductEnrichmentIpcHandlers(): void {
   })
 
   ipcMain.handle('productEnrichment:initialize-draft', async (_event, jobDir: string, options?: any) => {
-    return await initializeStagedDraftFromPackage(jobDir, options)
+    return await initializeStagedDraftFromPackage(jobDir, stripUntrustedSupabaseClient(options))
   })
 
   ipcMain.handle('productEnrichment:export-step1-csv', async (_event, jobDir: string, options?: any) => {
-    return await exportStagedLeafletForStep2(jobDir, options)
+    return await exportStagedLeafletForStep2(jobDir, stripUntrustedSupabaseClient(options))
   })
 
   ipcMain.handle('productEnrichment:publish-staged-draft', async (event, jobDir: string, options?: any) => {
     return await publishStagedLeafletDraftToDb(jobDir, {
-      ...options,
+      ...sanitizePublishStagedDraftOptions(options),
       onProgress: (p: any) => {
         event.sender.send('productEnrichment:publishProgress', p)
       }
@@ -139,7 +157,7 @@ export function registerProductEnrichmentIpcHandlers(): void {
 
   ipcMain.handle('catalog:publishStagedDraft', async (event, jobDir: string, options?: any) => {
     return await publishStagedLeafletDraftToDb(jobDir, {
-      ...options,
+      ...sanitizePublishStagedDraftOptions(options),
       onProgress: (p: any) => {
         event.sender.send('productEnrichment:publishProgress', p)
       }
@@ -167,7 +185,19 @@ export function registerProductEnrichmentIpcHandlers(): void {
     return { canceled: false, filePath: result.filePaths[0] }
   })
 
-  ipcMain.handle('catalog:getSupermarketsAndRegions', async () => {
+  const loadSupermarketsAndRegionsOfflineAware = async () => {
+    if (isOfflineUatMode()) {
+      const [supermarkets, regions] = await Promise.all([loadSupermarkets(), loadRegions()])
+      return {
+        supermarkets: supermarkets
+          .map((s) => ({ id: s.id, name_en: s.name_en, name_ar: s.name_ar, slug: s.slug }))
+          .sort((a, b) => (a.name_en || '').localeCompare(b.name_en || '')),
+        regions: regions
+          .map((r) => ({ id: r.id, name_en: r.name_en, name_ar: r.name_ar, slug: r.slug }))
+          .sort((a, b) => (a.name_en || '').localeCompare(b.name_en || ''))
+      }
+    }
+
     const supabase = getSupabaseAdminClient()
     const [{ data: supermarkets }, { data: regions }] = await Promise.all([
       supabase.from('supermarkets').select('id, name_en, name_ar, slug').order('name_en', { ascending: true }),
@@ -177,18 +207,14 @@ export function registerProductEnrichmentIpcHandlers(): void {
       supermarkets: supermarkets || [],
       regions: regions || []
     }
+  }
+
+  ipcMain.handle('catalog:getSupermarketsAndRegions', async () => {
+    return await loadSupermarketsAndRegionsOfflineAware()
   })
 
   ipcMain.handle('productEnrichment:get-supermarkets-and-regions', async () => {
-    const supabase = getSupabaseAdminClient()
-    const [{ data: supermarkets }, { data: regions }] = await Promise.all([
-      supabase.from('supermarkets').select('id, name_en, name_ar, slug').order('name_en', { ascending: true }),
-      supabase.from('regions').select('id, name_en, name_ar, slug').order('name_en', { ascending: true })
-    ])
-    return {
-      supermarkets: supermarkets || [],
-      regions: regions || []
-    }
+    return await loadSupermarketsAndRegionsOfflineAware()
   })
 
   ipcMain.handle('productEnrichment:resolve-supermarket', async (_event, rawName: string) => {

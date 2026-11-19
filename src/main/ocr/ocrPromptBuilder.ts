@@ -158,7 +158,7 @@ RULES:
 - Return only valid JSON matching the schema. No markdown, no explanation, no prose.
 - Extract each product-offer block as one item.
 - EVERY product MUST have an offer_price. Read the large bold number on the price tag.
-- Extract the product name, description (if available), offer price, original price, size (including unit), and any special offer conditions (like 2+1, bundle deal, etc.).
+- Extract the product name, description (if available), offer price, original price, and size (including unit).
 - DO NOT include any other data.
 - Ignore: campaign banners, page headers, page footers, supermarket logos.
 - Use null for unknown optional values.
@@ -190,7 +190,7 @@ export function buildWifranFullPageAnnotationFormat(): unknown {
                 "original_price": { "type": ["number", "string", "null"] },
                 "pack_size_value": { "type": ["number", "string", "null"] },
                 "pack_size_unit": { "type": ["string", "null"] },
-                "discount_text": { "type": ["string", "null"], "description": "Special offer conditions (2+1, bundle deal, etc.)" },
+                "discount_text": { "type": ["string", "null"], "description": "Optional badge wording (2+1, bundle deal, etc.)" },
                 "notes_ar": { "type": ["string", "null"] }
               },
               "required": ["product_name_ar", "offer_price"]

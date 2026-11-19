@@ -2,6 +2,7 @@ import { writeFileSync, mkdirSync, existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 import type { PageFirstExtractionReport, PageFirstReportPageItem, PageFirstReportOfferItem, PageFirstQualityMetrics } from '../../shared/types/pageFirstExtractionReport';
 import { calculateEstimatedCostUsd, PageFirstCostTracker } from '../page-first/pageFirstCostBudget';
+import type { GeminiJobUsageSummary } from '../ocr/geminiCacheTypes';
 
 export function generatePageFirstReport(input: {
   packageDir: string;
@@ -12,8 +13,9 @@ export function generatePageFirstReport(input: {
   offers: PageFirstReportOfferItem[];
   startTime: number;
   costTracker: PageFirstCostTracker;
+  geminiUsageSummary?: GeminiJobUsageSummary;
 }): PageFirstExtractionReport {
-  const { packageDir, pdfBaseName, model, rolloutMode, pages, offers, startTime, costTracker } = input;
+  const { packageDir, pdfBaseName, model, rolloutMode, pages, offers, startTime, costTracker, geminiUsageSummary } = input;
 
   const totalPages = pages.length;
   const offerPages = pages.filter(p => p.page_classification === 'offer_page' || p.structured_offer_count > 0).length;
@@ -39,7 +41,9 @@ export function generatePageFirstReport(input: {
   const pagesPassedAfterRetry = pages.filter(p => p.pass_status === 'retry_completed' && (p.completeness_status === 'pass' || p.completeness_status === 'pass_with_warnings')).length;
   const unresolvedPages = pages.filter(p => p.pass_status === 'unresolved' || p.completeness_status === 'unresolved').length;
 
-  const estimatedCost = calculateEstimatedCostUsd(costTracker);
+  const estimatedCost = geminiUsageSummary
+    ? geminiUsageSummary.totalCostUsd
+    : calculateEstimatedCostUsd(costTracker);
   const processingTime = Date.now() - startTime;
 
   const pageAutomationRate = totalPages > 0 ? Number(((totalPages - unresolvedPages) / totalPages).toFixed(4)) : 1.0;
@@ -73,6 +77,7 @@ export function generatePageFirstReport(input: {
     pages_passed_after_retry: pagesPassedAfterRetry,
     unresolved_pages: unresolvedPages,
     estimated_cost_usd: estimatedCost,
+    is_cost_estimate: true,
     processing_time_ms: processingTime,
     page_automation_rate: pageAutomationRate,
     offer_anchor_link_rate: offerAnchorLinkRate,
@@ -91,6 +96,24 @@ export function generatePageFirstReport(input: {
     model,
     leaflet_base_name: pdfBaseName,
     package_path: packageDir,
+    budget_usd: costTracker.budgetUsd,
+    ...(geminiUsageSummary
+      ? {
+          gemini_usage_summary: {
+            api_calls_count: geminiUsageSummary.apiCallsCount,
+            cache_hits_count: geminiUsageSummary.cacheHitsCount,
+            retries_count: geminiUsageSummary.retriesCount,
+            total_prompt_tokens: geminiUsageSummary.totalPromptTokens,
+            total_candidates_tokens: geminiUsageSummary.totalCandidatesTokens,
+            total_thoughts_tokens: geminiUsageSummary.totalThoughtsTokens,
+            total_cached_tokens: geminiUsageSummary.totalCachedTokens,
+            total_tokens: geminiUsageSummary.totalTokens,
+            total_cost_usd: geminiUsageSummary.totalCostUsd,
+            is_estimate: true,
+            models_used: geminiUsageSummary.modelsUsed || []
+          }
+        }
+      : {}),
     metrics,
     pages,
     offers
@@ -138,7 +161,7 @@ export function formatPageFirstReportMarkdown(report: PageFirstExtractionReport)
 | **Offer Anchor Link Rate** | ${(m.offer_anchor_link_rate * 100).toFixed(1)}% | 100% | ${m.offer_anchor_link_rate === 1.0 ? '✅ PASS' : '⚠️ WARNING'} |
 | **Valid Crop Rate** | ${(m.valid_crop_rate * 100).toFixed(1)}% | ≥ 95.0% | ${m.valid_crop_rate >= 0.95 ? '✅ PASS' : '⚠️ WARNING'} |
 | **Unresolved Pages** | ${m.unresolved_pages} | 0 | ${m.unresolved_pages === 0 ? '✅ NONE' : '⚠️ QUARANTINED'} |
-| **Estimated Cost** | $${m.estimated_cost_usd.toFixed(4)} | < $0.95 | ${m.estimated_cost_usd < 0.95 ? '✅ PASS' : '❌ EXCEEDED'} |
+| **Post-Call Estimated Cost (Local Estimate — Not Provider Billing)** | $${m.estimated_cost_usd.toFixed(6)} | < $${(report.budget_usd ?? 0.95).toFixed(2)} | ${m.estimated_cost_usd < (report.budget_usd ?? 0.95) ? '✅ PASS' : '❌ EXCEEDED'} |
 | **Critical Errors** | ${m.critical_error_count} | 0 | ${m.critical_error_count === 0 ? '✅ ZERO' : '❌ BLOCKED'} |
 
 ---
@@ -155,6 +178,8 @@ export function formatPageFirstReportMarkdown(report: PageFirstExtractionReport)
 - **Duplicate Anchor Assignments:** ${m.duplicate_anchor_assignments}
 - **Automatic Crops Generated:** ${m.automatic_crops_generated}
 - **Processing Time:** ${(m.processing_time_ms / 1000).toFixed(1)}s
+${report.gemini_usage_summary ? `- **Gemini Token Usage (Measured):** ${report.gemini_usage_summary.total_prompt_tokens} prompt + ${report.gemini_usage_summary.total_candidates_tokens} output + ${report.gemini_usage_summary.total_thoughts_tokens} thinking = ${report.gemini_usage_summary.total_tokens} total tokens (API calls: ${report.gemini_usage_summary.api_calls_count}, cache hits: ${report.gemini_usage_summary.cache_hits_count})
+- **Pre-Run Budget Ceiling:** $${(report.budget_usd ?? 0.95).toFixed(2)} | **Post-Call Measured Estimate (isEstimate=${report.gemini_usage_summary.is_estimate}):** $${report.gemini_usage_summary.total_cost_usd.toFixed(6)} (Local pricing estimate, not official provider billing)` : ''}
 
 ---
 
@@ -162,7 +187,7 @@ export function formatPageFirstReportMarkdown(report: PageFirstExtractionReport)
 
 | Page | Classification | Offers | Anchors | Uncovered | Pass Status | Completeness | Cost |
 | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-${report.pages.map(p => `| ${p.page_number} | ${p.page_classification} | ${p.structured_offer_count} | ${p.current_price_anchor_count} | ${p.uncovered_anchor_count} | ${p.pass_status} | ${p.completeness_status} | $${p.estimated_cost_usd.toFixed(4)} |`).join('\n')}
+${report.pages.map(p => `| ${p.page_number} | ${p.page_classification} | ${p.structured_offer_count} | ${p.current_price_anchor_count} | ${p.uncovered_anchor_count} | ${p.pass_status} | ${p.completeness_status} | $${p.estimated_cost_usd.toFixed(6)} |`).join('\n')}
 
 ---
 

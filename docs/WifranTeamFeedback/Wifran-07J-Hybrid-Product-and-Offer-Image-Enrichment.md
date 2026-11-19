@@ -77,6 +77,23 @@ Image_Ref,image_url
 
 This preserves two-column, low-token agent output while adding an optional file attachment for real generated images. In the initial phase, it is also acceptable to do only the Step 1 export first and defer URL/file import changes until the manual AI step is complete.
 
+### Update (WIFRAN-EXTRACTOR-IMAGE-SOURCING-CSV-001): Product/Offer Images Only
+
+Because Stage 2 automatically discovers and confirms leaflet metadata (`LeafletMetadataService` / `confirmed_metadata.json`) before product-image sourcing begins:
+
+- Step 1 CSV exports (`exportStagedLeafletForStep2`) contain `Image_Ref,Item_Name` with valid `P` and `O` rows **only** — zero `FPTSP`/`LPTSP` boundary page rows and zero `SD`/`ED`/`SMN`/`REG`/`M_*` rows, and zero temporary page uploads to the public Supabase `tmp` bucket.
+- Returned Step 2 CSVs imported in Step 3 (`Image_Ref,image_url`, optionally supporting `Corrected_Item_Name|https_image_url`) must contain `P` and `O` rows **only**; `SD`/`ED`/`SMN`/`REG` are never required and are cleanly ignored if present in legacy CSVs without mutating Stage 2 metadata.
+
+**Copy-ready sourcing agent prompt:**
+
+```text
+You will receive a 2-column CSV (Image_Ref,Item_Name) containing only product (P<id>) and offer (O<n>) rows.
+Leaflet metadata is already confirmed inside Wifran Extractor Stage 2 — do NOT inspect leaflet page URLs and do NOT emit FPTSP, LPTSP, SD, ED, SMN, or REG rows.
+Return ONLY a 2-column CSV: Image_Ref,image_url
+- Preserve every P/O Image_Ref unchanged with one row per input item.
+- Provide a direct HTTPS product image URL (or Corrected_Item_Name|https://... only when an evidence-backed OCR correction is paired with an image URL), or leave image_url blank if no safe match is found.
+```
+
 ## 6. Database and Supabase design
 
 **Keep the two media classes separate.**

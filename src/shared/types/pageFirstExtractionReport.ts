@@ -36,6 +36,15 @@ export type PageFirstReportPageItem = {
   unresolved_reason: string | null;
   pages_processed_usage: number;
   estimated_cost_usd: number;
+  is_cost_estimate?: boolean;
+  token_usage?: {
+    prompt_tokens: number;
+    candidates_tokens: number;
+    thoughts_tokens: number;
+    cached_tokens: number;
+    total_tokens: number;
+    cache_hit: boolean;
+  };
   warnings: string[];
   blocking_issues: string[];
 };
@@ -58,6 +67,7 @@ export type PageFirstQualityMetrics = {
   pages_passed_after_retry: number;
   unresolved_pages: number;
   estimated_cost_usd: number;
+  is_cost_estimate?: boolean;
   processing_time_ms: number;
 
   page_automation_rate: number;
@@ -77,6 +87,20 @@ export type PageFirstExtractionReport = {
   model: string;
   leaflet_base_name: string;
   package_path: string;
+  budget_usd?: number;
+  gemini_usage_summary?: {
+    api_calls_count: number;
+    cache_hits_count: number;
+    retries_count: number;
+    total_prompt_tokens: number;
+    total_candidates_tokens: number;
+    total_thoughts_tokens: number;
+    total_cached_tokens: number;
+    total_tokens: number;
+    total_cost_usd: number;
+    is_estimate: boolean;
+    models_used: string[];
+  };
 
   metrics: PageFirstQualityMetrics;
   pages: PageFirstReportPageItem[];

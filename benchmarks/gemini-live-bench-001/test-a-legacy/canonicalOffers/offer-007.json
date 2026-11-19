@@ -1,0 +1,355 @@
+{
+  "source": {
+    "leaflet_id": "default_leaflet",
+    "source_page_number": 1,
+    "source_item_number": "007",
+    "external_image_id": "noori-supermarket-229798534-jeddah_p001_007",
+    "crop_path": null,
+    "thumbnail_path": null,
+    "page_area_share_pct": 5.05,
+    "json_path": ""
+  },
+  "trusted_context": {},
+  "product": {
+    "title_ar": "دقيق قوت أند روت فاخر 1 كيلو",
+    "title_en": "Qoot & Root Premium Flour 1kg",
+    "normalized_title_ar": "دقيق قوت أند روت فاخر",
+    "normalized_title_en": "Qoot & Root Premium Flour",
+    "commodity_tag": "flour",
+    "brand_text": "Qoot & Root",
+    "category_hint": "staples",
+    "item_domain": "grocery",
+    "description_ar": null,
+    "description_en": null
+  },
+  "prices": {
+    "offer_price": 9.99,
+    "original_price": 26.55,
+    "currency": "SAR",
+    "discount_amount": null,
+    "discount_percentage": null,
+    "price_basis": "each",
+    "price_condition_text": null,
+    "all_price_candidates": [
+      {
+        "raw_text": "9.99",
+        "normalized_value": 9.99,
+        "currency": "SAR",
+        "visual_role": "current_offer_price",
+        "classified_as": "offer_price",
+        "confidence": "high",
+        "evidence": "9.99",
+        "visual_evidence": {}
+      }
+    ]
+  },
+  "content": {
+    "size_text": "9x1 كجم",
+    "pack_quantity": 9,
+    "bundle_quantity": null,
+    "each_size_value": 1,
+    "each_size_unit": "kilogram",
+    "total_content_value": 9,
+    "total_content_unit": "kilogram"
+  },
+  "promotion": {
+    "mechanic": "standard_price",
+    "special_offer": "9 حبات",
+    "condition_text": null,
+    "quantity_limit": null,
+    "bundle_quantity": null
+  },
+  "comparison": {
+    "comparison_eligible": true,
+    "comparison_unit": "kilogram",
+    "comparison_unit_price": 1.11,
+    "comparison_confidence": "high",
+    "comparison_exclusion_reason": null
+  },
+  "image": {
+    "image_bucket": null,
+    "image_path": null,
+    "image_url": null,
+    "thumbnail_path": null,
+    "thumbnail_url": null,
+    "image_source_type": "leaflet_crop"
+  },
+  "display": {
+    "show_display_unit_price": true,
+    "display_unit_price": 1.11,
+    "display_unit_basis_value": 1,
+    "display_unit_basis_unit": "kg",
+    "display_unit_family": "mass",
+    "display_unit_price_label_ar": "1.11 ر.س / 1 كجم",
+    "display_unit_price_label_en": "SAR 1.11 / 1kg",
+    "below_min_display_price_threshold": false,
+    "min_display_unit_price_sar": 0.5,
+    "hidden_reason": null,
+    "display_unit_price_unrounded": 1.11
+  },
+  "quality": {
+    "publish_decision": "publish",
+    "extraction_confidence": "high",
+    "validation_confidence": "high",
+    "comparison_confidence": "high",
+    "blocking_errors": [],
+    "non_blocking_warnings": []
+  },
+  "style_validation": {
+    "validation_result": "pass",
+    "visual_evidence": {},
+    "corrected_fields": {},
+    "style_profile_scope": "page"
+  },
+  "pre_publish": {
+    "preview_eligible": true,
+    "preview_group": "publish",
+    "display_in_preview": true
+  },
+  "raw": {
+    "raw_ocr_json": {},
+    "raw_validation_json": null,
+    "raw_ocr_text": null,
+    "raw_attributes": {
+      "raw_offer_extraction": {
+        "offer_number": 7,
+        "arabic_title": "دقيق قوت أند روت فاخر 1 كيلو",
+        "english_title": "Qoot & Root Premium Flour 1kg",
+        "brand": "Qoot & Root",
+        "is_multi_brand_or_variant": false,
+        "compound_group_id": null,
+        "item_domain": "grocery",
+        "category_slug": "staples",
+        "normalized_product_name_ar": "دقيق قوت أند روت فاخر",
+        "normalized_product_name_en": "Qoot & Root Premium Flour",
+        "commodity_tag": "flour",
+        "quantity_limit": null,
+        "size_value": "9x1 كجم",
+        "unit_type": "9 حبات",
+        "pack_quantity": 9,
+        "each_size_value": 1,
+        "each_size_unit": "kg",
+        "is_uniform_size_across_variants": true,
+        "promo_price": 9.99,
+        "original_price": 26.55,
+        "promo_condition": "STANDARD",
+        "confidence": 0.99,
+        "components": {
+          "product_graphic_box": [
+            521,
+            664,
+            642,
+            974
+          ],
+          "promo_price_box": [
+            522,
+            668,
+            543,
+            747
+          ],
+          "title_text_box": [
+            645,
+            738,
+            672,
+            885
+          ],
+          "original_price_box": [
+            542,
+            686,
+            557,
+            741
+          ],
+          "unit_and_size_badge_box": [
+            509,
+            687,
+            521,
+            725
+          ]
+        }
+      },
+      "spatial_prominence": {
+        "page_area_share_pct": 5.05,
+        "is_front_page": true,
+        "is_hero_offer": true,
+        "normalized_union_box": [
+          509,
+          664,
+          672,
+          974
+        ]
+      },
+      "completeness_status": "complete",
+      "evidence_linking_status": "linked",
+      "is_retry_pass": false,
+      "page_first": {
+        "current_price_anchor_block_id": "rev1_price_anchor_p001_007",
+        "evidence_link_confidence": 1,
+        "completeness_status": "pass",
+        "crop_confidence": 0.99,
+        "is_retry": false
+      }
+    }
+  },
+  "schema_version": "wifran.extractor.offer/2.0",
+  "contract_v2": {
+    "record_metadata": {
+      "schema_version": "wifran.extractor.offer/2.0",
+      "source_offer_id": "default_leaflet:p001:i007:s01",
+      "source_revision": 1,
+      "semantic_checksum": "2125215d5a2e668a637cea52ae3043ed53c1f6ad9b7c8f20c5ed699871598352",
+      "producer_model": "wifran-extractor-2.0",
+      "supersedes_source_offer_id": null
+    },
+    "product_facts": {
+      "exact_identity_status": "product_family_only",
+      "verified_product_id": null,
+      "gtin": null,
+      "brand_assertion": {
+        "value": "Qoot & Root",
+        "state": "supported",
+        "candidate_unverified": null,
+        "provenance": "extracted_brand"
+      },
+      "derived_subcategory_slug": "flour",
+      "attributes": {
+        "scent": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "flavor": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "fat_level": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "milk_processing_type": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "product_form": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "model": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "power_watts": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "dimensions": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        }
+      }
+    },
+    "assortment": {
+      "status": "single_product",
+      "composition_type": "single",
+      "known_options": [],
+      "is_uniform_size": true,
+      "source_assertions": []
+    },
+    "quantity_semantics": {
+      "sale_unit": "pack",
+      "inner_count": 9,
+      "per_inner_content": {
+        "value": 1,
+        "unit": "kilogram"
+      },
+      "total_content": {
+        "value": 9,
+        "unit": "kilogram"
+      },
+      "is_indivisible_sale_unit": true
+    },
+    "price_terms": {
+      "currency": "SAR",
+      "source_reported_offer_price": "9.99",
+      "source_reported_price_basis": "each",
+      "source_reported_original_price": "26.55",
+      "verified_current_non_member_price": null
+    },
+    "promotion_terms": {
+      "mechanic": "markdown",
+      "bonus_wording": "9 حبات",
+      "bonus_fulfillment": "not_applicable",
+      "bonus_already_included_in_inner_count": false,
+      "structured_checkout_rule": null
+    },
+    "eligibility": {
+      "loyalty": {
+        "requirement": "unknown",
+        "program_id": null,
+        "source_path": null,
+        "restriction_coverage": "not_stated_in_inspected_source"
+      },
+      "sales_channel": "unknown",
+      "quantity_limit": {
+        "value": null,
+        "unit": null,
+        "scope": null
+      }
+    },
+    "evidence": {
+      "coordinate_system": "normalized_0_1000_ymin_xmin_ymax_xmax",
+      "offer_price_evidence_complete": true,
+      "original_price_evidence_complete": false
+    },
+    "assessments": {
+      "capabilities": {
+        "offer_display": "supported",
+        "save_to_list": "supported",
+        "selected_offer_subtotal": "supported",
+        "unit_price_calculation": "supported",
+        "exact_product_comparison": "needs_review",
+        "automatic_list_fulfillment": "needs_review"
+      },
+      "structural_capabilities": {
+        "offer_display": "supported",
+        "save_to_list": "supported",
+        "selected_offer_subtotal": "supported",
+        "unit_price_calculation": "supported",
+        "exact_product_comparison": "needs_review",
+        "automatic_list_fulfillment": "needs_review"
+      },
+      "confidence": {
+        "extraction_confidence": "high",
+        "unit_math_confidence": "high",
+        "identity_confidence": "high"
+      },
+      "reason_codes": [
+        "CHANNEL_UNKNOWN",
+        "PRICE_EVIDENCE_INCOMPLETE",
+        "MEDIA_UPLOAD_PENDING"
+      ]
+    },
+    "assets": {
+      "offer_card": {
+        "local_path_internal": null,
+        "storage_bucket": null,
+        "storage_object_path": null,
+        "subject_scope": "offer_group",
+        "upload_state": "pending"
+      },
+      "product_thumbnail": {
+        "local_path_internal": null,
+        "storage_bucket": null,
+        "storage_object_path": null,
+        "subject_scope": "offer_group",
+        "upload_state": "pending"
+      }
+    }
+  }
+}

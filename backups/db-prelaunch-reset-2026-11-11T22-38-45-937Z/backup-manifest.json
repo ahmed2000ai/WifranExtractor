@@ -1,0 +1,89 @@
+{
+  "timestamp": "2026-11-11T22:38:45.939Z",
+  "supabaseHost": "db.swratbmclahjyekouned.supabase.co",
+  "projectRef": "swratbmclahjyekouned",
+  "tables": {
+    "offer_display_images": {
+      "count": 31,
+      "jsonFile": "offer_display_images.json",
+      "sha256": "e46ebdc2aabb5692d64d9842dd432182b6e2575d57e07d0a693451a956ade106"
+    },
+    "offers": {
+      "count": 93,
+      "jsonFile": "offers.json",
+      "sha256": "32260ada2c8dba80173c132490d63ecfcb027db8069bb7696fc74713b3b7f333"
+    },
+    "product_images": {
+      "count": 7,
+      "jsonFile": "product_images.json",
+      "sha256": "4e45d5a874df3edb2c177669ebd4d53a6fa3fccdb48732204feeb7ab0f31585c"
+    },
+    "products": {
+      "count": 11,
+      "jsonFile": "products.json",
+      "sha256": "742c993de36202afcdd24bfebb2422906ae10a792a14436c79d40e3f55dda2ee"
+    },
+    "product_aliases": {
+      "count": 0,
+      "jsonFile": "product_aliases.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "offer_revision_snapshots": {
+      "count": 0,
+      "jsonFile": "offer_revision_snapshots.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "offer_status_history": {
+      "count": 0,
+      "jsonFile": "offer_status_history.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "offer_visual_group_members": {
+      "count": 0,
+      "jsonFile": "offer_visual_group_members.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "saved_offers": {
+      "count": 0,
+      "jsonFile": "saved_offers.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "watched_items": {
+      "count": 0,
+      "jsonFile": "watched_items.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "shopping_list_items": {
+      "count": 0,
+      "jsonFile": "shopping_list_items.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "shopping_lists": {
+      "count": 0,
+      "jsonFile": "shopping_lists.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "issue_reports": {
+      "count": 0,
+      "jsonFile": "issue_reports.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "import_rows": {
+      "count": 0,
+      "jsonFile": "import_rows.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "import_batches": {
+      "count": 0,
+      "jsonFile": "import_batches.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    "validation_errors": {
+      "count": 0,
+      "jsonFile": "validation_errors.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  },
+  "totalRecords": 142,
+  "verified": true
+}

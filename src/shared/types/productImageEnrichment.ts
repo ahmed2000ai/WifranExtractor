@@ -33,7 +33,7 @@ export interface ValidatedCsvRow {
   imageUrl: string | null
   productName?: string
   visualSubjectKey?: string
-  status: 'valid' | 'blank_skipped' | 'duplicate_product' | 'unknown_product' | 'invalid_url' | 'already_has_image'
+  status: 'valid' | 'blank_skipped' | 'duplicate_product' | 'unknown_product' | 'invalid_url' | 'already_has_image' | 'legacy_ignored'
   issueMessage?: string
 }
 
@@ -64,9 +64,11 @@ export interface CsvValidationSummary {
   validRowsCount: number
   blankSkippedCount: number
   alreadyHasImageCount: number
+  ignoredLegacyRowsCount?: number
   errorCount: number
   rows: ValidatedCsvRow[]
   errors: string[]
+  warnings?: string[]
 }
 
 export interface UploadProductImagesInput {

@@ -1,7 +1,7 @@
-import { getSupabaseAdminClient } from '../src/main/db/supabaseAdminClient'
+import { getGuardedSupabaseClient } from '../src/main/db/databaseEnvironmentResolver'
 
 async function checkConsumerOffers() {
-  const supabase = getSupabaseAdminClient()
+  const supabase = getGuardedSupabaseClient('DEVELOPMENT_TEST')
 
   const { data: offers, error } = await supabase
     .from('v_consumer_offers')
@@ -9,11 +9,11 @@ async function checkConsumerOffers() {
     .order('title_en', { ascending: true })
 
   if (error) {
-    console.error('Error querying v_consumer_offers:', error.message)
+    console.error('Error querying v_consumer_offers in development:', error.message)
     return
   }
 
-  console.log(`v_consumer_offers total rows: ${offers?.length || 0}`)
+  console.log(`v_consumer_offers total rows in development: ${offers?.length || 0}`)
   let exactCount = 0
   let illustrativeCount = 0
   let nullCount = 0
@@ -29,5 +29,4 @@ async function checkConsumerOffers() {
   console.log(`- No image (null):       ${nullCount}`)
 }
 
-checkConsumerOffers()
-
+checkConsumerOffers().catch(console.error)

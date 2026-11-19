@@ -1,0 +1,127 @@
+{
+  "benchmarkId": "WIFRAN-EXTRACTOR-GEMINI-LIVE-BENCH-002",
+  "date": "2026-11-11T14:33:41.925Z",
+  "model": "gemini-3.8-flash",
+  "backend": "vertex_ai",
+  "location": "global",
+  "thinkingLevel": "HIGH",
+  "testA": {
+    "testId": "test-a-legacy",
+    "model": "gemini-3.8-flash",
+    "backend": "vertex_ai",
+    "location": "global",
+    "promptProfile": "legacy",
+    "schemaProfile": "legacy",
+    "thinkingLevel": "HIGH",
+    "executionMode": "flex",
+    "imageSha256": "d5ebb7b85c90ef82b3835222fe9589ae6fdc5a9a8388a2af432a5be7ad22fa5b",
+    "trafficType": "ON_DEMAND_FLEX",
+    "requestDurationMs": 75330,
+    "tokens": {
+      "promptTokenCount": 5460,
+      "candidatesTokenCount": 4676,
+      "thoughtsTokenCount": 8153,
+      "cachedContentTokenCount": 0,
+      "totalTokenCount": 18289
+    },
+    "cost": {
+      "totalCostUsd": 0.02610188,
+      "inputCostUsd": 0.0020475,
+      "outputCostUsd": 0.0087675,
+      "thinkingCostUsd": 0.01528688,
+      "cachedInputCostUsd": 0,
+      "tier": "flex"
+    },
+    "offersCount": 10,
+    "responseId": "8MDzaqW7JKOBtfAPiJ3rkQE",
+    "status": "SUCCESS"
+  },
+  "testB": {
+    "testId": "test-b-compact",
+    "model": "gemini-3.8-flash",
+    "backend": "vertex_ai",
+    "location": "global",
+    "promptProfile": "compact_v1",
+    "schemaProfile": "compact_v1",
+    "thinkingLevel": "HIGH",
+    "executionMode": "flex",
+    "imageSha256": "d5ebb7b85c90ef82b3835222fe9589ae6fdc5a9a8388a2af432a5be7ad22fa5b",
+    "trafficType": "ON_DEMAND_FLEX",
+    "requestDurationMs": 108004,
+    "tokens": {
+      "promptTokenCount": 3799,
+      "candidatesTokenCount": 2472,
+      "thoughtsTokenCount": 15362,
+      "cachedContentTokenCount": 0,
+      "totalTokenCount": 21633
+    },
+    "cost": {
+      "totalCostUsd": 0.03486337,
+      "inputCostUsd": 0.00142462,
+      "outputCostUsd": 0.004635,
+      "thinkingCostUsd": 0.02880375,
+      "cachedInputCostUsd": 0,
+      "tier": "flex"
+    },
+    "offersCount": 10,
+    "responseId": "78HzaqCzOaOBtfAPiJ3rkQE",
+    "status": "SUCCESS"
+  },
+  "testC": {
+    "testId": "test-c-hybrid",
+    "model": "gemini-3.8-flash",
+    "backend": "vertex_ai",
+    "location": "global",
+    "promptProfile": "legacy_compact_v1",
+    "schemaProfile": "compact_v1",
+    "thinkingLevel": "HIGH",
+    "executionMode": "flex",
+    "imageSha256": "d5ebb7b85c90ef82b3835222fe9589ae6fdc5a9a8388a2af432a5be7ad22fa5b",
+    "trafficType": "ON_DEMAND_FLEX",
+    "requestDurationMs": 118816,
+    "tokens": {
+      "promptTokenCount": 5425,
+      "candidatesTokenCount": 3652,
+      "thoughtsTokenCount": 10406,
+      "cachedContentTokenCount": 0,
+      "totalTokenCount": 19483
+    },
+    "cost": {
+      "totalCostUsd": 0.02839313,
+      "inputCostUsd": 0.00203438,
+      "outputCostUsd": 0.0068475,
+      "thinkingCostUsd": 0.01951125,
+      "cachedInputCostUsd": 0,
+      "tier": "flex"
+    },
+    "offersCount": 10,
+    "responseId": "UXz0aqf2DeDmvNkPwNDa6Ak",
+    "status": "SUCCESS"
+  },
+  "diffVersusA": {
+    "promptTokens": -35,
+    "promptTokensPct": "-0.64%",
+    "candidateTokens": -1024,
+    "candidateTokensPct": "-21.90%",
+    "thinkingTokens": 2253,
+    "thinkingTokensPct": "27.63%",
+    "totalTokens": 1194,
+    "totalTokensPct": "6.53%",
+    "costUsd": 0.002291249999999998,
+    "costPct": "8.78%",
+    "durationMs": 43486
+  },
+  "diffVersusB": {
+    "promptTokens": 1626,
+    "promptTokensPct": "42.80%",
+    "candidateTokens": 1180,
+    "candidateTokensPct": "47.73%",
+    "thinkingTokens": -4956,
+    "thinkingTokensPct": "-32.26%",
+    "totalTokens": -2150,
+    "totalTokensPct": "-9.94%",
+    "costUsd": -0.006470239999999999,
+    "costPct": "-18.56%",
+    "durationMs": 10812
+  }
+}

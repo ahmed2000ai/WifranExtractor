@@ -1,3 +1,11 @@
+// [PRODUCTION SAFETY QUARANTINE] WIFRAN-ENV-ISOLATION-002
+// This script is a historical production utility. Execution against production is blocked by default.
+// To execute with explicit authorization, provide BOTH:
+//   1. Environment variable: WIFRAN_PRODUCTION_MAINTENANCE_CONFIRMED=1
+//   2. CLI argument: --allow-production-admin-operation
+import { assertProductionMaintenanceAuthorized } from '../src/main/db/databaseEnvironmentResolver'
+assertProductionMaintenanceAuthorized(__filename)
+
 import * as fs from 'fs'
 import * as path from 'path'
 import sharp from 'sharp'

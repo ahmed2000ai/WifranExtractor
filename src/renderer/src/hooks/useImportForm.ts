@@ -1,53 +1,56 @@
-import { useState, useCallback, useMemo, useEffect } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import type { 
   SelectedPdfFile,
   SelectedImportLocation, 
   ImportFormState, 
   ImportFormValidationResult,
-  ImportFormValidationError
+  ImportFormValidationError,
+  PageSelectionMode,
+  PageSelectionState
 } from '../../../shared/types/importForm'
 import { useConfigStatus } from './useConfigStatus'
 import { validateLocationScope } from '../../../shared/utils/locationScopeValidation'
+import { parsePageSelection, formatPageList, formatPageRanges } from '../../../shared/utils/pageRangeParser'
 
 function formatDate(date: Date): string {
   return date.toISOString().split('T')[0]
 }
 
-function getLastWednesday(date: Date): Date {
-  const d = new Date(date)
-  const day = d.getDay()
-  // 0: Sun, 1: Mon, 2: Tue, 3: Wed, 4: Thu, 5: Fri, 6: Sat
-  const diff = (day >= 3 ? day - 3 : day + 4)
-  d.setDate(d.getDate() - diff)
-  return d
+function createDefaultAllPagesSelection(totalPages?: number): PageSelectionState {
+  if (!totalPages || totalPages <= 0) {
+    return {
+      mode: 'all',
+      specificInput: '',
+      selectedPages: [],
+      normalizedString: '',
+      isValid: true
+    }
+  }
+  const allPages = Array.from({ length: totalPages }, (_, i) => i + 1)
+  return {
+    mode: 'all',
+    specificInput: '',
+    selectedPages: allPages,
+    normalizedString: formatPageList(allPages),
+    isValid: true
+  }
 }
 
 export function useImportForm() {
   const { configStatus } = useConfigStatus()
 
+  // WIFRAN-EXTRACTOR-METADATA-002: Do not invent unsupported guessed dates.
+  // Missing dates remain genuinely unresolved until discovered or confirmed by operator.
   const [formState, setFormState] = useState<ImportFormState>(() => {
-    const start = getLastWednesday(new Date())
-    const end = new Date(start)
-    end.setDate(start.getDate() + 6)
     return {
       pdfFile: null,
       supermarketId: null,
       location: null,
-      offerStartDate: formatDate(start),
-      offerEndDate: formatDate(end)
+      offerStartDate: '',
+      offerEndDate: '',
+      pageSelection: createDefaultAllPagesSelection()
     }
   })
-
-  // Update default end date when config loads (if configured differently)
-  useEffect(() => {
-    if (configStatus && !formState.pdfFile && !formState.supermarketId) {
-      const start = new Date(formState.offerStartDate)
-      const end = new Date(start)
-      end.setDate(start.getDate() + (configStatus.importBehavior?.defaultOfferDurationDays ? configStatus.importBehavior.defaultOfferDurationDays - 1 : 6))
-      setFormState(prev => ({ ...prev, offerEndDate: formatDate(end) }))
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [configStatus])
 
   const setSupermarketId = useCallback((id: string | null) => {
     setFormState(prev => ({ ...prev, supermarketId: id, location: null }))
@@ -57,24 +60,104 @@ export function useImportForm() {
     setFormState(prev => ({ ...prev, location }))
   }, [])
 
+  // Preserves exact operator input without inferring a synthetic 7-day duration
   const setOfferStartDate = useCallback((date: string) => {
-    setFormState(prev => {
-      const start = new Date(date)
-      if (isNaN(start.getTime())) {
-        return { ...prev, offerStartDate: date }
-      }
-      const end = new Date(start)
-      end.setDate(start.getDate() + 6)
-      return { 
-        ...prev, 
-        offerStartDate: date,
-        offerEndDate: formatDate(end)
-      }
-    })
+    setFormState(prev => ({ ...prev, offerStartDate: date }))
   }, [])
 
   const setOfferEndDate = useCallback((date: string) => {
     setFormState(prev => ({ ...prev, offerEndDate: date }))
+  }, [])
+
+  const setPageSelectionMode = useCallback((mode: PageSelectionMode) => {
+    setFormState(prev => {
+      const totalPages = prev.pdfFile?.pageCount || 0
+      if (mode === 'all') {
+        return {
+          ...prev,
+          pageSelection: {
+            ...createDefaultAllPagesSelection(totalPages),
+            specificInput: prev.pageSelection.specificInput
+          }
+        }
+      } else {
+        // Re-evaluate specificInput against totalPages
+        const rawInput = prev.pageSelection.specificInput
+        if (!rawInput.trim()) {
+          return {
+            ...prev,
+            pageSelection: {
+              mode: 'specific',
+              specificInput: rawInput,
+              selectedPages: [],
+              normalizedString: '',
+              isValid: false,
+              errorMessage: 'Page selection cannot be empty. Specify page numbers (e.g. 1-5, 8).'
+            }
+          }
+        }
+        const parsed = parsePageSelection(rawInput, totalPages)
+        return {
+          ...prev,
+          pageSelection: {
+            mode: 'specific',
+            specificInput: rawInput,
+            selectedPages: parsed.ok ? parsed.pages : [],
+            normalizedString: parsed.ok ? parsed.normalizedString : '',
+            isValid: parsed.ok,
+            errorMessage: parsed.error
+          }
+        }
+      }
+    })
+  }, [])
+
+  const setSpecificPageSelection = useCallback((input: string) => {
+    setFormState(prev => {
+      const totalPages = prev.pdfFile?.pageCount || 0
+      const parsed = parsePageSelection(input, totalPages)
+      return {
+        ...prev,
+        pageSelection: {
+          mode: 'specific',
+          specificInput: input,
+          selectedPages: parsed.ok ? parsed.pages : [],
+          normalizedString: parsed.ok ? parsed.normalizedString : '',
+          isValid: parsed.ok,
+          errorMessage: parsed.error
+        }
+      }
+    })
+  }, [])
+
+  const restorePageSelection = useCallback((selection: {
+    mode: PageSelectionMode
+    selectedPages: number[]
+    totalPages?: number
+  }) => {
+    setFormState(prev => {
+      const docTotal = selection.totalPages || prev.pdfFile?.pageCount || 0
+      if (selection.mode === 'all') {
+        return {
+          ...prev,
+          pageSelection: createDefaultAllPagesSelection(docTotal)
+        }
+      } else {
+        const rangeText = formatPageRanges(selection.selectedPages)
+        const parsed = parsePageSelection(rangeText, docTotal || Math.max(...selection.selectedPages, 1))
+        return {
+          ...prev,
+          pageSelection: {
+            mode: 'specific',
+            specificInput: rangeText,
+            selectedPages: parsed.ok ? parsed.pages : selection.selectedPages,
+            normalizedString: parsed.ok ? parsed.normalizedString : formatPageList(selection.selectedPages),
+            isValid: parsed.ok,
+            errorMessage: parsed.error
+          }
+        }
+      }
+    })
   }, [])
 
   const selectPdf = useCallback(async (supermarkets?: any[], cities?: any[], regions?: any[]) => {
@@ -82,7 +165,9 @@ export function useImportForm() {
       const file = await window.wifranExtractor.files.selectPdf()
       if (file) {
         setFormState(prev => {
-          let bestSupermarketId = prev.supermarketId
+          let bestSupermarketId: string | null = null
+          let offerStartDate = ''
+          let offerEndDate = ''
 
           if (supermarkets && supermarkets.length > 0) {
             let bestScore = 0
@@ -121,7 +206,7 @@ export function useImportForm() {
             }
           }
 
-          let newLocation = prev.location;
+          let newLocation: SelectedImportLocation | null = null;
           let locationPrefilled = false;
 
           if (file.parsedMetadata?.ok) {
@@ -133,15 +218,12 @@ export function useImportForm() {
               }
             }
 
-            // Prefill Dates
+            // Candidate start date from filename (unconfirmed candidate only)
             if (file.parsedMetadata.promotion_start_date) {
               const d = new Date(file.parsedMetadata.promotion_start_date)
               if (!isNaN(d.getTime())) {
-                const startStr = formatDate(d)
-                const endD = new Date(d)
-                endD.setDate(d.getDate() + 6)
-                prev.offerStartDate = startStr
-                prev.offerEndDate = formatDate(endD)
+                offerStartDate = formatDate(d)
+                // WIFRAN-EXTRACTOR-METADATA-002: Do not invent a guessed 7-day end date!
               }
             }
 
@@ -180,12 +262,20 @@ export function useImportForm() {
             }
           }
 
-          // If supermarket changed, and we didn't just prefill location from filename, reset location
           if (!locationPrefilled) {
-            newLocation = bestSupermarketId !== prev.supermarketId ? null : prev.location
+            newLocation = null
           }
 
-          return { ...prev, pdfFile: file, supermarketId: bestSupermarketId, location: newLocation }
+          // Switching to a new PDF always resets page selection to 'all'
+          return {
+            ...prev,
+            pdfFile: file,
+            supermarketId: bestSupermarketId,
+            location: newLocation,
+            offerStartDate,
+            offerEndDate,
+            pageSelection: createDefaultAllPagesSelection(file.pageCount)
+          }
         })
       }
     } catch (error) {
@@ -194,21 +284,23 @@ export function useImportForm() {
   }, [])
 
   const setPdfFile = useCallback((file: SelectedPdfFile | null) => {
-    setFormState(prev => ({ ...prev, pdfFile: file }))
+    setFormState(prev => ({
+      ...prev,
+      pdfFile: file,
+      pageSelection: file ? createDefaultAllPagesSelection(file.pageCount) : createDefaultAllPagesSelection()
+    }))
   }, [])
 
   const resetForm = useCallback(() => {
-    const start = getLastWednesday(new Date())
-    const end = new Date(start)
-    end.setDate(start.getDate() + (configStatus?.importBehavior?.defaultOfferDurationDays ? configStatus.importBehavior.defaultOfferDurationDays - 1 : 6))
     setFormState({
       pdfFile: null,
       supermarketId: null,
       location: null,
-      offerStartDate: formatDate(start),
-      offerEndDate: formatDate(end)
+      offerStartDate: '',
+      offerEndDate: '',
+      pageSelection: createDefaultAllPagesSelection()
     })
-  }, [configStatus])
+  }, [])
 
   const validation = useMemo<ImportFormValidationResult>(() => {
     const errors: ImportFormValidationError[] = []
@@ -221,6 +313,13 @@ export function useImportForm() {
       }
       if (formState.pdfFile.sizeBytes <= 0) {
         errors.push({ field: 'pdfFile', code: 'PDF_FILE_EMPTY', message: 'Selected PDF file is empty.' })
+      }
+      if (formState.pageSelection.mode === 'specific' && !formState.pageSelection.isValid) {
+        errors.push({
+          field: 'pageSelection',
+          code: 'PAGE_SELECTION_INVALID',
+          message: formState.pageSelection.errorMessage || 'Invalid page selection.'
+        })
       }
     }
 
@@ -277,6 +376,9 @@ export function useImportForm() {
     setLocation,
     setOfferStartDate,
     setOfferEndDate,
+    setPageSelectionMode,
+    setSpecificPageSelection,
+    restorePageSelection,
     selectPdf,
     setPdfFile,
     resetForm,

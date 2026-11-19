@@ -606,7 +606,7 @@ describe('WIFRAN-EXTRACTOR-IDENTITY-001C — Staged Leaflet Publishing Safety Ha
         region: 'Western Region',
         validFrom: '2026-11-01',
         validTo: '2026-11-10',
-        headerModifiedByOperator: false
+        headerModifiedByOperator: true
       },
       items: [
         {
@@ -655,7 +655,7 @@ describe('WIFRAN-EXTRACTOR-IDENTITY-001C — Staged Leaflet Publishing Safety Ha
         region: 'Western Region',
         validFrom: '2026-11-01',
         validTo: '2026-11-10',
-        headerModifiedByOperator: false
+        headerModifiedByOperator: true
       },
       items: [
         {
@@ -706,7 +706,7 @@ describe('WIFRAN-EXTRACTOR-IDENTITY-001C — Staged Leaflet Publishing Safety Ha
         region: 'Western Region',
         validFrom: '2026-11-01',
         validTo: '2026-11-10',
-        headerModifiedByOperator: false
+        headerModifiedByOperator: true
       },
       items: [
         {

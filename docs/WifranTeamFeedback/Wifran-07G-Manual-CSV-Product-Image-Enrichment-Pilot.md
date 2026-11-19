@@ -1,4 +1,4 @@
-﻿# Wifran — Minimal CSV Product-Image Enrichment Workflow
+# Wifran — Minimal CSV Product-Image Enrichment Workflow
 
 **Document ID:** WIFRAN-07G  
 **Revision:** 1.1 — supersedes the earlier six-column AI-result proposal  
@@ -76,23 +76,25 @@ Product_ID,image_url
 
 ### Copy-ready prompt for the web-enabled AI agent
 
-> You will receive a CSV containing exactly two columns: `Product_ID,item_name`.
+> You will receive a 2-column CSV containing `Image_Ref,Item_Name` (or `Product_ID,item_name` for standalone catalog runs), where each row is either a verified catalog product (`P<id>`) or an offer visual reference (`O<n>` / `O<uuid>`).
 >
-> For each row, search the web for a standalone photograph matching the product description as precisely as possible, including brand, variant, size, package type and multipack count.
+> Process **only** the `P` and `O` product/offer rows for product-image sourcing. Leaflet metadata (supermarket, location scope, and offer validity dates) has already been confirmed in Stage 2 and must not be extracted or emitted.
+>
+> For each row, search the web for a clean standalone photograph (or truthful generic/illustrative image for `O` rows when applicable) matching the product description as precisely as possible, including brand, variant, size, package type and multipack count.
 >
 > Return **only** a CSV with exactly two columns in this order:
 >
-> `Product_ID,image_url`
+> `Image_Ref,image_url`
 >
-> Preserve every input `Product_ID` unchanged, with exactly one row per input.
+> Preserve every input `Image_Ref` unchanged, with exactly one row per input `P` or `O` row.
 >
-> The `image_url` must be a direct HTTPS image URL, not a search-results URL or webpage.
+> Each `image_url` must be a direct HTTPS image URL, not a search-results URL or HTML webpage. When a product description contains an obvious OCR typo and you have evidence-backed correction alongside a direct HTTPS URL, you may format column 2 as `Corrected_Item_Name|https://...`.
 >
-> If a reliable product image cannot be found or the description is ambiguous, leave `image_url` empty.
+> If a reliable product image cannot be found or the description is ambiguous, leave `image_url` blank (`""`).
+>
+> Do **not** inspect or request leaflet page URLs. Do **not** emit `FPTSP`, `LPTSP`, `SD`, `ED`, `SMN`, `REG`, `M_*`, explanations, license assessments, or additional columns.
 >
 > Never invent an image URL or product identifier.
->
-> Do not return any explanations, license assessments or additional columns.
 
 ## 4. Human review is mandatory before import
 

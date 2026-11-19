@@ -1,0 +1,58 @@
+{
+  "migrations": [
+    {
+      "id": "001_initial_schema.sql",
+      "applied_at": "2026-11-11T23:31:20.248Z"
+    },
+    {
+      "id": "001_seed_core_catalog.sql",
+      "applied_at": "2026-11-11T23:31:20.355Z"
+    },
+    {
+      "id": "003_offer_location_scope.sql",
+      "applied_at": "2026-11-11T23:31:20.461Z"
+    },
+    {
+      "id": "004_offer_image_ingestion_metadata.sql",
+      "applied_at": "2026-11-11T23:31:20.567Z"
+    },
+    {
+      "id": "005_wifran_v2_offer_contract.sql",
+      "applied_at": "2026-11-11T23:31:20.673Z"
+    },
+    {
+      "id": "006_wifran_07a_security_and_contract_reconciliation.sql",
+      "applied_at": "2026-11-11T23:31:20.779Z"
+    },
+    {
+      "id": "007_wifran_07g_07h_catalog_resolution_and_product_images.sql",
+      "applied_at": "2026-11-11T23:31:20.886Z"
+    },
+    {
+      "id": "008_wifran_07j_consumer_view_disputed_identity_masking.sql",
+      "applied_at": "2026-11-11T23:31:20.990Z"
+    },
+    {
+      "id": "009_wifran_07j_product_alias_staging_and_audit.sql",
+      "applied_at": "2026-11-11T23:31:21.096Z"
+    },
+    {
+      "id": "010_wifran_08_publication_journal_and_uniqueness.sql",
+      "applied_at": "2026-11-15T11:18:59.379Z"
+    },
+    {
+      "id": "011_wifran_mvp_candidate_consumer_visibility.sql",
+      "applied_at": "2026-11-19T00:52:43.390Z"
+    },
+    {
+      "id": "012_wifran_offer_display_image_precedence.sql",
+      "applied_at": "2026-11-19T00:52:43.644Z"
+    },
+    {
+      "id": "013_wifran_product_verification_defaults.sql",
+      "applied_at": "2026-11-19T00:52:43.860Z"
+    }
+  ],
+  "columnCount": 98,
+  "sourceKindConstraint": "CHECK ((source_kind = ANY (ARRAY['promotional_leaflet_crop'::text, 'leaflet_crop'::text, 'generated_illustration'::text, 'generic_library'::text, 'licensed_stock'::text])))"
+}

@@ -1,0 +1,355 @@
+{
+  "source": {
+    "leaflet_id": "default_leaflet",
+    "source_page_number": 1,
+    "source_item_number": "005",
+    "external_image_id": "noori-supermarket-229798534-jeddah_p001_005",
+    "crop_path": null,
+    "thumbnail_path": null,
+    "page_area_share_pct": 4.05,
+    "json_path": ""
+  },
+  "trusted_context": {},
+  "product": {
+    "title_ar": "سكر فاصكو ناعم 5 كيلو",
+    "title_en": "Fazco Fine Sugar 5kg",
+    "normalized_title_ar": "سكر فاصكو ناعم",
+    "normalized_title_en": "Fazco Fine Sugar",
+    "commodity_tag": "sugar",
+    "brand_text": "Fazco",
+    "category_hint": "staples",
+    "item_domain": "grocery",
+    "description_ar": null,
+    "description_en": null
+  },
+  "prices": {
+    "offer_price": 16.5,
+    "original_price": 25,
+    "currency": "SAR",
+    "discount_amount": null,
+    "discount_percentage": null,
+    "price_basis": "each",
+    "price_condition_text": null,
+    "all_price_candidates": [
+      {
+        "raw_text": "16.5",
+        "normalized_value": 16.5,
+        "currency": "SAR",
+        "visual_role": "current_offer_price",
+        "classified_as": "offer_price",
+        "confidence": "high",
+        "evidence": "16.5",
+        "visual_evidence": {}
+      }
+    ]
+  },
+  "content": {
+    "size_text": "5 كيلو",
+    "pack_quantity": 1,
+    "bundle_quantity": null,
+    "each_size_value": 5,
+    "each_size_unit": "kilogram",
+    "total_content_value": 5,
+    "total_content_unit": "kilogram"
+  },
+  "promotion": {
+    "mechanic": "standard_price",
+    "special_offer": null,
+    "condition_text": null,
+    "quantity_limit": null,
+    "bundle_quantity": null
+  },
+  "comparison": {
+    "comparison_eligible": true,
+    "comparison_unit": "kilogram",
+    "comparison_unit_price": 3.3,
+    "comparison_confidence": "high",
+    "comparison_exclusion_reason": null
+  },
+  "image": {
+    "image_bucket": null,
+    "image_path": null,
+    "image_url": null,
+    "thumbnail_path": null,
+    "thumbnail_url": null,
+    "image_source_type": "leaflet_crop"
+  },
+  "display": {
+    "show_display_unit_price": true,
+    "display_unit_price": 3.3,
+    "display_unit_basis_value": 1,
+    "display_unit_basis_unit": "kg",
+    "display_unit_family": "mass",
+    "display_unit_price_label_ar": "3.30 ر.س / 1 كجم",
+    "display_unit_price_label_en": "SAR 3.30 / 1kg",
+    "below_min_display_price_threshold": false,
+    "min_display_unit_price_sar": 0.5,
+    "hidden_reason": null,
+    "display_unit_price_unrounded": 3.3
+  },
+  "quality": {
+    "publish_decision": "publish",
+    "extraction_confidence": "high",
+    "validation_confidence": "high",
+    "comparison_confidence": "high",
+    "blocking_errors": [],
+    "non_blocking_warnings": []
+  },
+  "style_validation": {
+    "validation_result": "pass",
+    "visual_evidence": {},
+    "corrected_fields": {},
+    "style_profile_scope": "page"
+  },
+  "pre_publish": {
+    "preview_eligible": true,
+    "preview_group": "publish",
+    "display_in_preview": true
+  },
+  "raw": {
+    "raw_ocr_json": {},
+    "raw_validation_json": null,
+    "raw_ocr_text": null,
+    "raw_attributes": {
+      "raw_offer_extraction": {
+        "offer_number": 5,
+        "arabic_title": "سكر فاصكو ناعم 5 كيلو",
+        "english_title": "Fazco Fine Sugar 5kg",
+        "brand": "Fazco",
+        "is_multi_brand_or_variant": false,
+        "compound_group_id": null,
+        "item_domain": "grocery",
+        "category_slug": "staples",
+        "normalized_product_name_ar": "سكر فاصكو ناعم",
+        "normalized_product_name_en": "Fazco Fine Sugar",
+        "commodity_tag": "sugar",
+        "quantity_limit": null,
+        "size_value": "5 كيلو",
+        "unit_type": "كيس",
+        "pack_quantity": 1,
+        "each_size_value": 5,
+        "each_size_unit": "kg",
+        "is_uniform_size_across_variants": true,
+        "promo_price": 16.5,
+        "original_price": 25,
+        "promo_condition": "STANDARD",
+        "confidence": 0.99,
+        "components": {
+          "product_graphic_box": [
+            510,
+            138,
+            646,
+            264
+          ],
+          "promo_price_box": [
+            523,
+            29,
+            547,
+            110
+          ],
+          "title_text_box": [
+            657,
+            107,
+            672,
+            279
+          ],
+          "original_price_box": [
+            545,
+            48,
+            560,
+            99
+          ],
+          "unit_and_size_badge_box": [
+            511,
+            52,
+            524,
+            86
+          ]
+        }
+      },
+      "spatial_prominence": {
+        "page_area_share_pct": 4.05,
+        "is_front_page": true,
+        "is_hero_offer": true,
+        "normalized_union_box": [
+          510,
+          29,
+          672,
+          279
+        ]
+      },
+      "completeness_status": "complete",
+      "evidence_linking_status": "linked",
+      "is_retry_pass": false,
+      "page_first": {
+        "current_price_anchor_block_id": "rev1_price_anchor_p001_005",
+        "evidence_link_confidence": 1,
+        "completeness_status": "pass",
+        "crop_confidence": 0.99,
+        "is_retry": false
+      }
+    }
+  },
+  "schema_version": "wifran.extractor.offer/2.0",
+  "contract_v2": {
+    "record_metadata": {
+      "schema_version": "wifran.extractor.offer/2.0",
+      "source_offer_id": "default_leaflet:p001:i005:s01",
+      "source_revision": 1,
+      "semantic_checksum": "ee0add795fc32938a86b92ce3b672df84baf8e2084383226bd4e65f20f7d1b9a",
+      "producer_model": "wifran-extractor-2.0",
+      "supersedes_source_offer_id": null
+    },
+    "product_facts": {
+      "exact_identity_status": "product_family_only",
+      "verified_product_id": null,
+      "gtin": null,
+      "brand_assertion": {
+        "value": "Fazco",
+        "state": "supported",
+        "candidate_unverified": null,
+        "provenance": "extracted_brand"
+      },
+      "derived_subcategory_slug": "sugar",
+      "attributes": {
+        "scent": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "flavor": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "fat_level": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "milk_processing_type": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "product_form": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "model": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "power_watts": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "dimensions": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        }
+      }
+    },
+    "assortment": {
+      "status": "single_product",
+      "composition_type": "single",
+      "known_options": [],
+      "is_uniform_size": true,
+      "source_assertions": []
+    },
+    "quantity_semantics": {
+      "sale_unit": "each",
+      "inner_count": 1,
+      "per_inner_content": {
+        "value": 5,
+        "unit": "kilogram"
+      },
+      "total_content": {
+        "value": 5,
+        "unit": "kilogram"
+      },
+      "is_indivisible_sale_unit": true
+    },
+    "price_terms": {
+      "currency": "SAR",
+      "source_reported_offer_price": "16.50",
+      "source_reported_price_basis": "each",
+      "source_reported_original_price": "25.00",
+      "verified_current_non_member_price": null
+    },
+    "promotion_terms": {
+      "mechanic": "markdown",
+      "bonus_wording": null,
+      "bonus_fulfillment": "not_applicable",
+      "bonus_already_included_in_inner_count": false,
+      "structured_checkout_rule": null
+    },
+    "eligibility": {
+      "loyalty": {
+        "requirement": "unknown",
+        "program_id": null,
+        "source_path": null,
+        "restriction_coverage": "not_stated_in_inspected_source"
+      },
+      "sales_channel": "unknown",
+      "quantity_limit": {
+        "value": null,
+        "unit": null,
+        "scope": null
+      }
+    },
+    "evidence": {
+      "coordinate_system": "normalized_0_1000_ymin_xmin_ymax_xmax",
+      "offer_price_evidence_complete": true,
+      "original_price_evidence_complete": false
+    },
+    "assessments": {
+      "capabilities": {
+        "offer_display": "supported",
+        "save_to_list": "supported",
+        "selected_offer_subtotal": "supported",
+        "unit_price_calculation": "supported",
+        "exact_product_comparison": "needs_review",
+        "automatic_list_fulfillment": "needs_review"
+      },
+      "structural_capabilities": {
+        "offer_display": "supported",
+        "save_to_list": "supported",
+        "selected_offer_subtotal": "supported",
+        "unit_price_calculation": "supported",
+        "exact_product_comparison": "needs_review",
+        "automatic_list_fulfillment": "needs_review"
+      },
+      "confidence": {
+        "extraction_confidence": "high",
+        "unit_math_confidence": "high",
+        "identity_confidence": "high"
+      },
+      "reason_codes": [
+        "CHANNEL_UNKNOWN",
+        "PRICE_EVIDENCE_INCOMPLETE",
+        "MEDIA_UPLOAD_PENDING"
+      ]
+    },
+    "assets": {
+      "offer_card": {
+        "local_path_internal": null,
+        "storage_bucket": null,
+        "storage_object_path": null,
+        "subject_scope": "offer_group",
+        "upload_state": "pending"
+      },
+      "product_thumbnail": {
+        "local_path_internal": null,
+        "storage_bucket": null,
+        "storage_object_path": null,
+        "subject_scope": "offer_group",
+        "upload_state": "pending"
+      }
+    }
+  }
+}

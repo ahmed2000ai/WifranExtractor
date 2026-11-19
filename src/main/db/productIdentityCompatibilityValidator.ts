@@ -16,6 +16,10 @@ import {
   compareProductVariants,
   classifyCommodityPackaging
 } from './variantDisambiguationService'
+import {
+  validateCatalogMatchingWithPackageSafeguards,
+  detectPackageConfigurationContext
+} from '../../shared/utils/packageQuantitySafeguards'
 import type { CanonicalExtractionUnit } from '../../shared/types/leafletExtraction'
 
 export {
@@ -23,7 +27,9 @@ export {
   comparePackageConfigurations,
   extractStructuredVariantFacts,
   compareProductVariants,
-  classifyCommodityPackaging
+  classifyCommodityPackaging,
+  validateCatalogMatchingWithPackageSafeguards,
+  detectPackageConfigurationContext
 }
 
 export function classifyOfferAmbiguity(offer: {
@@ -574,6 +580,39 @@ export function validateProductIdentityCompatibility(
       if (!conflicts.some((existing) => existing.includes(c) || c.includes(existing))) {
         conflicts.push(c)
       }
+    }
+  }
+
+  // 8b. Reusable Package Variant vs Multipack Safeguards Check
+  const pkgSafeguard = validateCatalogMatchingWithPackageSafeguards(
+    {
+      ...offerInput,
+      title_en: offerFacts.rawTitleEn,
+      title_ar: offerFacts.rawTitleAr,
+      each_size_value: offerFacts.sizeValue,
+      each_size_unit: offerFacts.sizeUnit,
+      inner_pack_count: offerFacts.packCount,
+      sale_unit_type: offerFacts.saleUnitType
+    },
+    candidateProduct
+  )
+  if (!pkgSafeguard.isCompatible) {
+    if (pkgSafeguard.status === 'rejected_ambiguous_offer') {
+      return {
+        isCompatible: false,
+        status: 'rejected_ambiguous_offer',
+        reason: pkgSafeguard.reason
+      }
+    }
+    if (pkgSafeguard.status === 'rejected_insufficient_evidence' && conflicts.length === 0) {
+      return {
+        isCompatible: false,
+        status: 'rejected_insufficient_evidence',
+        reason: pkgSafeguard.reason
+      }
+    }
+    if (!conflicts.some((existing) => existing.includes(pkgSafeguard.reason) || pkgSafeguard.reason.includes(existing))) {
+      conflicts.push(pkgSafeguard.reason)
     }
   }
 

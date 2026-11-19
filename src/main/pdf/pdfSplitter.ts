@@ -1,37 +1,40 @@
 import { PDFDocument } from 'pdf-lib'
-import { readFile, writeFile } from 'fs/promises'
+import { mkdir, readFile, writeFile } from 'fs/promises'
 import { join } from 'path'
 import type { PdfChunkMetadata } from '../../shared/types/pdfPreprocess'
 
 export async function splitPdfIntoChunks(
   sourcePdfPath: string, 
   outputChunksDir: string, 
-  chunkSize: number
+  chunkSize: number,
+  selectedPages?: number[]
 ): Promise<PdfChunkMetadata[]> {
   const actualChunkSize = Math.max(1, Math.min(3, chunkSize)) // Clamp between 1 and 3
   
+  await mkdir(outputChunksDir, { recursive: true })
   const pdfBuffer = await readFile(sourcePdfPath)
   const sourceDoc = await PDFDocument.load(pdfBuffer)
   const totalPages = sourceDoc.getPageCount()
+
+  const pagesToInclude = (selectedPages && selectedPages.length > 0)
+    ? selectedPages.filter(p => p >= 1 && p <= totalPages)
+    : Array.from({ length: totalPages }, (_, idx) => idx + 1)
   
   const chunks: PdfChunkMetadata[] = []
   let chunkIndex = 1
 
-  for (let i = 0; i < totalPages; i += actualChunkSize) {
+  for (let i = 0; i < pagesToInclude.length; i += actualChunkSize) {
     const chunkDoc = await PDFDocument.create()
-    const originalPageNumbers: number[] = []
-
-    const endPage = Math.min(i + actualChunkSize, totalPages)
-    const pageIndices = Array.from({ length: endPage - i }, (_, k) => i + k)
+    const batchPages = pagesToInclude.slice(i, i + actualChunkSize)
+    const pageIndices = batchPages.map(p => p - 1) // 0-indexed for pdf-lib
 
     const copiedPages = await chunkDoc.copyPages(sourceDoc, pageIndices)
 
     for (let j = 0; j < copiedPages.length; j++) {
       chunkDoc.addPage(copiedPages[j])
-      // Original pages are 1-indexed
-      originalPageNumbers.push(i + j + 1)
     }
 
+    const originalPageNumbers = batchPages
     const firstPage = originalPageNumbers[0]
     const lastPage = originalPageNumbers[originalPageNumbers.length - 1]
 

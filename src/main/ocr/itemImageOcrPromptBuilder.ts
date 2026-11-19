@@ -28,8 +28,6 @@ The image may contain:
 - pack quantity
 - bundle/promotion labels such as 1+1, 1+2, 2+1, 6+1, 2 for 10
 - price basis such as each, per pack, per box, per bag, per kg, per 2kg, per dozen
-- branch restrictions
-- loyalty conditions
 - non-grocery attributes such as screen size, resolution, features, streaming services
 
 Important safety rules:
@@ -51,7 +49,6 @@ Then select the most likely current offer price and original price, if visible.
 For each price candidate, include:
 - raw visible text
 - normalized numeric value
-- currency if visible
 - visual role
 - selected classification
 - confidence
@@ -70,7 +67,6 @@ Visual evidence must include any visible clues such as:
 - price block color if obvious
 - whether the number is large/prominent
 - whether the number is crossed out
-- whether it is near a SAR symbol
 - whether it is attached to L/ml/kg/g/pcs/inch
 - whether it is near product title/package text
 - approximate position such as top-left, bottom-right, center

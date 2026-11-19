@@ -6,6 +6,7 @@ import { buildStyleAwareValidationJsonSchema, styleAwareValidationModelSchema } 
 import type { StyleAwareValidationResult } from '../../shared/types/styleAwareValidation';
 import { runWithMistralRateLimit } from './mistralRateLimitQueue';
 import { warn, error as logError, info } from '../logging/logger';
+import { assertNotOfflineUat } from '../config/offlineUatGuard';
 
 export async function validateItemWithStyleAwareness(input: {
   leafletId?: string | null;
@@ -23,6 +24,8 @@ export async function validateItemWithStyleAwareness(input: {
     info(`Validation skipped by config for item ${input.sourceItemNumber}`);
     return null;
   }
+
+  assertNotOfflineUat('Live Mistral Style-Aware Validation API calls');
 
   const apiKey = config.mistral.apiKey;
   if (!apiKey) {

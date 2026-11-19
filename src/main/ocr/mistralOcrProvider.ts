@@ -13,6 +13,7 @@ import type { OcrChunkInput, OcrExtractedDocument, OcrProvider } from './ocrType
 import sharp from 'sharp'
 import { runWithMistralRateLimit, MistralRequestKind } from './mistralRateLimitQueue'
 import { getMistralClient } from './mistralClient'
+import { assertNotOfflineUat } from '../config/offlineUatGuard'
 
 // Free-tier safe delay between API calls (in ms)
 
@@ -30,6 +31,7 @@ async function callPixtralVision(opts: {
   kind?: MistralRequestKind
   pageNumber?: number
 }): Promise<{ parsed: any; usage: any } | null> {
+  assertNotOfflineUat('Live Mistral Pixtral Vision API calls')
   const { apiKey, imageDataUrl, promptText, schema, kind = 'document_ocr', pageNumber } = opts
 
   let chatRes: Response | null = null

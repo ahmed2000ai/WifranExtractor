@@ -36,7 +36,7 @@ Offer grouping rules:
    4K, HD, FHD, UHD and similar product attributes must not be
    selected as current offer prices.
 
-7. Discount percentages, loyalty points and product quantities
+7. Discount percentages and physical product quantities
    are not current offer prices unless the page explicitly displays
    them as a payable price.
 
@@ -46,8 +46,7 @@ Offer grouping rules:
    title,
    current price,
    original price,
-   size/content,
-   and promotion condition.
+   and size/content.
 
 10. Do not add supermarket, location, leaflet filename or date metadata.
     Those values come from trusted application context.
@@ -213,7 +212,6 @@ export function buildPageFirstAnnotationFormat(): Record<string, unknown> {
                     required: [
                       'raw_text',
                       'normalized_value',
-                      'currency',
                       'role',
                       'is_crossed_out',
                       'confidence',
@@ -223,14 +221,12 @@ export function buildPageFirstAnnotationFormat(): Record<string, unknown> {
                     properties: {
                       raw_text: { type: 'string' },
                       normalized_value: { type: ['number', 'null'] },
-                      currency: { type: ['string', 'null'], enum: ['SAR', null] },
                       role: {
                         type: 'string',
                         enum: [
                           'current_offer_price',
                           'original_old_price',
                           'multi_buy_total_price',
-                          'loyalty_price',
                           'ambiguous_price',
                           'not_a_price'
                         ]
@@ -246,7 +242,6 @@ export function buildPageFirstAnnotationFormat(): Record<string, unknown> {
                   required: [
                     'offer_price',
                     'original_price',
-                    'currency',
                     'offer_price_raw_text',
                     'original_price_raw_text',
                     'confidence'
@@ -255,7 +250,6 @@ export function buildPageFirstAnnotationFormat(): Record<string, unknown> {
                   properties: {
                     offer_price: { type: ['number', 'null'] },
                     original_price: { type: ['number', 'null'] },
-                    currency: { type: ['string', 'null'], enum: ['SAR', null] },
                     offer_price_raw_text: { type: ['string', 'null'] },
                     original_price_raw_text: { type: ['string', 'null'] },
                     confidence: { type: 'string', enum: ['high', 'medium', 'low'] }
@@ -333,7 +327,7 @@ export function buildPageFirstAnnotationFormat(): Record<string, unknown> {
                 },
                 promotion: {
                   type: 'object',
-                  required: ['mechanic', 'raw_text', 'condition_text'],
+                  required: ['mechanic', 'raw_text'],
                   additionalProperties: false,
                   properties: {
                     mechanic: {
@@ -343,13 +337,10 @@ export function buildPageFirstAnnotationFormat(): Record<string, unknown> {
                         'bogo',
                         'bundle',
                         'multi_buy',
-                        'loyalty_required',
-                        'selected_branches',
                         'unknown'
                       ]
                     },
-                    raw_text: { type: ['string', 'null'] },
-                    condition_text: { type: ['string', 'null'] }
+                    raw_text: { type: ['string', 'null'] }
                   }
                 },
                 evidence: {

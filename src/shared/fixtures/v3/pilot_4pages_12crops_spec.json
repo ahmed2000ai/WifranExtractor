@@ -1,0 +1,291 @@
+{
+  "spec_version": "wifran.v3.pilot.plan/1.0",
+  "status": "PLANNED_NOT_EXECUTED",
+  "live_calls_executed": 0,
+  "strict_rules": {
+    "ground_truth_excluded_from_prompts": true,
+    "retry_on_timeout_or_error": false,
+    "allow_silent_legacy_fallback": false,
+    "production_db_access": false
+  },
+  "runtime_profile": {
+    "requested_profile": "extraction_v3",
+    "prompt_version": "extraction_v3_stage1_r1",
+    "schema_version": "wifran.extractor.card/3.0",
+    "model": "gemini-3.8-flash",
+    "thinking_level": "MEDIUM",
+    "service_tier": "flex",
+    "vertex_location": "global",
+    "request_count_planned": {
+      "page_level_requests": 4,
+      "crop_level_requests": 12,
+      "total_requests": 16,
+      "batching": "1 page PDF per request (4 page calls) + 1 offer_card_crop per request (12 sequential crop calls with per-request checkpointing)"
+    },
+    "timeout_and_cancellation": {
+      "per_request_timeout_ms": 180000,
+      "total_wall_clock_cap_ms": 1800000,
+      "supports_abort_controller_cancellation": true,
+      "checkpoint_after_every_request": true
+    },
+    "estimated_budget_usd": {
+      "pricing_table_reference": "src/main/ocr/geminiPricingTable.ts (2026-11-07 Flex PayGo: $0.375/1M input, $1.875/1M output+thinking)",
+      "estimated_tokens_total": {
+        "input_tokens": 58000,
+        "output_and_thinking_tokens": 34000
+      },
+      "estimated_expected_cost_usd": 0.0855,
+      "hard_spend_abort_cap_usd": 0.25
+    }
+  },
+  "pages": [
+    {
+      "pilot_page_id": "pilot_page_01_panda_p002",
+      "retailer": "Panda",
+      "leaflet_id": "panda-national-national-2026-10-20",
+      "page_number": 2,
+      "file_path": "Extracts/Panda_Test/chunks/chunk-002-pages-002-002.pdf",
+      "denominator_expected_source_offers": 12,
+      "existing_extraction_baseline_dir": "Extracts/Panda_Test/json",
+      "target_challenges": ["visual_assortment", "sealed_multipack", "multi_brand", "compound_and_multibuy"]
+    },
+    {
+      "pilot_page_id": "pilot_page_02_bndw_p004",
+      "retailer": "BinDawood",
+      "leaflet_id": "bin-dawood-national-national-2026-10-20",
+      "page_number": 4,
+      "file_path": "Extracts/BNDW_Test/chunks/chunk-004-pages-004-004.pdf",
+      "denominator_expected_source_offers": 12,
+      "existing_extraction_baseline_dir": "Extracts/BNDW_Test/json",
+      "target_challenges": ["assortment_slash_title", "partial_visual_assortment_fail_closed", "retailer_sku_only_fail_closed"]
+    },
+    {
+      "pilot_page_id": "pilot_page_03_noori_p001",
+      "retailer": "Noori Supermarket",
+      "leaflet_id": "noori-jeddah-2026-11-15",
+      "page_number": 1,
+      "file_path": "Extracts/noori-supermarket-229798534-jeddah/chunks/chunk-001-pages-001-001.pdf",
+      "denominator_expected_source_offers": 10,
+      "existing_extraction_baseline_dir": "Extracts/noori-supermarket-229798534-jeddah/json",
+      "target_challenges": ["compound_shared_caption", "arabic_only_no_translation", "factory_bonus_7_plus_3", "text_vs_image_conflict", "price_as_pack_trap"]
+    },
+    {
+      "pilot_page_id": "pilot_page_04_alwafa_p001",
+      "retailer": "AlWafa",
+      "leaflet_id": "alwafa-city-jeddah-2026-10-20",
+      "page_number": 1,
+      "file_path": "Extracts/Alwafa_Test/chunks/chunk-001-pages-001-001.pdf",
+      "denominator_expected_source_offers": 13,
+      "existing_extraction_baseline_dir": "Extracts/Alwafa_Test/json",
+      "target_challenges": ["en_ar_weight_conflict", "checkout_multibuy_buy2"]
+    }
+  ],
+  "crops": [
+    {
+      "pilot_crop_id": "pilot_crop_01_baskin_robbins",
+      "source_offer_id": "Panda_Test_p002_007",
+      "category_tag": "visual_assortment",
+      "file_path": "Extracts/Panda_Test/metadata/rev1/page-002/crops/offer-007/offer_card_crop.webp",
+      "existing_extraction_json": "Extracts/Panda_Test/json/page-002-007.canonical.json",
+      "offline_ground_truth": {
+        "title_en": "Baskin Robbins Ice Cream (500ml)",
+        "promo_price": 17.99,
+        "currency": "SAR",
+        "expected_assortment_status": "explicit_assortment",
+        "expected_decomposed": true,
+        "expected_sub_item_count": 2,
+        "expected_variants": ["Vanilla", "Chocolate"],
+        "expected_manufacturer_pack_count": 1,
+        "expected_conflicts": []
+      }
+    },
+    {
+      "pilot_crop_id": "pilot_crop_02_moussy",
+      "source_offer_id": "Panda_Test_p002_011",
+      "category_tag": "visual_assortment_sealed_multipack",
+      "file_path": "Extracts/Panda_Test/metadata/rev1/page-002/crops/offer-011/offer_card_crop.webp",
+      "existing_extraction_json": "Extracts/Panda_Test/json/page-002-011.canonical.json",
+      "offline_ground_truth": {
+        "title_en": "Moussy Beer Classic (6 x 330ml)",
+        "promo_price": 28.99,
+        "currency": "SAR",
+        "expected_assortment_status": "explicit_assortment",
+        "expected_decomposed": true,
+        "expected_sub_item_count": 2,
+        "expected_variants": ["Classic", "Pomegranate"],
+        "expected_manufacturer_pack_count": 6,
+        "expected_conflicts": []
+      }
+    },
+    {
+      "pilot_crop_id": "pilot_crop_03_al_arabi_shams",
+      "source_offer_id": "Panda_Test_p001_008",
+      "category_tag": "multi_brand",
+      "file_path": "Extracts/Panda_Test/metadata/rev1/page-001/crops/offer-008/offer_card_crop.webp",
+      "existing_extraction_json": "Extracts/Panda_Test/json/page-001-008.canonical.json",
+      "offline_ground_truth": {
+        "title_en": "Al Arabi Vegetable Oil / Shams Sunflower Oil (2 x 1.5L)",
+        "promo_price": 25.99,
+        "currency": "SAR",
+        "expected_assortment_status": "explicit_assortment",
+        "expected_decomposed": true,
+        "expected_sub_item_count": 2,
+        "expected_brands": ["Al Arabi", "Shams"],
+        "expected_manufacturer_pack_count": 2,
+        "expected_conflicts": []
+      }
+    },
+    {
+      "pilot_crop_id": "pilot_crop_04_al_khair_plyms",
+      "source_offer_id": "Panda_Test_p001_007",
+      "category_tag": "multi_brand_paired_sizes",
+      "file_path": "Extracts/Panda_Test/metadata/rev1/page-001/crops/offer-007/offer_card_crop.webp",
+      "existing_extraction_json": "Extracts/Panda_Test/json/page-001-007.canonical.json",
+      "offline_ground_truth": {
+        "title_en": "Al Khair / Plyms Tuna (185g / 170g)",
+        "promo_price": 8.99,
+        "currency": "SAR",
+        "expected_assortment_status": "explicit_assortment",
+        "expected_decomposed": true,
+        "expected_sub_item_count": 2,
+        "expected_brands": ["Al Khair", "Plyms"],
+        "expected_sizes_g": [185, 170],
+        "expected_conflicts": []
+      }
+    },
+    {
+      "pilot_crop_id": "pilot_crop_05_abu_kass",
+      "source_offer_id": "BNDW_Test_p004_001",
+      "category_tag": "visual_assortment_slash",
+      "file_path": "Extracts/BNDW_Test/metadata/rev1/page-004/crops/offer-001/offer_card_crop.webp",
+      "existing_extraction_json": "Extracts/BNDW_Test/json/page-004-001.canonical.json",
+      "offline_ground_truth": {
+        "title_en": "Abu Kass Mazza / Amber Basmati Rice 10Kg",
+        "promo_price": 63.99,
+        "currency": "SAR",
+        "expected_assortment_status": "explicit_assortment",
+        "expected_decomposed": true,
+        "expected_sub_item_count": 2,
+        "expected_variants": ["Mazza", "Amber"],
+        "expected_each_size_value": 10,
+        "expected_each_size_unit": "kg",
+        "expected_conflicts": []
+      }
+    },
+    {
+      "pilot_crop_id": "pilot_crop_06_tide_partial_negative",
+      "source_offer_id": "BNDW_Test_p004_011",
+      "category_tag": "negative_control_partial_assortment",
+      "file_path": "Extracts/BNDW_Test/metadata/rev1/page-004/crops/offer-011/offer_card_crop.webp",
+      "existing_extraction_json": "Extracts/BNDW_Test/json/page-004-011.canonical.json",
+      "offline_ground_truth": {
+        "title_en": "Tide Detergent Powder 4Kg",
+        "promo_price": 34.99,
+        "currency": "SAR",
+        "expected_decomposed": false,
+        "expected_is_enumerated_list_complete": false,
+        "expected_conflicts": ["INCOMPLETE_VISIBLE_ASSORTMENT"]
+      }
+    },
+    {
+      "pilot_crop_id": "pilot_crop_07_persil_sku_negative",
+      "source_offer_id": "BNDW_Test_p004_012",
+      "category_tag": "negative_control_retailer_sku_only",
+      "file_path": "Extracts/BNDW_Test/metadata/rev1/page-004/crops/offer-012/offer_card_crop.webp",
+      "existing_extraction_json": "Extracts/BNDW_Test/json/page-004-012.canonical.json",
+      "offline_ground_truth": {
+        "title_en": "Persil - Detergent Gel 5Ltr.",
+        "promo_price": 39.99,
+        "currency": "SAR",
+        "expected_decomposed": false,
+        "expected_conflicts": ["RETAILER_SKU_WITHOUT_VARIANT_NAMES"]
+      }
+    },
+    {
+      "pilot_crop_id": "pilot_crop_08_fakieh_compound",
+      "source_offer_id": "noori-supermarket-229798534-jeddah_p001_002",
+      "category_tag": "compound_card",
+      "file_path": "Extracts/noori-supermarket-229798534-jeddah/metadata/rev1/page-001/crops/offer-002/offer_card_crop.webp",
+      "existing_extraction_json": "Extracts/noori-supermarket-229798534-jeddah/json/page-001-002.canonical.json",
+      "offline_ground_truth": {
+        "title_ar": "دجاج فقيه مجمد 10 × 1000 جرام",
+        "expected_compound_price_tiers": [
+          { "tier": "carton_10x1000g", "promo_price": 141.0, "manufacturer_pack_count": 10 },
+          { "tier": "single_1000g", "promo_price": 15.5, "manufacturer_pack_count": 1 }
+        ],
+        "expected_decomposed": true,
+        "expected_sub_item_count": 2
+      }
+    },
+    {
+      "pilot_crop_id": "pilot_crop_09_softy_arabic_only_bonus",
+      "source_offer_id": "noori-supermarket-229798534-jeddah_p001_009",
+      "category_tag": "arabic_only_factory_bonus_pack",
+      "file_path": "Extracts/noori-supermarket-229798534-jeddah/metadata/rev1/page-001/crops/offer-009/offer_card_crop.webp",
+      "existing_extraction_json": "Extracts/noori-supermarket-229798534-jeddah/json/page-001-009.canonical.json",
+      "offline_ground_truth": {
+        "title_en": null,
+        "title_ar": "مناديل سوفتي الوجه كيس (7+3 مجاناً) 10×130 منديل",
+        "promo_price": 13.99,
+        "original_price": 23.95,
+        "currency": "SAR",
+        "expected_sale_basis": "factory_bonus_pack",
+        "expected_bonus_paid_qty": 7,
+        "expected_bonus_free_qty": 3,
+        "expected_manufacturer_pack_count": 10,
+        "expected_arabic_only_zero_translation": true
+      }
+    },
+    {
+      "pilot_crop_id": "pilot_crop_10_wafir_conflict_negative",
+      "source_offer_id": "noori-supermarket-229798534-jeddah_p001_008",
+      "category_tag": "negative_control_text_vs_image_conflict",
+      "file_path": "Extracts/noori-supermarket-229798534-jeddah/metadata/rev1/page-001/crops/offer-008/offer_card_crop.webp",
+      "existing_extraction_json": "Extracts/noori-supermarket-229798534-jeddah/json/page-001-008.canonical.json",
+      "offline_ground_truth": {
+        "title_en": null,
+        "title_ar": "مسحوق غسيل وفير أزرق 2.5كجم",
+        "promo_price": 10.99,
+        "currency": "SAR",
+        "expected_decomposed": false,
+        "expected_conflicts": ["TEXT_VS_IMAGE_CONFLICT"],
+        "expected_quarantine": true
+      }
+    },
+    {
+      "pilot_crop_id": "pilot_crop_11_fakieh_multibuy_en_ar_conflict",
+      "source_offer_id": "Alwafa_Test_p001_007",
+      "category_tag": "checkout_multibuy_and_en_ar_conflict",
+      "file_path": "Extracts/Alwafa_Test/metadata/rev1/page-001/crops/offer-007/offer_card_crop.webp",
+      "existing_extraction_json": "Extracts/Alwafa_Test/json/page-001-007.canonical.json",
+      "offline_ground_truth": {
+        "title_en": "Fakieh Frozen Chicken 600Gm",
+        "title_ar": "دجاج فقيه مجمد ٧٠٠ ج",
+        "promo_price": 15.0,
+        "currency": "SAR",
+        "expected_checkout_multibuy_qty": 2,
+        "expected_manufacturer_pack_count": 1,
+        "expected_decomposed": false,
+        "expected_conflicts": ["EN_AR_WEIGHT_VOLUME_CONFLICT"],
+        "expected_quarantine": true
+      }
+    },
+    {
+      "pilot_crop_id": "pilot_crop_12_perinna_non_grocery_negative",
+      "source_offer_id": "Alwafa_Test_p003_014",
+      "category_tag": "non_grocery_and_unlabeled_swatches",
+      "file_path": "Extracts/Alwafa_Test/metadata/rev1/page-003/crops/offer-014/offer_card_crop.webp",
+      "existing_extraction_json": "Extracts/Alwafa_Test/json/page-003-014.canonical.json",
+      "offline_ground_truth": {
+        "title_en": "Perinna Bed Sheet 225X250Cm",
+        "promo_price": 25.0,
+        "currency": "SAR",
+        "expected_domain": "textiles_home",
+        "expected_excluded_from_default_grocery_feed": true,
+        "expected_decomposed": false,
+        "expected_conflicts": ["UNLABELED_SWATCH_OR_BOTTLE_VARIANTS"],
+        "expected_quarantine": true
+      }
+    }
+  ]
+}

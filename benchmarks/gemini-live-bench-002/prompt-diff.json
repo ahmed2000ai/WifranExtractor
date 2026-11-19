@@ -1,0 +1,17 @@
+{
+  "benchmarkId": "WIFRAN-EXTRACTOR-GEMINI-LIVE-BENCH-002",
+  "date": "2026-11-11T14:31:43.082Z",
+  "originalLegacyPrompt": {
+    "lengthChars": 8826,
+    "sha256": "e54ee263bcc8f54e49c22dc002673d60fbd75d2d8e83e45258943e76c3b93c9e",
+    "profile": "legacy"
+  },
+  "testCPrompt": {
+    "lengthChars": 9155,
+    "sha256": "ed5433f0e679629b7e91c1b1f49dddc1e1223ef91824d2fd0ab43a2748dae5cd",
+    "profile": "legacy_compact_v1"
+  },
+  "schemaProfile": "compact_v1",
+  "schemaSha256": "e22a67aa71784546b6f7eb723ed2681e87be68771022b0ba30cd06e02e4d5384",
+  "alignmentSummary": "Preserved 100% of domain rules, examples, and detailed instructions from legacy prompt. Only annotated property names with single-letter compact keys and added standard schema conformity directive."
+}

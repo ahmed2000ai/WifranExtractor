@@ -1,6 +1,8 @@
 import { ipcMain, app } from 'electron'
 import { AppHealthStatus } from '../../shared/types/app'
 import { getSafeConfigStatus } from '../config/configStatus'
+import type { DatabaseContext } from '../db/databaseEnvironmentResolver'
+import { assessSchemaCompatibility } from '../db/schemaCompatibilityService'
 import { registerReferenceDataIpcHandlers } from './referenceDataIpc'
 import { registerFileDialogIpcHandlers } from './fileDialogIpc'
 import { registerPdfPreprocessIpcHandlers } from './pdfPreprocessIpc'
@@ -19,6 +21,9 @@ import { registerPrePublishIpc } from './prePublishIpc'
 import { registerPageFirstIpcHandlers } from './pageFirstIpc'
 import { registerRev1IpcHandlers } from './rev1Ipc'
 import { registerProductEnrichmentIpcHandlers } from './productEnrichmentIpc'
+import { registerLeafletMetadataIpc } from './leafletMetadataIpc'
+import { registerBatchExtractionIpcHandlers } from './batchExtractionIpc'
+import { registerCatalogMatchingIpcHandlers } from './catalogMatchingIpc'
 
 export function registerIpcHandlers(): void {
   ipcMain.handle('app:getVersion', () => {
@@ -26,15 +31,24 @@ export function registerIpcHandlers(): void {
   })
 
   ipcMain.handle('app:getHealth', (): AppHealthStatus => {
+    const { databaseEnvironment } = getSafeConfigStatus()
+
     return {
       ok: true,
       appVersion: app.getVersion(),
-      environment: process.env.NODE_ENV === 'development' ? 'development' : 'production'
+      environment: process.env.NODE_ENV === 'development' ? 'development' : 'production',
+      isOfflineUat: process.env.WIFRAN_OFFLINE_UAT === '1',
+      databaseEnvironment
     }
   })
 
   ipcMain.handle('config:getStatus', () => {
     return getSafeConfigStatus()
+  })
+
+  ipcMain.handle('config:verifySchemaReadiness', async (_event, context?: DatabaseContext) => {
+    const resolvedContext: DatabaseContext = context === 'DEVELOPMENT_TEST' ? 'DEVELOPMENT_TEST' : 'PRODUCTION_UI'
+    return await assessSchemaCompatibility({ context: resolvedContext })
   })
 
   registerReferenceDataIpcHandlers()
@@ -55,4 +69,7 @@ export function registerIpcHandlers(): void {
   registerPageFirstIpcHandlers()
   registerRev1IpcHandlers()
   registerProductEnrichmentIpcHandlers()
+  registerLeafletMetadataIpc()
+  registerBatchExtractionIpcHandlers()
+  registerCatalogMatchingIpcHandlers()
 }

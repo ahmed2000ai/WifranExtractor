@@ -123,7 +123,10 @@ export function runDeterministicOfferChecks(input: {
   }
 
   if (c.trusted_context.offer_end_date) {
-    const end = new Date(c.trusted_context.offer_end_date);
+    const rawEnd = c.trusted_context.offer_end_date.trim();
+    const end = /^\d{4}-\d{2}-\d{2}$/.test(rawEnd)
+      ? new Date(`${rawEnd}T23:59:59.999Z`)
+      : new Date(rawEnd);
     if (isNaN(end.getTime())) {
       addBlock('invalid_offer_end_date', 'Offer end date is unparsable');
     } else if (end < now) {

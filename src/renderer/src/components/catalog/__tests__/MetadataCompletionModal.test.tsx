@@ -113,8 +113,13 @@ describe('MetadataCompletionModal (WIFRAN-07J Step 2 Import Fallback)', () => {
       expect(screen.getByTestId('modal-supermarket-select')).toBeInTheDocument()
     })
 
+    const smSelect = screen.getByTestId('modal-supermarket-select') as HTMLSelectElement
+    const smOptions = Array.from(smSelect.options)
+    expect(smOptions[smOptions.length - 1]?.value).toBe('__ADD_NEW__')
+    expect(smOptions[smOptions.length - 1]?.textContent).toBe('New supermarket...')
+
     // Select Add New Supermarket
-    fireEvent.change(screen.getByTestId('modal-supermarket-select'), {
+    fireEvent.change(smSelect, {
       target: { value: '__ADD_NEW__' }
     })
     const customSmInput = screen.getByTestId('modal-custom-supermarket-input')
@@ -214,7 +219,7 @@ describe('MetadataCompletionModal (WIFRAN-07J Step 2 Import Fallback)', () => {
     expect(screen.getByText('Confirm Leaflet Metadata')).toBeInTheDocument()
     expect(screen.getByText('Review & Confirm Leaflet Metadata')).toBeInTheDocument()
     expect(
-      screen.getByText(/Supermarket and Region were derived from the PDF filename, and Offer Dates were imported from the Step 2 CSV./i)
+      screen.getByText(/Review and confirm the discovered or operator-entered Supermarket, Region\/Scope, and Offer Validity Dates below before publishing to the database./i)
     ).toBeInTheDocument()
 
     // Submit button label

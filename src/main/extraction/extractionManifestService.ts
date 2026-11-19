@@ -14,6 +14,7 @@ export async function createInitialExtractionManifest(input: {
   location?: any
   offerDates?: any
   parsedMetadata?: any
+  processingSelection?: import('../../shared/types/extractionManifest').ProcessingSelectionManifest
 }): Promise<ExtractionManifest> {
   const manifest: ExtractionManifest = {
     schema_version: 1,
@@ -36,9 +37,10 @@ export async function createInitialExtractionManifest(input: {
     pdf_file_name: input.pdfFileName,
     pdf_base_name: input.pdfBaseName,
     page_count: input.pageCount || null,
+    processing_selection: input.processingSelection,
     processing_scope: {
-      mode: 'all_pages',
-      pages: []
+      mode: input.processingSelection?.selectionMode === 'specific' ? 'selected_pages' : 'all_pages',
+      pages: input.processingSelection?.selectedPages || []
     },
     supermarket: {
       id: input.supermarketId || null

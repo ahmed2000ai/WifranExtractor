@@ -1,0 +1,1271 @@
+{
+  "archiveFormatVersion": 1,
+  "archiveKind": "live_provider_attempt",
+  "reconstructedFromSavedCache": false,
+  "provenanceNote": "Per-attempt archive of actual provider response fields and verbatim rawResponseText separated from parsed application extraction. Hidden model reasoning text is not exposed by the Gemini API and is never fabricated.",
+  "attemptKind": "primary",
+  "attemptSequence": 1,
+  "pageNumber": 1,
+  "correlationId": "bench-live-p1-testA-1794359535189",
+  "requestTimestamp": "2026-11-11T01:12:15.275Z",
+  "completedAt": "2026-11-11T01:13:30.619Z",
+  "cacheHit": false,
+  "providerCacheHit": false,
+  "providerCacheResource": null,
+  "providerCacheStatus": "disabled",
+  "modelId": "gemini-3.8-flash",
+  "modelVersion": "gemini-3.8-flash",
+  "requestedServiceTier": "flex",
+  "actualServiceTier": "flex",
+  "thinkingConfig": {
+    "thinkingLevel": "HIGH"
+  },
+  "requestMetadata": {
+    "fingerprintHash": "221b5fa063b8bdb775c2f8d9fa5546df018e4fc25e8ccf6bba271680f5f8d1ba",
+    "imageSha256": "d5ebb7b85c90ef82b3835222fe9589ae6fdc5a9a8388a2af432a5be7ad22fa5b",
+    "systemInstructionSha256": "e54ee263bcc8f54e49c22dc002673d60fbd75d2d8e83e45258943e76c3b93c9e",
+    "promptSha256": "60010e5fc0698140c0f768086d5f083e26493914a6189729f27b07dae6249b3b",
+    "schemaSha256": "a126c35cd49763af95f3c2c5f5fc1bf498d0fa4828b1022dbf76746747533d9e",
+    "promptProfile": "legacy",
+    "schemaProfile": "legacy",
+    "schemaVersion": "legacy",
+    "isDiagnosticRetry": false,
+    "failureReasons": null,
+    "backendContext": {
+      "backend": "vertex_ai",
+      "projectId": "wifran",
+      "location": "global"
+    }
+  },
+  "rawResponseText": "{\n  \"is_loyalty_page\": false,\n  \"ignored_banners\": [\n    \"أقل الأسعار LOWEST PRICES top promotional header banner\"\n  ],\n  \"offers\": [\n    {\n      \"offer_number\": 1,\n      \"arabic_title\": \"أرز بوندي مزة هندي 10 كجم\",\n      \"english_title\": \"Bundi Mazza Rice 10kg\",\n      \"is_multi_brand_or_variant\": false,\n      \"promo_price\": 42.99,\n      \"promo_condition\": \"STANDARD\",\n      \"confidence\": 0.99,\n      \"components\": {\n        \"product_graphic_box\": [341, 126, 483, 290],\n        \"promo_price_box\": [349, 28, 373, 110],\n        \"title_text_box\": [483, 49, 502, 286],\n        \"original_price_box\": [370, 48, 388, 104],\n        \"unit_and_size_badge_box\": [335, 52, 351, 85]\n      },\n      \"brand\": \"Bundi\",\n      \"category_slug\": \"staples\",\n      \"commodity_tag\": \"basmati_rice\",\n      \"compound_group_id\": null,\n      \"each_size_unit\": \"kg\",\n      \"each_size_value\": 10,\n      \"is_uniform_size_across_variants\": true,\n      \"item_domain\": \"grocery\",\n      \"normalized_product_name_ar\": \"أرز بوندي مزة هندي\",\n      \"normalized_product_name_en\": \"Bundi Mazza Rice\",\n      \"original_price\": 62.99,\n      \"pack_quantity\": 1,\n      \"quantity_limit\": null,\n      \"size_value\": \"10 كجم\",\n      \"unit_type\": \"كيس\"\n    },\n    {\n      \"offer_number\": 2,\n      \"arabic_title\": \"دجاج فقيه مجمد 10 × 1000 جرام كرتون\",\n      \"english_title\": \"Fakieh Frozen Chicken Carton 10 x 1000g\",\n      \"is_multi_brand_or_variant\": false,\n      \"promo_price\": 141.0,\n      \"promo_condition\": \"STANDARD\",\n      \"confidence\": 0.98,\n      \"components\": {\n        \"product_graphic_box\": [341, 423, 488, 624],\n        \"promo_price_box\": [350, 348, 373, 429],\n        \"title_text_box\": [488, 379, 503, 611],\n        \"original_price_box\": [371, 358, 387, 422],\n        \"unit_and_size_badge_box\": [336, 370, 352, 407]\n      },\n      \"brand\": \"Fakieh\",\n      \"category_slug\": \"meat-chicken\",\n      \"commodity_tag\": \"whole_chicken\",\n      \"compound_group_id\": \"cell_fakieh_chicken\",\n      \"each_size_unit\": \"g\",\n      \"each_size_value\": 1000,\n      \"is_uniform_size_across_variants\": true,\n      \"item_domain\": \"grocery\",\n      \"normalized_product_name_ar\": \"دجاج فقيه مجمد\",\n      \"normalized_product_name_en\": \"Fakieh Frozen Chicken\",\n      \"original_price\": 202.0,\n      \"pack_quantity\": 10,\n      \"quantity_limit\": null,\n      \"size_value\": \"10 x 1000g\",\n      \"unit_type\": \"كرتون\"\n    },\n    {\n      \"offer_number\": 3,\n      \"arabic_title\": \"دجاج فقيه مجمد 1000 جرام حبة\",\n      \"english_title\": \"Fakieh Frozen Chicken 1000g Each\",\n      \"is_multi_brand_or_variant\": false,\n      \"promo_price\": 15.5,\n      \"promo_condition\": \"STANDARD\",\n      \"confidence\": 0.98,\n      \"components\": {\n        \"product_graphic_box\": [341, 423, 488, 624],\n        \"promo_price_box\": [405, 400, 419, 448],\n        \"title_text_box\": [488, 379, 503, 611],\n        \"original_price_box\": null,\n        \"unit_and_size_badge_box\": [398, 414, 407, 437]\n      },\n      \"brand\": \"Fakieh\",\n      \"category_slug\": \"meat-chicken\",\n      \"commodity_tag\": \"whole_chicken\",\n      \"compound_group_id\": \"cell_fakieh_chicken\",\n      \"each_size_unit\": \"g\",\n      \"each_size_value\": 1000,\n      \"is_uniform_size_across_variants\": true,\n      \"item_domain\": \"grocery\",\n      \"normalized_product_name_ar\": \"دجاج فقيه مجمد\",\n      \"normalized_product_name_en\": \"Fakieh Frozen Chicken\",\n      \"original_price\": null,\n      \"pack_quantity\": 1,\n      \"quantity_limit\": null,\n      \"size_value\": \"1000g\",\n      \"unit_type\": \"الحبة\"\n    },\n    {\n      \"offer_number\": 4,\n      \"arabic_title\": \"بيض لؤلؤة المزارع مغلف 30 حبة\",\n      \"english_title\": \"Pearl of Farms Wrapped Eggs 30s\",\n      \"is_multi_brand_or_variant\": false,\n      \"promo_price\": 13.25,\n      \"promo_condition\": \"STANDARD\",\n      \"confidence\": 0.99,\n      \"components\": {\n        \"product_graphic_box\": [352, 779, 474, 946],\n        \"promo_price_box\": [350, 667, 373, 747],\n        \"title_text_box\": [474, 672, 501, 794],\n        \"original_price_box\": [371, 689, 388, 737],\n        \"unit_and_size_badge_box\": [337, 694, 351, 719]\n      },\n      \"brand\": \"Pearl of Farms\",\n      \"category_slug\": \"eggs\",\n      \"commodity_tag\": \"white_eggs\",\n      \"compound_group_id\": null,\n      \"each_size_unit\": \"pcs\",\n      \"each_size_value\": 30,\n      \"is_uniform_size_across_variants\": true,\n      \"item_domain\": \"grocery\",\n      \"normalized_product_name_ar\": \"بيض لؤلؤة المزارع مغلف\",\n      \"normalized_product_name_en\": \"Pearl of Farms Wrapped Eggs\",\n      \"original_price\": 15.0,\n      \"pack_quantity\": 1,\n      \"quantity_limit\": null,\n      \"size_value\": \"30 حبة\",\n      \"unit_type\": \"طبق\"\n    },\n    {\n      \"offer_number\": 5,\n      \"arabic_title\": \"سكر فاصكو ناعم 5 كيلو\",\n      \"english_title\": \"Fazco Fine Sugar 5kg\",\n      \"is_multi_brand_or_variant\": false,\n      \"promo_price\": 16.5,\n      \"promo_condition\": \"STANDARD\",\n      \"confidence\": 0.99,\n      \"components\": {\n        \"product_graphic_box\": [510, 138, 646, 264],\n        \"promo_price_box\": [523, 29, 547, 110],\n        \"title_text_box\": [657, 107, 672, 279],\n        \"original_price_box\": [545, 48, 560, 99],\n        \"unit_and_size_badge_box\": [511, 52, 524, 86]\n      },\n      \"brand\": \"Fazco\",\n      \"category_slug\": \"staples\",\n      \"commodity_tag\": \"sugar\",\n      \"compound_group_id\": null,\n      \"each_size_unit\": \"kg\",\n      \"each_size_value\": 5,\n      \"is_uniform_size_across_variants\": true,\n      \"item_domain\": \"grocery\",\n      \"normalized_product_name_ar\": \"سكر فاصكو ناعم\",\n      \"normalized_product_name_en\": \"Fazco Fine Sugar\",\n      \"original_price\": 25.0,\n      \"pack_quantity\": 1,\n      \"quantity_limit\": null,\n      \"size_value\": \"5 كيلو\",\n      \"unit_type\": \"كيس\"\n    },\n    {\n      \"offer_number\": 6,\n      \"arabic_title\": \"لبنة برايد كريمي\",\n      \"english_title\": \"Pride Creamy Labneh\",\n      \"is_multi_brand_or_variant\": false,\n      \"promo_price\": 18.99,\n      \"promo_condition\": \"STANDARD\",\n      \"confidence\": 0.99,\n      \"components\": {\n        \"product_graphic_box\": [540, 417, 655, 610],\n        \"promo_price_box\": [523, 349, 543, 429],\n        \"title_text_box\": [658, 360, 672, 473],\n        \"original_price_box\": [542, 368, 557, 421],\n        \"unit_and_size_badge_box\": [509, 372, 522, 404]\n      },\n      \"brand\": \"Pride\",\n      \"category_slug\": \"dairy\",\n      \"commodity_tag\": \"labneh\",\n      \"compound_group_id\": null,\n      \"each_size_unit\": \"kg\",\n      \"each_size_value\": 1,\n      \"is_uniform_size_across_variants\": true,\n      \"item_domain\": \"grocery\",\n      \"normalized_product_name_ar\": \"لبنة برايد كريمي\",\n      \"normalized_product_name_en\": \"Pride Creamy Labneh\",\n      \"original_price\": 32.95,\n      \"pack_quantity\": 1,\n      \"quantity_limit\": null,\n      \"size_value\": \"1 كجم\",\n      \"unit_type\": \"الكيلو\"\n    },\n    {\n      \"offer_number\": 7,\n      \"arabic_title\": \"دقيق قوت أند روت فاخر 1 كيلو\",\n      \"english_title\": \"Qoot & Root Premium Flour 1kg\",\n      \"is_multi_brand_or_variant\": false,\n      \"promo_price\": 9.99,\n      \"promo_condition\": \"STANDARD\",\n      \"confidence\": 0.99,\n      \"components\": {\n        \"product_graphic_box\": [521, 664, 642, 974],\n        \"promo_price_box\": [522, 668, 543, 747],\n        \"title_text_box\": [645, 738, 672, 885],\n        \"original_price_box\": [542, 686, 557, 741],\n        \"unit_and_size_badge_box\": [509, 687, 521, 725]\n      },\n      \"brand\": \"Qoot & Root\",\n      \"category_slug\": \"staples\",\n      \"commodity_tag\": \"flour\",\n      \"compound_group_id\": null,\n      \"each_size_unit\": \"kg\",\n      \"each_size_value\": 1,\n      \"is_uniform_size_across_variants\": true,\n      \"item_domain\": \"grocery\",\n      \"normalized_product_name_ar\": \"دقيق قوت أند روت فاخر\",\n      \"normalized_product_name_en\": \"Qoot & Root Premium Flour\",\n      \"original_price\": 26.55,\n      \"pack_quantity\": 9,\n      \"quantity_limit\": null,\n      \"size_value\": \"9 x 1 كجم\",\n      \"unit_type\": \"9 حبات\"\n    },\n    {\n      \"offer_number\": 8,\n      \"arabic_title\": \"مسحوق غسيل وفير أزرق 2.5 كجم\",\n      \"english_title\": \"Wafir Blue Detergent Powder 2.5kg\",\n      \"is_multi_brand_or_variant\": false,\n      \"promo_price\": 10.99,\n      \"promo_condition\": \"STANDARD\",\n      \"confidence\": 0.99,\n      \"components\": {\n        \"product_graphic_box\": [688, 131, 811, 277],\n        \"promo_price_box\": [691, 29, 712, 109],\n        \"title_text_box\": [813, 33, 841, 199],\n        \"original_price_box\": [711, 48, 726, 99],\n        \"unit_and_size_badge_box\": [678, 52, 692, 84]\n      },\n      \"brand\": \"Wafir\",\n      \"category_slug\": \"cleaning\",\n      \"commodity_tag\": \"laundry_detergent\",\n      \"compound_group_id\": null,\n      \"each_size_unit\": \"kg\",\n      \"each_size_value\": 2.5,\n      \"is_uniform_size_across_variants\": true,\n      \"item_domain\": \"grocery\",\n      \"normalized_product_name_ar\": \"مسحوق غسيل وفير أزرق\",\n      \"normalized_product_name_en\": \"Wafir Blue Detergent Powder\",\n      \"original_price\": 27.95,\n      \"pack_quantity\": 1,\n      \"quantity_limit\": null,\n      \"size_value\": \"2.5 كجم\",\n      \"unit_type\": \"كيس\"\n    },\n    {\n      \"offer_number\": 9,\n      \"arabic_title\": \"مناديل سوفتي الوجه كيس (3+7 مجانا) 10×130 منديل\",\n      \"english_title\": \"Softy Facial Tissue Pack (7+3 Free) 10 x 130 Sheets\",\n      \"is_multi_brand_or_variant\": false,\n      \"promo_price\": 13.99,\n      \"promo_condition\": \"STANDARD\",\n      \"confidence\": 0.99,\n      \"components\": {\n        \"product_graphic_box\": [694, 469, 818, 620],\n        \"promo_price_box\": [691, 349, 712, 429],\n        \"title_text_box\": [814, 351, 843, 539],\n        \"original_price_box\": [712, 368, 726, 421],\n        \"unit_and_size_badge_box\": [678, 376, 692, 401]\n      },\n      \"brand\": \"Softy\",\n      \"category_slug\": \"cleaning\",\n      \"commodity_tag\": \"facial_tissue\",\n      \"compound_group_id\": null,\n      \"each_size_unit\": \"sheet\",\n      \"each_size_value\": 130,\n      \"is_uniform_size_across_variants\": true,\n      \"item_domain\": \"grocery\",\n      \"normalized_product_name_ar\": \"مناديل سوفتي الوجه كيس\",\n      \"normalized_product_name_en\": \"Softy Facial Tissue Pack\",\n      \"original_price\": 23.95,\n      \"pack_quantity\": 10,\n      \"quantity_limit\": null,\n      \"size_value\": \"10 x 130 منديل\",\n      \"unit_type\": \"ربطة\"\n    },\n    {\n      \"offer_number\": 10,\n      \"arabic_title\": \"مكسرات باجة فول سوداني مملح 18×25 جرام\",\n      \"english_title\": \"Baja Salted Peanuts 18 x 25g\",\n      \"is_multi_brand_or_variant\": false,\n      \"promo_price\": 11.99,\n      \"promo_condition\": \"STANDARD\",\n      \"confidence\": 0.99,\n      \"components\": {\n        \"product_graphic_box\": [681, 796, 810, 932],\n        \"promo_price_box\": [692, 668, 713, 747],\n        \"title_text_box\": [811, 714, 841, 937],\n        \"original_price_box\": [712, 686, 726, 739],\n        \"unit_and_size_badge_box\": [678, 693, 691, 721]\n      },\n      \"brand\": \"Baja\",\n      \"category_slug\": \"staples\",\n      \"commodity_tag\": \"peanuts\",\n      \"compound_group_id\": null,\n      \"each_size_unit\": \"g\",\n      \"each_size_value\": 25,\n      \"is_uniform_size_across_variants\": true,\n      \"item_domain\": \"grocery\",\n      \"normalized_product_name_ar\": \"مكسرات باجة فول سوداني مملح\",\n      \"normalized_product_name_en\": \"Baja Salted Peanuts\",\n      \"original_price\": 26.99,\n      \"pack_quantity\": 18,\n      \"quantity_limit\": null,\n      \"size_value\": \"18 x 25 جم\",\n      \"unit_type\": \"ربطة\"\n    }\n  ],\n  \"loyalty_program_name\": null,\n  \"validity_end_date\": \"2026-11-15\",\n  \"validity_start_date\": \"2026-11-05\"\n}",
+  "rawResponseReconstructed": false,
+  "providerSdkResponse": {
+    "responseId": "8MDzaqW7JKOBtfAPiJ3rkQE",
+    "modelVersion": "gemini-3.8-flash",
+    "createTime": "2026-11-11T01:12:16.597413Z",
+    "candidates": [
+      {
+        "content": {
+          "role": "model",
+          "parts": [
+            {
+              "text": "{\n  \"is_loyalty_page\": false,\n  \"ignored_banners\": [\n    \"أقل الأسعار LOWEST PRICES top promotional header banner\"\n  ],\n  \"offers\": [\n    {\n      \"offer_number\": 1,\n      \"arabic_title\": \"أرز بوندي مزة هندي 10 كجم\",\n      \"english_title\": \"Bundi Mazza Rice 10kg\",\n      \"is_multi_brand_or_variant\": false,\n      \"promo_price\": 42.99,\n      \"promo_condition\": \"STANDARD\",\n      \"confidence\": 0.99,\n      \"components\": {\n        \"product_graphic_box\": [341, 126, 483, 290],\n        \"promo_price_box\": [349, 28, 373, 110],\n        \"title_text_box\": [483, 49, 502, 286],\n        \"original_price_box\": [370, 48, 388, 104],\n        \"unit_and_size_badge_box\": [335, 52, 351, 85]\n      },\n      \"brand\": \"Bundi\",\n      \"category_slug\": \"staples\",\n      \"commodity_tag\": \"basmati_rice\",\n      \"compound_group_id\": null,\n      \"each_size_unit\": \"kg\",\n      \"each_size_value\": 10,\n      \"is_uniform_size_across_variants\": true,\n      \"item_domain\": \"grocery\",\n      \"normalized_product_name_ar\": \"أرز بوندي مزة هندي\",\n      \"normalized_product_name_en\": \"Bundi Mazza Rice\",\n      \"original_price\": 62.99,\n      \"pack_quantity\": 1,\n      \"quantity_limit\": null,\n      \"size_value\": \"10 كجم\",\n      \"unit_type\": \"كيس\"\n    },\n    {\n      \"offer_number\": 2,\n      \"arabic_title\": \"دجاج فقيه مجمد 10 × 1000 جرام كرتون\",\n      \"english_title\": \"Fakieh Frozen Chicken Carton 10 x 1000g\",\n      \"is_multi_brand_or_variant\": false,\n      \"promo_price\": 141.0,\n      \"promo_condition\": \"STANDARD\",\n      \"confidence\": 0.98,\n      \"components\": {\n        \"product_graphic_box\": [341, 423, 488, 624],\n        \"promo_price_box\": [350, 348, 373, 429],\n        \"title_text_box\": [488, 379, 503, 611],\n        \"original_price_box\": [371, 358, 387, 422],\n        \"unit_and_size_badge_box\": [336, 370, 352, 407]\n      },\n      \"brand\": \"Fakieh\",\n      \"category_slug\": \"meat-chicken\",\n      \"commodity_tag\": \"whole_chicken\",\n      \"compound_group_id\": \"cell_fakieh_chicken\",\n      \"each_size_unit\": \"g\",\n      \"each_size_value\": 1000,\n      \"is_uniform_size_across_variants\": true,\n      \"item_domain\": \"grocery\",\n      \"normalized_product_name_ar\": \"دجاج فقيه مجمد\",\n      \"normalized_product_name_en\": \"Fakieh Frozen Chicken\",\n      \"original_price\": 202.0,\n      \"pack_quantity\": 10,\n      \"quantity_limit\": null,\n      \"size_value\": \"10 x 1000g\",\n      \"unit_type\": \"كرتون\"\n    },\n    {\n      \"offer_number\": 3,\n      \"arabic_title\": \"دجاج فقيه مجمد 1000 جرام حبة\",\n      \"english_title\": \"Fakieh Frozen Chicken 1000g Each\",\n      \"is_multi_brand_or_variant\": false,\n      \"promo_price\": 15.5,\n      \"promo_condition\": \"STANDARD\",\n      \"confidence\": 0.98,\n      \"components\": {\n        \"product_graphic_box\": [341, 423, 488, 624],\n        \"promo_price_box\": [405, 400, 419, 448],\n        \"title_text_box\": [488, 379, 503, 611],\n        \"original_price_box\": null,\n        \"unit_and_size_badge_box\": [398, 414, 407, 437]\n      },\n      \"brand\": \"Fakieh\",\n      \"category_slug\": \"meat-chicken\",\n      \"commodity_tag\": \"whole_chicken\",\n      \"compound_group_id\": \"cell_fakieh_chicken\",\n      \"each_size_unit\": \"g\",\n      \"each_size_value\": 1000,\n      \"is_uniform_size_across_variants\": true,\n      \"item_domain\": \"grocery\",\n      \"normalized_product_name_ar\": \"دجاج فقيه مجمد\",\n      \"normalized_product_name_en\": \"Fakieh Frozen Chicken\",\n      \"original_price\": null,\n      \"pack_quantity\": 1,\n      \"quantity_limit\": null,\n      \"size_value\": \"1000g\",\n      \"unit_type\": \"الحبة\"\n    },\n    {\n      \"offer_number\": 4,\n      \"arabic_title\": \"بيض لؤلؤة المزارع مغلف 30 حبة\",\n      \"english_title\": \"Pearl of Farms Wrapped Eggs 30s\",\n      \"is_multi_brand_or_variant\": false,\n      \"promo_price\": 13.25,\n      \"promo_condition\": \"STANDARD\",\n      \"confidence\": 0.99,\n      \"components\": {\n        \"product_graphic_box\": [352, 779, 474, 946],\n        \"promo_price_box\": [350, 667, 373, 747],\n        \"title_text_box\": [474, 672, 501, 794],\n        \"original_price_box\": [371, 689, 388, 737],\n        \"unit_and_size_badge_box\": [337, 694, 351, 719]\n      },\n      \"brand\": \"Pearl of Farms\",\n      \"category_slug\": \"eggs\",\n      \"commodity_tag\": \"white_eggs\",\n      \"compound_group_id\": null,\n      \"each_size_unit\": \"pcs\",\n      \"each_size_value\": 30,\n      \"is_uniform_size_across_variants\": true,\n      \"item_domain\": \"grocery\",\n      \"normalized_product_name_ar\": \"بيض لؤلؤة المزارع مغلف\",\n      \"normalized_product_name_en\": \"Pearl of Farms Wrapped Eggs\",\n      \"original_price\": 15.0,\n      \"pack_quantity\": 1,\n      \"quantity_limit\": null,\n      \"size_value\": \"30 حبة\",\n      \"unit_type\": \"طبق\"\n    },\n    {\n      \"offer_number\": 5,\n      \"arabic_title\": \"سكر فاصكو ناعم 5 كيلو\",\n      \"english_title\": \"Fazco Fine Sugar 5kg\",\n      \"is_multi_brand_or_variant\": false,\n      \"promo_price\": 16.5,\n      \"promo_condition\": \"STANDARD\",\n      \"confidence\": 0.99,\n      \"components\": {\n        \"product_graphic_box\": [510, 138, 646, 264],\n        \"promo_price_box\": [523, 29, 547, 110],\n        \"title_text_box\": [657, 107, 672, 279],\n        \"original_price_box\": [545, 48, 560, 99],\n        \"unit_and_size_badge_box\": [511, 52, 524, 86]\n      },\n      \"brand\": \"Fazco\",\n      \"category_slug\": \"staples\",\n      \"commodity_tag\": \"sugar\",\n      \"compound_group_id\": null,\n      \"each_size_unit\": \"kg\",\n      \"each_size_value\": 5,\n      \"is_uniform_size_across_variants\": true,\n      \"item_domain\": \"grocery\",\n      \"normalized_product_name_ar\": \"سكر فاصكو ناعم\",\n      \"normalized_product_name_en\": \"Fazco Fine Sugar\",\n      \"original_price\": 25.0,\n      \"pack_quantity\": 1,\n      \"quantity_limit\": null,\n      \"size_value\": \"5 كيلو\",\n      \"unit_type\": \"كيس\"\n    },\n    {\n      \"offer_number\": 6,\n      \"arabic_title\": \"لبنة برايد كريمي\",\n      \"english_title\": \"Pride Creamy Labneh\",\n      \"is_multi_brand_or_variant\": false,\n      \"promo_price\": 18.99,\n      \"promo_condition\": \"STANDARD\",\n      \"confidence\": 0.99,\n      \"components\": {\n        \"product_graphic_box\": [540, 417, 655, 610],\n        \"promo_price_box\": [523, 349, 543, 429],\n        \"title_text_box\": [658, 360, 672, 473],\n        \"original_price_box\": [542, 368, 557, 421],\n        \"unit_and_size_badge_box\": [509, 372, 522, 404]\n      },\n      \"brand\": \"Pride\",\n      \"category_slug\": \"dairy\",\n      \"commodity_tag\": \"labneh\",\n      \"compound_group_id\": null,\n      \"each_size_unit\": \"kg\",\n      \"each_size_value\": 1,\n      \"is_uniform_size_across_variants\": true,\n      \"item_domain\": \"grocery\",\n      \"normalized_product_name_ar\": \"لبنة برايد كريمي\",\n      \"normalized_product_name_en\": \"Pride Creamy Labneh\",\n      \"original_price\": 32.95,\n      \"pack_quantity\": 1,\n      \"quantity_limit\": null,\n      \"size_value\": \"1 كجم\",\n      \"unit_type\": \"الكيلو\"\n    },\n    {\n      \"offer_number\": 7,\n      \"arabic_title\": \"دقيق قوت أند روت فاخر 1 كيلو\",\n      \"english_title\": \"Qoot & Root Premium Flour 1kg\",\n      \"is_multi_brand_or_variant\": false,\n      \"promo_price\": 9.99,\n      \"promo_condition\": \"STANDARD\",\n      \"confidence\": 0.99,\n      \"components\": {\n        \"product_graphic_box\": [521, 664, 642, 974],\n        \"promo_price_box\": [522, 668, 543, 747],\n        \"title_text_box\": [645, 738, 672, 885],\n        \"original_price_box\": [542, 686, 557, 741],\n        \"unit_and_size_badge_box\": [509, 687, 521, 725]\n      },\n      \"brand\": \"Qoot & Root\",\n      \"category_slug\": \"staples\",\n      \"commodity_tag\": \"flour\",\n      \"compound_group_id\": null,\n      \"each_size_unit\": \"kg\",\n      \"each_size_value\": 1,\n      \"is_uniform_size_across_variants\": true,\n      \"item_domain\": \"grocery\",\n      \"normalized_product_name_ar\": \"دقيق قوت أند روت فاخر\",\n      \"normalized_product_name_en\": \"Qoot & Root Premium Flour\",\n      \"original_price\": 26.55,\n      \"pack_quantity\": 9,\n      \"quantity_limit\": null,\n      \"size_value\": \"9 x 1 كجم\",\n      \"unit_type\": \"9 حبات\"\n    },\n    {\n      \"offer_number\": 8,\n      \"arabic_title\": \"مسحوق غسيل وفير أزرق 2.5 كجم\",\n      \"english_title\": \"Wafir Blue Detergent Powder 2.5kg\",\n      \"is_multi_brand_or_variant\": false,\n      \"promo_price\": 10.99,\n      \"promo_condition\": \"STANDARD\",\n      \"confidence\": 0.99,\n      \"components\": {\n        \"product_graphic_box\": [688, 131, 811, 277],\n        \"promo_price_box\": [691, 29, 712, 109],\n        \"title_text_box\": [813, 33, 841, 199],\n        \"original_price_box\": [711, 48, 726, 99],\n        \"unit_and_size_badge_box\": [678, 52, 692, 84]\n      },\n      \"brand\": \"Wafir\",\n      \"category_slug\": \"cleaning\",\n      \"commodity_tag\": \"laundry_detergent\",\n      \"compound_group_id\": null,\n      \"each_size_unit\": \"kg\",\n      \"each_size_value\": 2.5,\n      \"is_uniform_size_across_variants\": true,\n      \"item_domain\": \"grocery\",\n      \"normalized_product_name_ar\": \"مسحوق غسيل وفير أزرق\",\n      \"normalized_product_name_en\": \"Wafir Blue Detergent Powder\",\n      \"original_price\": 27.95,\n      \"pack_quantity\": 1,\n      \"quantity_limit\": null,\n      \"size_value\": \"2.5 كجم\",\n      \"unit_type\": \"كيس\"\n    },\n    {\n      \"offer_number\": 9,\n      \"arabic_title\": \"مناديل سوفتي الوجه كيس (3+7 مجانا) 10×130 منديل\",\n      \"english_title\": \"Softy Facial Tissue Pack (7+3 Free) 10 x 130 Sheets\",\n      \"is_multi_brand_or_variant\": false,\n      \"promo_price\": 13.99,\n      \"promo_condition\": \"STANDARD\",\n      \"confidence\": 0.99,\n      \"components\": {\n        \"product_graphic_box\": [694, 469, 818, 620],\n        \"promo_price_box\": [691, 349, 712, 429],\n        \"title_text_box\": [814, 351, 843, 539],\n        \"original_price_box\": [712, 368, 726, 421],\n        \"unit_and_size_badge_box\": [678, 376, 692, 401]\n      },\n      \"brand\": \"Softy\",\n      \"category_slug\": \"cleaning\",\n      \"commodity_tag\": \"facial_tissue\",\n      \"compound_group_id\": null,\n      \"each_size_unit\": \"sheet\",\n      \"each_size_value\": 130,\n      \"is_uniform_size_across_variants\": true,\n      \"item_domain\": \"grocery\",\n      \"normalized_product_name_ar\": \"مناديل سوفتي الوجه كيس\",\n      \"normalized_product_name_en\": \"Softy Facial Tissue Pack\",\n      \"original_price\": 23.95,\n      \"pack_quantity\": 10,\n      \"quantity_limit\": null,\n      \"size_value\": \"10 x 130 منديل\",\n      \"unit_type\": \"ربطة\"\n    },\n    {\n      \"offer_number\": 10,\n      \"arabic_title\": \"مكسرات باجة فول سوداني مملح 18×25 جرام\",\n      \"english_title\": \"Baja Salted Peanuts 18 x 25g\",\n      \"is_multi_brand_or_variant\": false,\n      \"promo_price\": 11.99,\n      \"promo_condition\": \"STANDARD\",\n      \"confidence\": 0.99,\n      \"components\": {\n        \"product_graphic_box\": [681, 796, 810, 932],\n        \"promo_price_box\": [692, 668, 713, 747],\n        \"title_text_box\": [811, 714, 841, 937],\n        \"original_price_box\": [712, 686, 726, 739],\n        \"unit_and_size_badge_box\": [678, 693, 691, 721]\n      },\n      \"brand\": \"Baja\",\n      \"category_slug\": \"staples\",\n      \"commodity_tag\": \"peanuts\",\n      \"compound_group_id\": null,\n      \"each_size_unit\": \"g\",\n      \"each_size_value\": 25,\n      \"is_uniform_size_across_variants\": true,\n      \"item_domain\": \"grocery\",\n      \"normalized_product_name_ar\": \"مكسرات باجة فول سوداني مملح\",\n      \"normalized_product_name_en\": \"Baja Salted Peanuts\",\n      \"original_price\": 26.99,\n      \"pack_quantity\": 18,\n      \"quantity_limit\": null,\n      \"size_value\": \"18 x 25 جم\",\n      \"unit_type\": \"ربطة\"\n    }\n  ],\n  \"loyalty_program_name\": null,\n  \"validity_end_date\": \"2026-11-15\",\n  \"validity_start_date\": \"2026-11-05\"\n}",
+              "thoughtSignature": "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"
+            }
+          ]
+        },
+        "finishReason": "STOP"
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 5460,
+      "candidatesTokenCount": 4676,
+      "totalTokenCount": 18289,
+      "trafficType": "ON_DEMAND_FLEX",
+      "promptTokensDetails": [
+        {
+          "modality": "IMAGE",
+          "tokenCount": 1092
+        },
+        {
+          "modality": "TEXT",
+          "tokenCount": 4368
+        }
+      ],
+      "candidatesTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 4676
+        }
+      ],
+      "thoughtsTokenCount": 8153
+    }
+  },
+  "providerUsageMetadata": {
+    "promptTokenCount": 5460,
+    "candidatesTokenCount": 4676,
+    "totalTokenCount": 18289,
+    "trafficType": "ON_DEMAND_FLEX",
+    "promptTokensDetails": [
+      {
+        "modality": "IMAGE",
+        "tokenCount": 1092
+      },
+      {
+        "modality": "TEXT",
+        "tokenCount": 4368
+      }
+    ],
+    "candidatesTokensDetails": [
+      {
+        "modality": "TEXT",
+        "tokenCount": 4676
+      }
+    ],
+    "thoughtsTokenCount": 8153
+  },
+  "localUsageSummary": {
+    "totalDurationMs": 75330,
+    "retriesCount": 0,
+    "usageReported": true,
+    "promptTokenCount": 5460,
+    "candidatesTokenCount": 4676,
+    "thoughtsTokenCount": 8153,
+    "cachedContentTokenCount": 0,
+    "totalTokenCount": 18289,
+    "costEstimate": {
+      "currency": "USD",
+      "effectiveDate": "2026-11-07",
+      "modelId": "gemini-3.8-flash",
+      "tier": "flex",
+      "ratesApplied": {
+        "inputPerMillion": 0.375,
+        "outputPerMillion": 1.875,
+        "cachedInputPerMillion": 0.0375
+      },
+      "inputCostUsd": 0.0020475,
+      "outputCostUsd": 0.0087675,
+      "thinkingCostUsd": 0.01528688,
+      "cachedInputCostUsd": 0,
+      "totalCostUsd": 0.02610188,
+      "isEstimate": true,
+      "metadataMissing": false
+    },
+    "costNote": "Locally estimated USD cost from pricing table (isEstimate=true), not official provider billing."
+  },
+  "parsedApplicationResponse": {
+    "rawParsedJson": {
+      "is_loyalty_page": false,
+      "ignored_banners": [
+        "أقل الأسعار LOWEST PRICES top promotional header banner"
+      ],
+      "offers": [
+        {
+          "offer_number": 1,
+          "arabic_title": "أرز بوندي مزة هندي 10 كجم",
+          "english_title": "Bundi Mazza Rice 10kg",
+          "is_multi_brand_or_variant": false,
+          "promo_price": 42.99,
+          "promo_condition": "STANDARD",
+          "confidence": 0.99,
+          "components": {
+            "product_graphic_box": [
+              341,
+              126,
+              483,
+              290
+            ],
+            "promo_price_box": [
+              349,
+              28,
+              373,
+              110
+            ],
+            "title_text_box": [
+              483,
+              49,
+              502,
+              286
+            ],
+            "original_price_box": [
+              370,
+              48,
+              388,
+              104
+            ],
+            "unit_and_size_badge_box": [
+              335,
+              52,
+              351,
+              85
+            ]
+          },
+          "brand": "Bundi",
+          "category_slug": "staples",
+          "commodity_tag": "basmati_rice",
+          "compound_group_id": null,
+          "each_size_unit": "kg",
+          "each_size_value": 10,
+          "is_uniform_size_across_variants": true,
+          "item_domain": "grocery",
+          "normalized_product_name_ar": "أرز بوندي مزة هندي",
+          "normalized_product_name_en": "Bundi Mazza Rice",
+          "original_price": 62.99,
+          "pack_quantity": 1,
+          "quantity_limit": null,
+          "size_value": "10 كجم",
+          "unit_type": "كيس"
+        },
+        {
+          "offer_number": 2,
+          "arabic_title": "دجاج فقيه مجمد 10 × 1000 جرام كرتون",
+          "english_title": "Fakieh Frozen Chicken Carton 10 x 1000g",
+          "is_multi_brand_or_variant": false,
+          "promo_price": 141,
+          "promo_condition": "STANDARD",
+          "confidence": 0.98,
+          "components": {
+            "product_graphic_box": [
+              341,
+              423,
+              488,
+              624
+            ],
+            "promo_price_box": [
+              350,
+              348,
+              373,
+              429
+            ],
+            "title_text_box": [
+              488,
+              379,
+              503,
+              611
+            ],
+            "original_price_box": [
+              371,
+              358,
+              387,
+              422
+            ],
+            "unit_and_size_badge_box": [
+              336,
+              370,
+              352,
+              407
+            ]
+          },
+          "brand": "Fakieh",
+          "category_slug": "meat-chicken",
+          "commodity_tag": "whole_chicken",
+          "compound_group_id": "cell_fakieh_chicken",
+          "each_size_unit": "g",
+          "each_size_value": 1000,
+          "is_uniform_size_across_variants": true,
+          "item_domain": "grocery",
+          "normalized_product_name_ar": "دجاج فقيه مجمد",
+          "normalized_product_name_en": "Fakieh Frozen Chicken",
+          "original_price": 202,
+          "pack_quantity": 10,
+          "quantity_limit": null,
+          "size_value": "10 x 1000g",
+          "unit_type": "كرتون"
+        },
+        {
+          "offer_number": 3,
+          "arabic_title": "دجاج فقيه مجمد 1000 جرام حبة",
+          "english_title": "Fakieh Frozen Chicken 1000g Each",
+          "is_multi_brand_or_variant": false,
+          "promo_price": 15.5,
+          "promo_condition": "STANDARD",
+          "confidence": 0.98,
+          "components": {
+            "product_graphic_box": [
+              341,
+              423,
+              488,
+              624
+            ],
+            "promo_price_box": [
+              405,
+              400,
+              419,
+              448
+            ],
+            "title_text_box": [
+              488,
+              379,
+              503,
+              611
+            ],
+            "original_price_box": null,
+            "unit_and_size_badge_box": [
+              398,
+              414,
+              407,
+              437
+            ]
+          },
+          "brand": "Fakieh",
+          "category_slug": "meat-chicken",
+          "commodity_tag": "whole_chicken",
+          "compound_group_id": "cell_fakieh_chicken",
+          "each_size_unit": "g",
+          "each_size_value": 1000,
+          "is_uniform_size_across_variants": true,
+          "item_domain": "grocery",
+          "normalized_product_name_ar": "دجاج فقيه مجمد",
+          "normalized_product_name_en": "Fakieh Frozen Chicken",
+          "original_price": null,
+          "pack_quantity": 1,
+          "quantity_limit": null,
+          "size_value": "1000g",
+          "unit_type": "الحبة"
+        },
+        {
+          "offer_number": 4,
+          "arabic_title": "بيض لؤلؤة المزارع مغلف 30 حبة",
+          "english_title": "Pearl of Farms Wrapped Eggs 30s",
+          "is_multi_brand_or_variant": false,
+          "promo_price": 13.25,
+          "promo_condition": "STANDARD",
+          "confidence": 0.99,
+          "components": {
+            "product_graphic_box": [
+              352,
+              779,
+              474,
+              946
+            ],
+            "promo_price_box": [
+              350,
+              667,
+              373,
+              747
+            ],
+            "title_text_box": [
+              474,
+              672,
+              501,
+              794
+            ],
+            "original_price_box": [
+              371,
+              689,
+              388,
+              737
+            ],
+            "unit_and_size_badge_box": [
+              337,
+              694,
+              351,
+              719
+            ]
+          },
+          "brand": "Pearl of Farms",
+          "category_slug": "eggs",
+          "commodity_tag": "white_eggs",
+          "compound_group_id": null,
+          "each_size_unit": "pcs",
+          "each_size_value": 30,
+          "is_uniform_size_across_variants": true,
+          "item_domain": "grocery",
+          "normalized_product_name_ar": "بيض لؤلؤة المزارع مغلف",
+          "normalized_product_name_en": "Pearl of Farms Wrapped Eggs",
+          "original_price": 15,
+          "pack_quantity": 1,
+          "quantity_limit": null,
+          "size_value": "30 حبة",
+          "unit_type": "طبق"
+        },
+        {
+          "offer_number": 5,
+          "arabic_title": "سكر فاصكو ناعم 5 كيلو",
+          "english_title": "Fazco Fine Sugar 5kg",
+          "is_multi_brand_or_variant": false,
+          "promo_price": 16.5,
+          "promo_condition": "STANDARD",
+          "confidence": 0.99,
+          "components": {
+            "product_graphic_box": [
+              510,
+              138,
+              646,
+              264
+            ],
+            "promo_price_box": [
+              523,
+              29,
+              547,
+              110
+            ],
+            "title_text_box": [
+              657,
+              107,
+              672,
+              279
+            ],
+            "original_price_box": [
+              545,
+              48,
+              560,
+              99
+            ],
+            "unit_and_size_badge_box": [
+              511,
+              52,
+              524,
+              86
+            ]
+          },
+          "brand": "Fazco",
+          "category_slug": "staples",
+          "commodity_tag": "sugar",
+          "compound_group_id": null,
+          "each_size_unit": "kg",
+          "each_size_value": 5,
+          "is_uniform_size_across_variants": true,
+          "item_domain": "grocery",
+          "normalized_product_name_ar": "سكر فاصكو ناعم",
+          "normalized_product_name_en": "Fazco Fine Sugar",
+          "original_price": 25,
+          "pack_quantity": 1,
+          "quantity_limit": null,
+          "size_value": "5 كيلو",
+          "unit_type": "كيس"
+        },
+        {
+          "offer_number": 6,
+          "arabic_title": "لبنة برايد كريمي",
+          "english_title": "Pride Creamy Labneh",
+          "is_multi_brand_or_variant": false,
+          "promo_price": 18.99,
+          "promo_condition": "STANDARD",
+          "confidence": 0.99,
+          "components": {
+            "product_graphic_box": [
+              540,
+              417,
+              655,
+              610
+            ],
+            "promo_price_box": [
+              523,
+              349,
+              543,
+              429
+            ],
+            "title_text_box": [
+              658,
+              360,
+              672,
+              473
+            ],
+            "original_price_box": [
+              542,
+              368,
+              557,
+              421
+            ],
+            "unit_and_size_badge_box": [
+              509,
+              372,
+              522,
+              404
+            ]
+          },
+          "brand": "Pride",
+          "category_slug": "dairy",
+          "commodity_tag": "labneh",
+          "compound_group_id": null,
+          "each_size_unit": "kg",
+          "each_size_value": 1,
+          "is_uniform_size_across_variants": true,
+          "item_domain": "grocery",
+          "normalized_product_name_ar": "لبنة برايد كريمي",
+          "normalized_product_name_en": "Pride Creamy Labneh",
+          "original_price": 32.95,
+          "pack_quantity": 1,
+          "quantity_limit": null,
+          "size_value": "1 كجم",
+          "unit_type": "الكيلو"
+        },
+        {
+          "offer_number": 7,
+          "arabic_title": "دقيق قوت أند روت فاخر 1 كيلو",
+          "english_title": "Qoot & Root Premium Flour 1kg",
+          "is_multi_brand_or_variant": false,
+          "promo_price": 9.99,
+          "promo_condition": "STANDARD",
+          "confidence": 0.99,
+          "components": {
+            "product_graphic_box": [
+              521,
+              664,
+              642,
+              974
+            ],
+            "promo_price_box": [
+              522,
+              668,
+              543,
+              747
+            ],
+            "title_text_box": [
+              645,
+              738,
+              672,
+              885
+            ],
+            "original_price_box": [
+              542,
+              686,
+              557,
+              741
+            ],
+            "unit_and_size_badge_box": [
+              509,
+              687,
+              521,
+              725
+            ]
+          },
+          "brand": "Qoot & Root",
+          "category_slug": "staples",
+          "commodity_tag": "flour",
+          "compound_group_id": null,
+          "each_size_unit": "kg",
+          "each_size_value": 1,
+          "is_uniform_size_across_variants": true,
+          "item_domain": "grocery",
+          "normalized_product_name_ar": "دقيق قوت أند روت فاخر",
+          "normalized_product_name_en": "Qoot & Root Premium Flour",
+          "original_price": 26.55,
+          "pack_quantity": 9,
+          "quantity_limit": null,
+          "size_value": "9 x 1 كجم",
+          "unit_type": "9 حبات"
+        },
+        {
+          "offer_number": 8,
+          "arabic_title": "مسحوق غسيل وفير أزرق 2.5 كجم",
+          "english_title": "Wafir Blue Detergent Powder 2.5kg",
+          "is_multi_brand_or_variant": false,
+          "promo_price": 10.99,
+          "promo_condition": "STANDARD",
+          "confidence": 0.99,
+          "components": {
+            "product_graphic_box": [
+              688,
+              131,
+              811,
+              277
+            ],
+            "promo_price_box": [
+              691,
+              29,
+              712,
+              109
+            ],
+            "title_text_box": [
+              813,
+              33,
+              841,
+              199
+            ],
+            "original_price_box": [
+              711,
+              48,
+              726,
+              99
+            ],
+            "unit_and_size_badge_box": [
+              678,
+              52,
+              692,
+              84
+            ]
+          },
+          "brand": "Wafir",
+          "category_slug": "cleaning",
+          "commodity_tag": "laundry_detergent",
+          "compound_group_id": null,
+          "each_size_unit": "kg",
+          "each_size_value": 2.5,
+          "is_uniform_size_across_variants": true,
+          "item_domain": "grocery",
+          "normalized_product_name_ar": "مسحوق غسيل وفير أزرق",
+          "normalized_product_name_en": "Wafir Blue Detergent Powder",
+          "original_price": 27.95,
+          "pack_quantity": 1,
+          "quantity_limit": null,
+          "size_value": "2.5 كجم",
+          "unit_type": "كيس"
+        },
+        {
+          "offer_number": 9,
+          "arabic_title": "مناديل سوفتي الوجه كيس (3+7 مجانا) 10×130 منديل",
+          "english_title": "Softy Facial Tissue Pack (7+3 Free) 10 x 130 Sheets",
+          "is_multi_brand_or_variant": false,
+          "promo_price": 13.99,
+          "promo_condition": "STANDARD",
+          "confidence": 0.99,
+          "components": {
+            "product_graphic_box": [
+              694,
+              469,
+              818,
+              620
+            ],
+            "promo_price_box": [
+              691,
+              349,
+              712,
+              429
+            ],
+            "title_text_box": [
+              814,
+              351,
+              843,
+              539
+            ],
+            "original_price_box": [
+              712,
+              368,
+              726,
+              421
+            ],
+            "unit_and_size_badge_box": [
+              678,
+              376,
+              692,
+              401
+            ]
+          },
+          "brand": "Softy",
+          "category_slug": "cleaning",
+          "commodity_tag": "facial_tissue",
+          "compound_group_id": null,
+          "each_size_unit": "sheet",
+          "each_size_value": 130,
+          "is_uniform_size_across_variants": true,
+          "item_domain": "grocery",
+          "normalized_product_name_ar": "مناديل سوفتي الوجه كيس",
+          "normalized_product_name_en": "Softy Facial Tissue Pack",
+          "original_price": 23.95,
+          "pack_quantity": 10,
+          "quantity_limit": null,
+          "size_value": "10 x 130 منديل",
+          "unit_type": "ربطة"
+        },
+        {
+          "offer_number": 10,
+          "arabic_title": "مكسرات باجة فول سوداني مملح 18×25 جرام",
+          "english_title": "Baja Salted Peanuts 18 x 25g",
+          "is_multi_brand_or_variant": false,
+          "promo_price": 11.99,
+          "promo_condition": "STANDARD",
+          "confidence": 0.99,
+          "components": {
+            "product_graphic_box": [
+              681,
+              796,
+              810,
+              932
+            ],
+            "promo_price_box": [
+              692,
+              668,
+              713,
+              747
+            ],
+            "title_text_box": [
+              811,
+              714,
+              841,
+              937
+            ],
+            "original_price_box": [
+              712,
+              686,
+              726,
+              739
+            ],
+            "unit_and_size_badge_box": [
+              678,
+              693,
+              691,
+              721
+            ]
+          },
+          "brand": "Baja",
+          "category_slug": "staples",
+          "commodity_tag": "peanuts",
+          "compound_group_id": null,
+          "each_size_unit": "g",
+          "each_size_value": 25,
+          "is_uniform_size_across_variants": true,
+          "item_domain": "grocery",
+          "normalized_product_name_ar": "مكسرات باجة فول سوداني مملح",
+          "normalized_product_name_en": "Baja Salted Peanuts",
+          "original_price": 26.99,
+          "pack_quantity": 18,
+          "quantity_limit": null,
+          "size_value": "18 x 25 جم",
+          "unit_type": "ربطة"
+        }
+      ],
+      "loyalty_program_name": null,
+      "validity_end_date": "2026-11-15",
+      "validity_start_date": "2026-11-05"
+    },
+    "decodedExtraction": {
+      "is_loyalty_page": false,
+      "loyalty_program_name": null,
+      "validity_start_date": "2026-11-05",
+      "validity_end_date": "2026-11-15",
+      "ignored_banners": [
+        "أقل الأسعار LOWEST PRICES top promotional header banner"
+      ],
+      "offers": [
+        {
+          "offer_number": 1,
+          "arabic_title": "أرز بوندي مزة هندي 10 كجم",
+          "english_title": "Bundi Mazza Rice 10kg",
+          "brand": "Bundi",
+          "is_multi_brand_or_variant": false,
+          "compound_group_id": null,
+          "item_domain": "grocery",
+          "category_slug": "staples",
+          "normalized_product_name_ar": "أرز بوندي مزة هندي",
+          "normalized_product_name_en": "Bundi Mazza Rice",
+          "commodity_tag": "basmati_rice",
+          "quantity_limit": null,
+          "size_value": "10 كجم",
+          "unit_type": "كيس",
+          "pack_quantity": 1,
+          "each_size_value": 10,
+          "each_size_unit": "kg",
+          "is_uniform_size_across_variants": true,
+          "promo_price": 42.99,
+          "original_price": 62.99,
+          "promo_condition": "STANDARD",
+          "confidence": 0.99,
+          "components": {
+            "product_graphic_box": [
+              341,
+              126,
+              483,
+              290
+            ],
+            "promo_price_box": [
+              349,
+              28,
+              373,
+              110
+            ],
+            "title_text_box": [
+              483,
+              49,
+              502,
+              286
+            ],
+            "original_price_box": [
+              370,
+              48,
+              388,
+              104
+            ],
+            "unit_and_size_badge_box": [
+              335,
+              52,
+              351,
+              85
+            ]
+          }
+        },
+        {
+          "offer_number": 2,
+          "arabic_title": "دجاج فقيه مجمد 10 × 1000 جرام كرتون",
+          "english_title": "Fakieh Frozen Chicken Carton 10 x 1000g",
+          "brand": "Fakieh",
+          "is_multi_brand_or_variant": false,
+          "compound_group_id": "cell_fakieh_chicken",
+          "item_domain": "grocery",
+          "category_slug": "meat-chicken",
+          "normalized_product_name_ar": "دجاج فقيه مجمد",
+          "normalized_product_name_en": "Fakieh Frozen Chicken",
+          "commodity_tag": "whole_chicken",
+          "quantity_limit": null,
+          "size_value": "10x1000g",
+          "unit_type": "كرتون",
+          "pack_quantity": 10,
+          "each_size_value": 1000,
+          "each_size_unit": "g",
+          "is_uniform_size_across_variants": true,
+          "promo_price": 141,
+          "original_price": 202,
+          "promo_condition": "STANDARD",
+          "confidence": 0.98,
+          "components": {
+            "product_graphic_box": [
+              341,
+              423,
+              488,
+              624
+            ],
+            "promo_price_box": [
+              350,
+              348,
+              373,
+              429
+            ],
+            "title_text_box": [
+              488,
+              379,
+              503,
+              611
+            ],
+            "original_price_box": [
+              371,
+              358,
+              387,
+              422
+            ],
+            "unit_and_size_badge_box": [
+              336,
+              370,
+              352,
+              407
+            ]
+          }
+        },
+        {
+          "offer_number": 3,
+          "arabic_title": "دجاج فقيه مجمد 1000 جرام حبة",
+          "english_title": "Fakieh Frozen Chicken 1000g Each",
+          "brand": "Fakieh",
+          "is_multi_brand_or_variant": false,
+          "compound_group_id": "cell_fakieh_chicken",
+          "item_domain": "grocery",
+          "category_slug": "meat-chicken",
+          "normalized_product_name_ar": "دجاج فقيه مجمد",
+          "normalized_product_name_en": "Fakieh Frozen Chicken",
+          "commodity_tag": "whole_chicken",
+          "quantity_limit": null,
+          "size_value": "1000g",
+          "unit_type": "الحبة",
+          "pack_quantity": 1,
+          "each_size_value": 1000,
+          "each_size_unit": "g",
+          "is_uniform_size_across_variants": true,
+          "promo_price": 15.5,
+          "original_price": null,
+          "promo_condition": "STANDARD",
+          "confidence": 0.98,
+          "components": {
+            "product_graphic_box": [
+              341,
+              423,
+              488,
+              624
+            ],
+            "promo_price_box": [
+              405,
+              400,
+              419,
+              448
+            ],
+            "title_text_box": [
+              488,
+              379,
+              503,
+              611
+            ],
+            "original_price_box": null,
+            "unit_and_size_badge_box": [
+              398,
+              414,
+              407,
+              437
+            ]
+          }
+        },
+        {
+          "offer_number": 4,
+          "arabic_title": "بيض لؤلؤة المزارع مغلف 30 حبة",
+          "english_title": "Pearl of Farms Wrapped Eggs 30s",
+          "brand": "Pearl of Farms",
+          "is_multi_brand_or_variant": false,
+          "compound_group_id": null,
+          "item_domain": "grocery",
+          "category_slug": "eggs",
+          "normalized_product_name_ar": "بيض لؤلؤة المزارع مغلف",
+          "normalized_product_name_en": "Pearl of Farms Wrapped Eggs",
+          "commodity_tag": "white_eggs",
+          "quantity_limit": null,
+          "size_value": "30 حبة",
+          "unit_type": "طبق",
+          "pack_quantity": 1,
+          "each_size_value": 30,
+          "each_size_unit": "pcs",
+          "is_uniform_size_across_variants": true,
+          "promo_price": 13.25,
+          "original_price": 15,
+          "promo_condition": "STANDARD",
+          "confidence": 0.99,
+          "components": {
+            "product_graphic_box": [
+              352,
+              779,
+              474,
+              946
+            ],
+            "promo_price_box": [
+              350,
+              667,
+              373,
+              747
+            ],
+            "title_text_box": [
+              474,
+              672,
+              501,
+              794
+            ],
+            "original_price_box": [
+              371,
+              689,
+              388,
+              737
+            ],
+            "unit_and_size_badge_box": [
+              337,
+              694,
+              351,
+              719
+            ]
+          }
+        },
+        {
+          "offer_number": 5,
+          "arabic_title": "سكر فاصكو ناعم 5 كيلو",
+          "english_title": "Fazco Fine Sugar 5kg",
+          "brand": "Fazco",
+          "is_multi_brand_or_variant": false,
+          "compound_group_id": null,
+          "item_domain": "grocery",
+          "category_slug": "staples",
+          "normalized_product_name_ar": "سكر فاصكو ناعم",
+          "normalized_product_name_en": "Fazco Fine Sugar",
+          "commodity_tag": "sugar",
+          "quantity_limit": null,
+          "size_value": "5 كيلو",
+          "unit_type": "كيس",
+          "pack_quantity": 1,
+          "each_size_value": 5,
+          "each_size_unit": "kg",
+          "is_uniform_size_across_variants": true,
+          "promo_price": 16.5,
+          "original_price": 25,
+          "promo_condition": "STANDARD",
+          "confidence": 0.99,
+          "components": {
+            "product_graphic_box": [
+              510,
+              138,
+              646,
+              264
+            ],
+            "promo_price_box": [
+              523,
+              29,
+              547,
+              110
+            ],
+            "title_text_box": [
+              657,
+              107,
+              672,
+              279
+            ],
+            "original_price_box": [
+              545,
+              48,
+              560,
+              99
+            ],
+            "unit_and_size_badge_box": [
+              511,
+              52,
+              524,
+              86
+            ]
+          }
+        },
+        {
+          "offer_number": 6,
+          "arabic_title": "لبنة برايد كريمي",
+          "english_title": "Pride Creamy Labneh",
+          "brand": "Pride",
+          "is_multi_brand_or_variant": false,
+          "compound_group_id": null,
+          "item_domain": "grocery",
+          "category_slug": "dairy",
+          "normalized_product_name_ar": "لبنة برايد كريمي",
+          "normalized_product_name_en": "Pride Creamy Labneh",
+          "commodity_tag": "labneh",
+          "quantity_limit": null,
+          "size_value": "1 كجم",
+          "unit_type": "الكيلو",
+          "pack_quantity": 1,
+          "each_size_value": 1,
+          "each_size_unit": "kg",
+          "is_uniform_size_across_variants": true,
+          "promo_price": 18.99,
+          "original_price": 32.95,
+          "promo_condition": "STANDARD",
+          "confidence": 0.99,
+          "components": {
+            "product_graphic_box": [
+              540,
+              417,
+              655,
+              610
+            ],
+            "promo_price_box": [
+              523,
+              349,
+              543,
+              429
+            ],
+            "title_text_box": [
+              658,
+              360,
+              672,
+              473
+            ],
+            "original_price_box": [
+              542,
+              368,
+              557,
+              421
+            ],
+            "unit_and_size_badge_box": [
+              509,
+              372,
+              522,
+              404
+            ]
+          }
+        },
+        {
+          "offer_number": 7,
+          "arabic_title": "دقيق قوت أند روت فاخر 1 كيلو",
+          "english_title": "Qoot & Root Premium Flour 1kg",
+          "brand": "Qoot & Root",
+          "is_multi_brand_or_variant": false,
+          "compound_group_id": null,
+          "item_domain": "grocery",
+          "category_slug": "staples",
+          "normalized_product_name_ar": "دقيق قوت أند روت فاخر",
+          "normalized_product_name_en": "Qoot & Root Premium Flour",
+          "commodity_tag": "flour",
+          "quantity_limit": null,
+          "size_value": "9x1 كجم",
+          "unit_type": "9 حبات",
+          "pack_quantity": 9,
+          "each_size_value": 1,
+          "each_size_unit": "kg",
+          "is_uniform_size_across_variants": true,
+          "promo_price": 9.99,
+          "original_price": 26.55,
+          "promo_condition": "STANDARD",
+          "confidence": 0.99,
+          "components": {
+            "product_graphic_box": [
+              521,
+              664,
+              642,
+              974
+            ],
+            "promo_price_box": [
+              522,
+              668,
+              543,
+              747
+            ],
+            "title_text_box": [
+              645,
+              738,
+              672,
+              885
+            ],
+            "original_price_box": [
+              542,
+              686,
+              557,
+              741
+            ],
+            "unit_and_size_badge_box": [
+              509,
+              687,
+              521,
+              725
+            ]
+          }
+        },
+        {
+          "offer_number": 8,
+          "arabic_title": "مسحوق غسيل وفير أزرق 2.5 كجم",
+          "english_title": "Wafir Blue Detergent Powder 2.5kg",
+          "brand": "Wafir",
+          "is_multi_brand_or_variant": false,
+          "compound_group_id": null,
+          "item_domain": "grocery",
+          "category_slug": "cleaning",
+          "normalized_product_name_ar": "مسحوق غسيل وفير أزرق",
+          "normalized_product_name_en": "Wafir Blue Detergent Powder",
+          "commodity_tag": "laundry_detergent",
+          "quantity_limit": null,
+          "size_value": "2.5 كجم",
+          "unit_type": "كيس",
+          "pack_quantity": 1,
+          "each_size_value": 2.5,
+          "each_size_unit": "kg",
+          "is_uniform_size_across_variants": true,
+          "promo_price": 10.99,
+          "original_price": 27.95,
+          "promo_condition": "STANDARD",
+          "confidence": 0.99,
+          "components": {
+            "product_graphic_box": [
+              688,
+              131,
+              811,
+              277
+            ],
+            "promo_price_box": [
+              691,
+              29,
+              712,
+              109
+            ],
+            "title_text_box": [
+              813,
+              33,
+              841,
+              199
+            ],
+            "original_price_box": [
+              711,
+              48,
+              726,
+              99
+            ],
+            "unit_and_size_badge_box": [
+              678,
+              52,
+              692,
+              84
+            ]
+          }
+        },
+        {
+          "offer_number": 9,
+          "arabic_title": "مناديل سوفتي الوجه كيس (3+7 مجانا) 10×130 منديل",
+          "english_title": "Softy Facial Tissue Pack (7+3 Free) 10 x 130 Sheets",
+          "brand": "Softy",
+          "is_multi_brand_or_variant": false,
+          "compound_group_id": null,
+          "item_domain": "grocery",
+          "category_slug": "cleaning",
+          "normalized_product_name_ar": "مناديل سوفتي الوجه كيس",
+          "normalized_product_name_en": "Softy Facial Tissue Pack",
+          "commodity_tag": "facial_tissue",
+          "quantity_limit": null,
+          "size_value": "10x130 منديل",
+          "unit_type": "ربطة",
+          "pack_quantity": 10,
+          "each_size_value": 130,
+          "each_size_unit": "sheet",
+          "is_uniform_size_across_variants": true,
+          "promo_price": 13.99,
+          "original_price": 23.95,
+          "promo_condition": "STANDARD",
+          "confidence": 0.99,
+          "components": {
+            "product_graphic_box": [
+              694,
+              469,
+              818,
+              620
+            ],
+            "promo_price_box": [
+              691,
+              349,
+              712,
+              429
+            ],
+            "title_text_box": [
+              814,
+              351,
+              843,
+              539
+            ],
+            "original_price_box": [
+              712,
+              368,
+              726,
+              421
+            ],
+            "unit_and_size_badge_box": [
+              678,
+              376,
+              692,
+              401
+            ]
+          }
+        },
+        {
+          "offer_number": 10,
+          "arabic_title": "مكسرات باجة فول سوداني مملح 18×25 جرام",
+          "english_title": "Baja Salted Peanuts 18 x 25g",
+          "brand": "Baja",
+          "is_multi_brand_or_variant": false,
+          "compound_group_id": null,
+          "item_domain": "grocery",
+          "category_slug": "staples",
+          "normalized_product_name_ar": "مكسرات باجة فول سوداني مملح",
+          "normalized_product_name_en": "Baja Salted Peanuts",
+          "commodity_tag": "peanuts",
+          "quantity_limit": null,
+          "size_value": "18x25 جم",
+          "unit_type": "ربطة",
+          "pack_quantity": 18,
+          "each_size_value": 25,
+          "each_size_unit": "g",
+          "is_uniform_size_across_variants": true,
+          "promo_price": 11.99,
+          "original_price": 26.99,
+          "promo_condition": "STANDARD",
+          "confidence": 0.99,
+          "components": {
+            "product_graphic_box": [
+              681,
+              796,
+              810,
+              932
+            ],
+            "promo_price_box": [
+              692,
+              668,
+              713,
+              747
+            ],
+            "title_text_box": [
+              811,
+              714,
+              841,
+              937
+            ],
+            "original_price_box": [
+              712,
+              686,
+              726,
+              739
+            ],
+            "unit_and_size_badge_box": [
+              678,
+              693,
+              691,
+              721
+            ]
+          }
+        }
+      ],
+      "page_number": 1
+    }
+  }
+}

@@ -1,3 +1,5 @@
+import type { GeminiJobUsageSummary } from './geminiCacheTypes';
+
 export type PageFirstProgressEvent = {
   stage: 'initializing' | 'rendering' | 'ocr_running' | 'linking' | 'cropping' | 'validating' | 'retrying' | 'completed' | 'failed';
   currentPage: number;
@@ -26,6 +28,7 @@ export type PageFirstPipelineResult = {
   cropsGenerated: number;
   estimatedCostUsd: number;
   reportPath: string;
+  geminiUsageSummary?: GeminiJobUsageSummary;
 };
 
 export type ProcessPageResult = {

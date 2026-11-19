@@ -71,7 +71,7 @@ export const pageFirstConfidenceLevelSchema = z.enum(['high', 'medium', 'low']);
 export const pageFirstPriceCandidateSchema = z.object({
   raw_text: z.string(),
   normalized_value: z.number().nullable(),
-  currency: z.literal('SAR').nullable(),
+  currency: z.literal('SAR').nullable().optional().default('SAR'),
   role: pageFirstPriceRoleSchema,
   is_crossed_out: z.boolean().nullable(),
   confidence: pageFirstConfidenceLevelSchema,
@@ -94,7 +94,7 @@ export const pageFirstExtractedOfferSchema = z.object({
   selected_prices: z.object({
     offer_price: z.number().nullable(),
     original_price: z.number().nullable(),
-    currency: z.literal('SAR').nullable(),
+    currency: z.literal('SAR').nullable().optional().default('SAR'),
     offer_price_raw_text: z.string().nullable(),
     original_price_raw_text: z.string().nullable(),
     confidence: pageFirstConfidenceLevelSchema
@@ -115,7 +115,7 @@ export const pageFirstExtractedOfferSchema = z.object({
   promotion: z.object({
     mechanic: pageFirstPromotionMechanicSchema,
     raw_text: z.string().nullable(),
-    condition_text: z.string().nullable()
+    condition_text: z.string().nullable().optional().default(null)
   }).strict(),
   evidence: z.object({
     title_texts: z.array(z.string()),

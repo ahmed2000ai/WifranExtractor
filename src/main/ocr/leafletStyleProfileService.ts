@@ -8,6 +8,7 @@ import type { LeafletStyleProfile, LeafletStyleProfileSelectionMetadata } from '
 import { runWithMistralRateLimit } from './mistralRateLimitQueue';
 import { warn, error as logError, info } from '../logging/logger';
 import { updateExtractionManifest } from '../extraction/extractionManifestService';
+import { assertNotOfflineUat } from '../config/offlineUatGuard';
 
 export async function generateLeafletStyleProfileFromSelectedPages(input: {
   leafletId?: string | null;
@@ -15,6 +16,7 @@ export async function generateLeafletStyleProfileFromSelectedPages(input: {
   pageImagePaths: string[];
   extractionPackagePath: string;
 }): Promise<LeafletStyleProfile> {
+  assertNotOfflineUat('Live Mistral Leaflet Style Profile API calls');
   const config = loadEnvConfig();
   
   const profilesDir = path.join(input.extractionPackagePath, 'metadata', 'style-profiles');

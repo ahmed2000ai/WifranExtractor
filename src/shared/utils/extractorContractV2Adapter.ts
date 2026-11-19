@@ -1,5 +1,6 @@
 import { createHash } from 'crypto';
 import type { CanonicalOffer } from '../types/canonicalOffer';
+import { sanitizePublicConsumerImageUrl } from './nonCatalogPublicationPolicy';
 import type {
   ExtractorOfferContractV2,
   ScenarioPurchaseResult,
@@ -133,15 +134,21 @@ export function toConsumerOfferProjection(
   }
 
   const sanitizeUrl = (url: string | null | undefined): string | null => {
-    if (!url) return null;
-    if (/^[a-zA-Z]:[\\/]/.test(url) || url.startsWith('\\\\')) return null;
-    return url;
+    return sanitizePublicConsumerImageUrl(url);
   };
 
+  const safeImageUrl = sanitizeUrl(canonical.image?.image_url);
+  const safeThumbUrl = sanitizeUrl(canonical.image?.thumbnail_url);
+  const cardWasBlocked = Boolean(canonical.image?.image_url) && !safeImageUrl;
+  const thumbWasBlocked = Boolean(canonical.image?.thumbnail_url) && !safeThumbUrl;
   const offerCardScope = contract.assets.offer_card.subject_scope;
   const thumbScope = contract.assets.product_thumbnail.subject_scope;
-  const offerCardUploadState = contract.assets.offer_card.upload_state;
-  const thumbUploadState = contract.assets.product_thumbnail.upload_state;
+  const offerCardUploadState = safeImageUrl
+    ? 'uploaded'
+    : (cardWasBlocked && contract.assets.offer_card.upload_state === 'uploaded' ? 'pending' : contract.assets.offer_card.upload_state);
+  const thumbUploadState = safeThumbUrl
+    ? 'uploaded'
+    : (thumbWasBlocked && contract.assets.product_thumbnail.upload_state === 'uploaded' ? 'pending' : contract.assets.product_thumbnail.upload_state);
 
   const saleUnit = contract.quantity_semantics.sale_unit;
   const innerCount = contract.quantity_semantics.inner_count;
@@ -220,8 +227,8 @@ export function toConsumerOfferProjection(
     display_unit_price_label_ar: canonical.display?.display_unit_price_label_ar ?? null,
     display_unit_price_label_en: canonical.display?.display_unit_price_label_en ?? null,
 
-    image_url: sanitizeUrl(canonical.image?.image_url),
-    thumbnail_url: sanitizeUrl(canonical.image?.thumbnail_url),
+    image_url: safeImageUrl,
+    thumbnail_url: safeThumbUrl,
     image_subject_scope: offerCardScope,
     card_image_subject_scope: offerCardScope,
     thumbnail_subject_scope: thumbScope,
@@ -322,11 +329,22 @@ export function mapSqlConsumerViewRowToConsumerDto(
   const offerCard = contractV2?.assets?.offer_card;
   const thumb = contractV2?.assets?.product_thumbnail;
 
+  const safeViewImageUrl = sanitizePublicConsumerImageUrl(sqlViewRow.image_url);
+  const safeViewThumbUrl = sanitizePublicConsumerImageUrl(sqlViewRow.thumbnail_url);
+  const viewCardWasBlocked = Boolean(sqlViewRow.image_url) && !safeViewImageUrl;
+  const viewThumbWasBlocked = Boolean(sqlViewRow.thumbnail_url) && !safeViewThumbUrl;
+
   const cardScope = sqlViewRow.card_image_subject_scope || offerCard?.subject_scope || sqlViewRow.image_subject_scope || 'offer_card';
   const thumbScope = sqlViewRow.thumbnail_subject_scope || thumb?.subject_scope || 'product_only';
 
-  const cardUpload = sqlViewRow.card_image_upload_state || offerCard?.upload_state || (sqlViewRow.image_url ? 'uploaded' : 'pending');
-  const thumbUpload = sqlViewRow.thumbnail_upload_state || thumb?.upload_state || (sqlViewRow.thumbnail_url ? 'uploaded' : 'pending');
+  const rawCardUpload = sqlViewRow.card_image_upload_state || offerCard?.upload_state;
+  const rawThumbUpload = sqlViewRow.thumbnail_upload_state || thumb?.upload_state;
+  const cardUpload = safeViewImageUrl
+    ? 'uploaded'
+    : (viewCardWasBlocked && rawCardUpload === 'uploaded' ? 'pending' : (rawCardUpload || 'pending'));
+  const thumbUpload = safeViewThumbUrl
+    ? 'uploaded'
+    : (viewThumbWasBlocked && rawThumbUpload === 'uploaded' ? 'pending' : (rawThumbUpload || 'pending'));
 
   const saleUnit = sqlViewRow.sale_unit || sqlViewRow.sale_unit_type || contractV2?.quantity_semantics?.sale_unit || 'piece';
   const innerCount = sqlViewRow.inner_pack_count !== undefined && sqlViewRow.inner_pack_count !== null
@@ -364,10 +382,18 @@ export function mapSqlConsumerViewRowToConsumerDto(
   const assortmentStatus = sqlViewRow.assortment_status || contractV2?.assortment?.status || 'single_item';
   const exactIdentityStatus = sqlViewRow.exact_identity_status || contractV2?.product_facts?.exact_identity_status || 'unresolved';
 
-  const capabilities = sqlViewRow.scoped_assessments && Object.keys(sqlViewRow.scoped_assessments).length > 0
+  const rawCapabilities = sqlViewRow.scoped_assessments && Object.keys(sqlViewRow.scoped_assessments).length > 0
     ? sqlViewRow.scoped_assessments
     : (contractV2?.assessments?.capabilities || {});
-  const reasonCodes = sqlViewRow.reason_codes || contractV2?.assessments?.reason_codes || [];
+  const reasonCodes: string[] = sqlViewRow.reason_codes || contractV2?.assessments?.reason_codes || [];
+  const capabilities =
+    sqlViewRow.product_id == null &&
+    (reasonCodes.includes('COMPARISON_DISABLED_NO_VERIFIED_SKU') ||
+      reasonCodes.includes('NON_CATALOG_APPROVED') ||
+      rawCapabilities.exact_product_comparison == null ||
+      rawCapabilities.exact_product_comparison === 'supported')
+      ? { ...rawCapabilities, exact_product_comparison: 'blocked' as CapabilityStateV2 }
+      : rawCapabilities;
 
   return {
     source_offer_id: sqlViewRow.source_offer_id,
@@ -425,8 +451,8 @@ export function mapSqlConsumerViewRowToConsumerDto(
     display_unit_price_label_ar: sqlViewRow.display_unit_price_label_ar ?? null,
     display_unit_price_label_en: sqlViewRow.display_unit_price_label_en ?? null,
 
-    image_url: sqlViewRow.image_url ?? null,
-    thumbnail_url: sqlViewRow.thumbnail_url ?? null,
+    image_url: safeViewImageUrl,
+    thumbnail_url: safeViewThumbUrl,
     image_subject_scope: cardScope,
     card_image_subject_scope: cardScope,
     thumbnail_subject_scope: thumbScope,

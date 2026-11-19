@@ -64,6 +64,45 @@ export async function checkRealPublishRehearsalGates(workspacePath: string, type
     return { ok: false, blockedReason: 'Publish rehearsal blocked: Pre-Publish Preview not approved.', eligibleRows: 0, maxRows, targetClassification };
   }
 
+  // Leaflet-level metadata confirmation gate check (WIFRAN-EXTRACTOR-METADATA-003)
+  const confirmedMetaPath = path.join(workspacePath, 'metadata', 'confirmed_metadata.json');
+  const altConfirmedMetaPath = path.join(workspacePath, 'metadata', 'confirmed-metadata.json');
+  let hasConfirmedMetadata = false;
+  for (const p of [confirmedMetaPath, altConfirmedMetaPath]) {
+    if (fs.existsSync(p)) {
+      try {
+        const payload = JSON.parse(fs.readFileSync(p, 'utf8'));
+        const rec = payload?.record || payload;
+        if (
+          rec?.operatorConfirmed &&
+          rec.retailer?.resolvedRetailerId &&
+          rec.validity?.startDate &&
+          rec.validity?.endDate
+        ) {
+          hasConfirmedMetadata = true;
+          break;
+        }
+      } catch {}
+    }
+  }
+
+  if (!hasConfirmedMetadata) {
+    const hasManifestHeader = Boolean(
+      manifest.supermarket?.id &&
+      manifest.offer_dates?.valid_from &&
+      manifest.offer_dates?.valid_to
+    );
+    if (!hasManifestHeader) {
+      return {
+        ok: false,
+        blockedReason: 'Publish rehearsal blocked: Leaflet metadata (retailer and validity dates) must be authoritatively confirmed by operator before publishing.',
+        eligibleRows: 0,
+        maxRows,
+        targetClassification
+      };
+    }
+  }
+
   const summaryPath = manifest.reports?.pre_publish_preview_summary?.path ? path.join(workspacePath, manifest.reports.pre_publish_preview_summary.path) : path.join(workspacePath, 'metadata', 'reports', 'pre-publish-preview-summary.json');
   if (!fs.existsSync(summaryPath)) {
     return { ok: false, blockedReason: 'Publish rehearsal blocked: pre-publish-preview-summary.json missing.', eligibleRows: 0, maxRows, targetClassification };

@@ -3,6 +3,44 @@ import type { ExtractedOfferRev1, CanonicalExtractionUnit } from '../types/leafl
 export const PROMO_MECHANIC_REGEX =
   /(?:buy\s*\d+\s*(?:get\s*\d+\s*free|pcs|pc|items|حبات|قطع)?|\b\d+\s*\+\s*\d+\s*free|\b\d+\s*for\s*(?:sar\s*)?\d+|\bاشتري\s*\d+\s*(?:واحصل\s*على\s*\d+|حبات|قطع)?|\b\d+\s*حبات\s*بسعر\s*\d+|\b\d+\s*pc(?:s)?\s*per\s*customer)/i;
 
+/**
+ * Detects customer purchase limits in Arabic and English (e.g. "حد أقصى 2 حبة", "Max 2 pcs per customer").
+ * A purchase limit MUST NEVER be conflated with the offer's physical pack count!
+ */
+export function detectCustomerPurchaseLimit(
+  text?: string | null
+): { hasLimit: boolean; limitPcs: number | null; matchedPhrase?: string } {
+  if (!text || typeof text !== 'string') return { hasLimit: false, limitPcs: null };
+  const clean = normalizeArabicNumerals(text);
+
+  // Pattern 1: Arabic "حد أقصى 2 حبة / كيس / قطع"
+  const mAr = clean.match(
+    /(?:حد\s*أقصى|كحد\s*أقصى|بحد\s*أقصى|أقصى\s*حد|الحد\s*الأقصى)\s*(\d+)\s*(?:حبة|حبات|قطع|أكياس|كيس|pcs?|pieces?)?/i
+  );
+  if (mAr) {
+    return { hasLimit: true, limitPcs: parseInt(mAr[1], 10), matchedPhrase: mAr[0] };
+  }
+
+  // Pattern 2: English "Max 2 pcs per customer", "Limit 2 per customer"
+  const mEn = clean.match(
+    /(?:max(?:imum)?|limit(?:ed)?(?:\s*to)?)\s*(\d+)\s*(?:pcs?|pieces?|bags?|items?|units?)?(?:\s*(?:per|for|each)\s*(?:customer|family|shopper|person|cart|ticket))?/i
+  );
+  if (mEn) {
+    return { hasLimit: true, limitPcs: parseInt(mEn[1], 10), matchedPhrase: mEn[0] };
+  }
+
+  // Pattern 3: "2 pcs per customer" / "لكل عميل 2 حبة"
+  const mPer = clean.match(
+    /(?:(?:per\s*(?:customer|family|shopper)|لكل\s*(?:عميل|زبون|أسرة|عائلة))\s*(\d+)\s*(?:حبة|حبات|pcs?|pieces?)?)|(?:(\d+)\s*(?:pcs?|pieces?|حبة|حبات)\s*(?:per\s*(?:customer|family|shopper)|لكل\s*(?:عميل|زبون|أسرة|عائلة)))/i
+  );
+  if (mPer) {
+    const qty = mPer[1] || mPer[2];
+    return { hasLimit: true, limitPcs: parseInt(qty, 10), matchedPhrase: mPer[0] };
+  }
+
+  return { hasLimit: false, limitPcs: null };
+}
+
 export type ParseQuantityInput = {
   size_text?: string | null;
   title_en?: string | null;
@@ -133,14 +171,17 @@ export function isTechOrCellularToken(token: string | null | undefined): boolean
 export function detectItemDomainFromTitle(
   titleEn: string | null | undefined,
   titleAr: string | null | undefined,
-  extractedDomain?: string | null
+  extractedDomain?: string | null,
+  categoryEvidence?: { commodityTag?: string | null; categoryHint?: string | null } | null
 ): 'grocery' | 'household' | 'personal_care' | 'electronics' | 'appliance' | 'other_non_grocery' {
   const combined = `${titleEn || ''} ${titleAr || ''}`.toLowerCase();
+  const commodityTag = (categoryEvidence?.commodityTag || '').toLowerCase().trim();
+  const categoryHint = (categoryEvidence?.categoryHint || '').toLowerCase().trim();
 
   // Guard: Food/confectionery keywords override tech keyword ambiguities (e.g. Galaxy chocolate, Apple juice)
   if (
-    /\b(chocolate|candy|wafer|biscuit|miniature|snack|bar|choc|milk|juice|sweet)\b/i.test(combined) ||
-    /(شوكولاته|شوكولاتة|بسكويت|حلوى|عصير|حليب)/.test(combined)
+    /\b(chocolate|candy|wafer|biscuit|miniature|minis?|mnis|jewels|flutes|snack|bar|choc|milk|juice|sweet|bread|croissant|tomato(?:es)?|potato(?:es)?|chicken|beef|lamb|mutton|fish|cheese|yogurt|butter|olive\s*oil|rice|pasta)\b/i.test(combined) ||
+    /(شوكولاته|شوكولاتة|بسكويت|حلوى|ميني|جواهر|فلوتس|عصير|حليب|خبز|طماطم|بطاطس|دجاج|لحم|سمك|جبن|زبادي|زبدة|زيت|أرز|ارز|مكرونة)/.test(combined)
   ) {
     return 'grocery';
   }
@@ -150,7 +191,7 @@ export function detectItemDomainFromTitle(
   if (
     /\b(tv|qled|qned|oled|uhd|4k|smart tv|iphone|ipad|pad|airpods|macbook|laptop|tablet|smartwatch|playstation|xbox|earbuds|headphone|charger|powerbank|inch|honor|tecno|techno|xiaomi|redmi|huawei)\b/i.test(combined) ||
     /\b(samsung\s+galaxy|galaxy\s+(?:a|s|z|tab|watch|phone|note|fold|flip|\d+)|apple\s+watch)\b/i.test(combined) ||
-    /(تلفزيون|شاشة|آيفون|آيباد|جوال|تابلت|سماعة|سماعات|ساعة\s*ذكية|تكنو|هونر|سامسونج|جالكسي|هواوي|شاومي|ريدمي|بوصة)/.test(combined)
+    /(تلفزيون|شاشة|آيفون|آيباد|جوال|تابلت|سماعة|سماعات|ساعة\s*ذكية|تكنو|هونر|سامسونج\s*جالكسي|جالكسي\s*(?:ايه|إيه|اس|إس|تاب|فولد|فليب|نوت|واتش|[aAsSzZ]\s*\d+)|هواوي|شاومي|ريدمي|بوصة)/.test(combined)
   ) {
     return 'electronics';
   }
@@ -161,6 +202,55 @@ export function detectItemDomainFromTitle(
     /(غلاية|ميكروويف|خلاط|قلاية|ثلاجة|مكنسة|فرن)/.test(combined)
   ) {
     return 'appliance';
+  }
+
+  // Household consumables (detergents, paper products, foil/wrap/trash bags) belong in WP2 household consumables scope
+  const isConsumableHouseholdTitle =
+    /\b(detergent|dishwash(?:ing)?|laundry|softener|bleach|disinfectant|cleaner|facial\s*tissue|tissues?|toilet\s*paper|paper\s*towel|napkin|aluminum\s*foil|cling\s*film|trash\s*bag|garbage\s*bag|sponge|scourer|insecticide|air\s*freshener)\b/i.test(combined) ||
+    /(مسحوق\s*غسيل|منظف|مبيض|مطهر|منعم|مناديل|ورق\s*تواليت|ورق\s*نشاف|قصدير|ورق\s*ألمنيوم|نايلون\s*تغليف|أكياس\s*نفايات|سفرة|معطر\s*جو|مبيد)/.test(combined);
+
+  if (isConsumableHouseholdTitle) {
+    return 'household';
+  }
+
+  // Durable household goods, home textiles, bedding, furniture, luggage, cookware, apparel -> non-grocery consumer exclusion
+  const isDurableOrTextileNonGroceryTitle =
+    /\b(bed\s*sheet|bedsheet|bed\s*spread|bedding|duvet|comforter|quilt|blanket|pillow|cushion|mattress|curtain|rug|carpet|towel|bathrobe|tablecloth|linen|cookware|frying\s*pan|saucepan|pressure\s*cooker|casserole|dinner\s*set|tableware|vacuum\s*flask|thermos|luggage|suitcase|trolley\s*bag|backpack|travel\s*bag|furniture|sofa|chair|dining\s*table|wardrobe|bookshelf|bicycle|treadmill|drill|tool\s*kit|slipper|sneaker|garment|t-?shirt|trouser|jeans)\b/i.test(combined) ||
+    /(شرشف|مفرش|لحاف|بطانية|مخدة|وسادة|مرتبة|ستارة|ستائر|سجاد|سجادة|فوطة|منشفة|مناشف|طقم\s*قدور|قدر\s*(?:ضغط|طبخ)|مقلاة|طقم\s*أواني|أطباق|ترمس|شنطة\s*سفر|حقيبة\s*سفر|طاولة|كرسي|مروحة|دفاية|لمبة|دراجة|ملابس|حذاء|شبشب)/.test(combined);
+
+  if (isDurableOrTextileNonGroceryTitle) {
+    return 'other_non_grocery';
+  }
+
+  // Personal care items belong in WP2 personal care scope
+  if (
+    /\b(shampoo|conditioner|shower\s*gel|body\s*wash|hand\s*wash|toothpaste|toothbrush|deodorant|antiperspirant|sunscreen|lotion|moisturizer|diaper|pampers|sanitary\s*pad|razor|shaver)\b/i.test(combined) ||
+    /(شامبو|بلسم|غسول\s*جسم|سائل\s*استحمام|معجون\s*أسنان|فرشاة\s*أسنان|مزيل\s*عرق|حفاضات|فوط\s*صحية|ماكينة\s*حلاقة)/.test(combined)
+  ) {
+    return 'personal_care';
+  }
+
+  // Structured non-grocery category evidence overrides loose "household" or default fallback
+  const nonGroceryCategorySignals = new Set([
+    'non_grocery_item',
+    'non-grocery',
+    'non_grocery',
+    'other_non_grocery',
+    'textiles_home',
+    'home_textiles',
+    'textiles',
+    'bedding',
+    'furniture',
+    'apparel',
+    'luggage',
+    'cookware',
+    'toys',
+    'hardware'
+  ]);
+  if (categoryHint === 'electronics' || commodityTag === 'electronics') return 'electronics';
+  if (categoryHint === 'appliances' || categoryHint === 'appliance' || commodityTag === 'appliance') return 'appliance';
+  if (nonGroceryCategorySignals.has(commodityTag) || nonGroceryCategorySignals.has(categoryHint)) {
+    return 'other_non_grocery';
   }
 
   if (extractedDomain === 'electronics') return 'electronics';
@@ -277,8 +367,10 @@ export function parseAndNormalizeQuantity(input: ParseQuantityInput): ParseQuant
     title_ar,
     size_text
   ].filter(Boolean).join(' ');
+  const limitCheck = detectCustomerPurchaseLimit(promoText);
   const isPromoMechanic =
     PROMO_MECHANIC_REGEX.test(promoText) ||
+    limitCheck.hasLimit ||
     promotion_mechanic === 'multi_buy' ||
     promotion_mechanic === 'bonus_pack';
 
@@ -350,7 +442,7 @@ export function parseAndNormalizeQuantity(input: ParseQuantityInput): ParseQuant
     }
 
     // 3. Pattern B (Lulu Style): Size x Qty -> "900gmx10", "155gmx2", "160 gm x 2", "٩٠٠ جم × ١٠"
-    const patternB = clean.match(/^(\d+(?:\.\d+)?)\s*([a-zA-Z\u0600-\u06FF]+)\s*x\s*(\d+)$/i);
+    const patternB = clean.match(/^(\d+(?:\.\d+)?)\s*([a-zA-Z\u0600-\u06FF]+)\s*(?:x|×|\*)\s*(\d+)$/i);
     if (patternB) {
       const u = canonicalizeUnit(patternB[2]);
       if (u) {
@@ -361,8 +453,10 @@ export function parseAndNormalizeQuantity(input: ParseQuantityInput): ParseQuant
       }
     }
 
-    // 4. Pattern A (Standard): Qty x Size -> "10x900g", "10 x 900g", "2 x 1.5L", "18 x 125ml", "6x245/250ml"
-    const patternA = clean.match(/^(\d+)\s*x\s*(\d+(?:\.\d+)?(?:[\/-]\d+(?:\.\d+)?)?)\s*([a-zA-Z\u0600-\u06FF]+)$/i);
+    // 4. Pattern A (Standard): Qty x Size -> "10x900g", "10 x 900g", "2 x 1.5L", "18 x 125ml", "6x245/250ml", "2 × 5 كجم"
+    const patternA = clean.match(
+      /^(\d+)\s*(?:pcs?|pieces?|bags?|cans?|bottles?|حبة|حبات|قطع|أكياس|كيس)?\s*(?:x|×|\*)\s*(\d+(?:\.\d+)?(?:[\/-]\d+(?:\.\d+)?)?)\s*([a-zA-Z\u0600-\u06FF]+)$/i
+    );
     if (patternA) {
       const q = parseInt(patternA[1], 10);
       const sizeStr = patternA[2];
@@ -432,9 +526,9 @@ export function parseAndNormalizeQuantity(input: ParseQuantityInput): ParseQuant
     const titlesToSearch = [title_en, title_ar].filter(Boolean) as string[];
     for (const title of titlesToSearch) {
       const normalizedTitle = normalizeArabicNumerals(title);
-      // Look for embedded expressions e.g. "10 x 900g", "900gm x 10", "155gm x 2", "30s", "500gm"
+      // Look for embedded expressions e.g. "10 x 900g", "900gm x 10", "155gm x 2", "30s", "500gm", "2 × 5 كجم"
       const candidateMatches = normalizedTitle.match(
-        /\b\d+\s*x\s*\d+(?:\.\d+)?(?:[\/-]\d+(?:\.\d+)?)?\s*[a-zA-Z\u0600-\u06FF]+|\b\d+(?:\.\d+)?\s*[a-zA-Z\u0600-\u06FF]+\s*x\s*\d+|\b\d+(?:\.\d+)?\s*[a-zA-Z\u0600-\u06FF]+\s+\d+\s*s|\b\d+\s*s\b|\b\d+(?:\.\d+)?\s*(?:kg|g|gm|ml|l|ltr|pcs|كيلو|كجم|جم|جرام|مل|لتر)\b/gi
+        /\b\d+\s*(?:pcs?|pieces?|bags?|cans?|bottles?|حبة|حبات|قطع|أكياس|كيس)?\s*(?:x|×|\*)\s*\d+(?:\.\d+)?(?:[\/-]\d+(?:\.\d+)?)?\s*[a-zA-Z\u0600-\u06FF]+|\b\d+(?:\.\d+)?\s*[a-zA-Z\u0600-\u06FF]+\s*(?:x|×|\*)\s*\d+|\b\d+(?:\.\d+)?\s*[a-zA-Z\u0600-\u06FF]+\s+\d+\s*s|\b\d+\s*s\b|\b\d+(?:\.\d+)?\s*(?:kg|g|gm|ml|l|ltr|pcs|كيلو|كجم|جم|جرام|مل|لتر)\b/gi
       );
       if (candidateMatches) {
         for (const candidate of candidateMatches) {
@@ -484,6 +578,17 @@ export function parseAndNormalizeQuantity(input: ParseQuantityInput): ParseQuant
   // If AI flags non-uniform sizes across variants explicitly, mark as wide range
   if (is_uniform_size_across_variants === false) {
     isWideVariantRange = true;
+  }
+
+  // Guard: If customer purchase limit was detected and packQuantity equals the limit without
+  // an explicit physical multipack parsed from text, isolate the limit from physical pack count!
+  const hasExplicitMultipackText = Boolean(
+    (rawStr && /\b\d+\s*(?:pcs?|pieces?|bags?|cans?|bottles?|حبة|حبات|قطع|أكياس|كيس)?\s*(?:x|×|\*)\s*\d+/i.test(rawStr)) ||
+    (title_en && /\b\d+\s*(?:pcs?|pieces?|bags?|cans?|bottles?|حبة|حبات|قطع|أكياس|كيس)?\s*(?:x|×|\*)\s*\d+/i.test(title_en)) ||
+    (title_ar && /\b\d+\s*(?:pcs?|pieces?|bags?|cans?|bottles?|حبة|حبات|قطع|أكياس|كيس)?\s*(?:x|×|\*)\s*\d+/i.test(title_ar))
+  );
+  if (limitCheck.hasLimit && !hasExplicitMultipackText && packQuantity === limitCheck.limitPcs && packQuantity > 1) {
+    packQuantity = 1;
   }
 
   // Determine standardizations and comparison safety

@@ -1,0 +1,74 @@
+{
+  "schemaVersion": "2.0",
+  "leafletFingerprint": "3886066cd2760cb84dfe012cbf67d0c2b53b77e4b34fe7c2abd9a53267fef0d6",
+  "sourceFileName": "PartialPublish.pdf",
+  "record": {
+    "schemaVersion": "2.0",
+    "leafletFingerprint": "3886066cd2760cb84dfe012cbf67d0c2b53b77e4b34fe7c2abd9a53267fef0d6",
+    "sourceFileName": "PartialPublish.pdf",
+    "retailer": {
+      "detectedName": "Danube",
+      "resolvedRetailerId": "c2cc16c2-0004-4444-b000-c00000000004",
+      "resolvedSlug": "danube",
+      "resolvedNameEn": "Danube",
+      "resolvedNameAr": "الدانوب",
+      "status": "confirmed",
+      "confidence": 1,
+      "sourcePage": 1,
+      "evidenceText": "Operator entered manually",
+      "isAmbiguous": false
+    },
+    "validity": {
+      "startDate": "2026-12-01",
+      "endDate": "2026-12-15",
+      "rawPrintedText": "Operator entered manually",
+      "status": "confirmed",
+      "sourcePage": 1,
+      "calendarType": "gregorian",
+      "confidence": 1,
+      "isAmbiguous": false,
+      "provenanceDetails": {
+        "conversionNote": "Entered manually by operator"
+      }
+    },
+    "locationScope": "city",
+    "cityId": "a6f7b140-0001-4444-a000-000000000001",
+    "regionId": null,
+    "locationSlug": "riyadh",
+    "locationNameEn": "Riyadh",
+    "locationNameAr": "الرياض",
+    "conflictingValidity": [],
+    "pageExceptions": [],
+    "resolvedExceptions": [],
+    "operatorConfirmed": true,
+    "confirmedAt": "2026-11-13T19:54:43.353Z",
+    "confirmedBy": "operator",
+    "discoveryMethod": "operator_manual",
+    "rawEvidence": [
+      {
+        "pageNumber": 1,
+        "snippet": "Validity dates (2026-12-01 to 2026-12-15) entered manually by operator",
+        "field": "validity_range",
+        "method": "operator_manual",
+        "confidence": 1
+      },
+      {
+        "pageNumber": 1,
+        "snippet": "Retailer ID c2cc16c2-0004-4444-b000-c00000000004 entered manually by operator",
+        "field": "retailer",
+        "method": "operator_manual",
+        "confidence": 1
+      }
+    ],
+    "operatorEdits": {
+      "editedRetailerId": "c2cc16c2-0004-4444-b000-c00000000004",
+      "editedStartDate": "2026-12-01",
+      "editedEndDate": "2026-12-15",
+      "editedLocationScope": "city",
+      "editedCityId": "a6f7b140-0001-4444-a000-000000000001",
+      "editedRegionId": null,
+      "editedAt": "2026-11-13T19:54:43.353Z"
+    }
+  },
+  "savedAt": "2026-11-13T19:54:43.370Z"
+}

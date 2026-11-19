@@ -1,0 +1,374 @@
+{
+  "source": {
+    "leaflet_id": "default_leaflet",
+    "source_page_number": 1,
+    "source_item_number": "003",
+    "external_image_id": "noori-supermarket-229798534-jeddah_p001_003",
+    "crop_path": null,
+    "thumbnail_path": null,
+    "page_area_share_pct": 3.97,
+    "json_path": ""
+  },
+  "trusted_context": {},
+  "product": {
+    "title_ar": "دجاج فقيه مجمد 1000 جرام حبة",
+    "title_en": "Fakieh Frozen Chicken 1000g Each",
+    "normalized_title_ar": "دجاج فقيه مجمد",
+    "normalized_title_en": "Fakieh Frozen Chicken",
+    "commodity_tag": "whole_chicken",
+    "brand_text": "Fakieh",
+    "category_hint": "meat-chicken",
+    "item_domain": "grocery",
+    "description_ar": null,
+    "description_en": null
+  },
+  "prices": {
+    "offer_price": 15.5,
+    "original_price": null,
+    "currency": "SAR",
+    "discount_amount": null,
+    "discount_percentage": null,
+    "price_basis": "each",
+    "price_condition_text": null,
+    "all_price_candidates": [
+      {
+        "raw_text": "15.5",
+        "normalized_value": 15.5,
+        "currency": "SAR",
+        "visual_role": "current_offer_price",
+        "classified_as": "offer_price",
+        "confidence": "high",
+        "evidence": "15.5",
+        "visual_evidence": {}
+      }
+    ]
+  },
+  "content": {
+    "size_text": "1000g",
+    "pack_quantity": 1,
+    "bundle_quantity": null,
+    "each_size_value": 1000,
+    "each_size_unit": "gram",
+    "total_content_value": 1000,
+    "total_content_unit": "gram"
+  },
+  "promotion": {
+    "mechanic": "standard_price",
+    "special_offer": null,
+    "condition_text": null,
+    "quantity_limit": null,
+    "bundle_quantity": null
+  },
+  "comparison": {
+    "comparison_eligible": true,
+    "comparison_unit": "kilogram",
+    "comparison_unit_price": 15.5,
+    "comparison_confidence": "high",
+    "comparison_exclusion_reason": null
+  },
+  "image": {
+    "image_bucket": null,
+    "image_path": null,
+    "image_url": null,
+    "thumbnail_path": null,
+    "thumbnail_url": null,
+    "image_source_type": "leaflet_crop"
+  },
+  "display": {
+    "show_display_unit_price": true,
+    "display_unit_price": 1.55,
+    "display_unit_basis_value": 100,
+    "display_unit_basis_unit": "g",
+    "display_unit_family": "mass",
+    "display_unit_price_label_ar": "1.55 ر.س / 100 جم",
+    "display_unit_price_label_en": "SAR 1.55 / 100g",
+    "below_min_display_price_threshold": false,
+    "min_display_unit_price_sar": 0.5,
+    "hidden_reason": null,
+    "display_unit_price_unrounded": 1.55
+  },
+  "quality": {
+    "publish_decision": "publish",
+    "extraction_confidence": "high",
+    "validation_confidence": "high",
+    "comparison_confidence": "high",
+    "blocking_errors": [],
+    "non_blocking_warnings": []
+  },
+  "style_validation": {
+    "validation_result": "pass",
+    "visual_evidence": {},
+    "corrected_fields": {},
+    "style_profile_scope": "page"
+  },
+  "pre_publish": {
+    "preview_eligible": true,
+    "preview_group": "publish",
+    "display_in_preview": true
+  },
+  "raw": {
+    "raw_ocr_json": {},
+    "raw_validation_json": null,
+    "raw_ocr_text": null,
+    "raw_attributes": {
+      "raw_offer_extraction": {
+        "offer_number": 3,
+        "arabic_title": "دجاج فقيه مجمد 1000 جرام حبة",
+        "english_title": "Fakieh Frozen Chicken 1000g Each",
+        "brand": "Fakieh",
+        "is_multi_brand_or_variant": false,
+        "compound_group_id": "cell_fakieh_chicken",
+        "item_domain": "grocery",
+        "category_slug": "meat-chicken",
+        "normalized_product_name_ar": "دجاج فقيه مجمد",
+        "normalized_product_name_en": "Fakieh Frozen Chicken",
+        "commodity_tag": "whole_chicken",
+        "quantity_limit": null,
+        "size_value": "1000g",
+        "unit_type": "الحبة",
+        "pack_quantity": 1,
+        "each_size_value": 1000,
+        "each_size_unit": "g",
+        "is_uniform_size_across_variants": true,
+        "promo_price": 15.5,
+        "original_price": null,
+        "promo_condition": "STANDARD",
+        "confidence": 0.98,
+        "components": {
+          "product_graphic_box": [
+            341,
+            423,
+            488,
+            624
+          ],
+          "promo_price_box": [
+            405,
+            400,
+            419,
+            448
+          ],
+          "title_text_box": [
+            488,
+            379,
+            503,
+            611
+          ],
+          "original_price_box": null,
+          "unit_and_size_badge_box": [
+            398,
+            414,
+            407,
+            437
+          ]
+        }
+      },
+      "spatial_prominence": {
+        "page_area_share_pct": 3.97,
+        "is_front_page": true,
+        "is_hero_offer": true,
+        "normalized_union_box": [
+          341,
+          379,
+          503,
+          624
+        ]
+      },
+      "completeness_status": "complete",
+      "evidence_linking_status": "linked",
+      "is_retry_pass": false,
+      "page_first": {
+        "current_price_anchor_block_id": "rev1_price_anchor_p001_003",
+        "evidence_link_confidence": 1,
+        "completeness_status": "pass",
+        "crop_confidence": 0.98,
+        "is_retry": false
+      }
+    }
+  },
+  "schema_version": "wifran.extractor.offer/2.0",
+  "contract_v2": {
+    "record_metadata": {
+      "schema_version": "wifran.extractor.offer/2.0",
+      "source_offer_id": "default_leaflet:p001:i003:s01",
+      "source_revision": 1,
+      "semantic_checksum": "5706ca94694dfa44d145fb5a0842c14011c19dd51b51491a558f0d995dc98702",
+      "producer_model": "wifran-extractor-2.0",
+      "supersedes_source_offer_id": null
+    },
+    "product_facts": {
+      "exact_identity_status": "product_family_only",
+      "verified_product_id": null,
+      "gtin": null,
+      "brand_assertion": {
+        "value": "Fakieh",
+        "state": "supported",
+        "candidate_unverified": null,
+        "provenance": "extracted_brand"
+      },
+      "derived_subcategory_slug": "whole_chicken",
+      "attributes": {
+        "scent": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "flavor": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "fat_level": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "milk_processing_type": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "product_form": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "model": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "power_watts": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "dimensions": {
+          "value": null,
+          "state": "not_applicable",
+          "provenance": null
+        },
+        "meat_species": {
+          "value": "chicken",
+          "state": "supported",
+          "provenance": "title_heuristic"
+        },
+        "freshness": {
+          "value": "frozen",
+          "state": "supported",
+          "provenance": "title_heuristic"
+        },
+        "origin": {
+          "value": null,
+          "state": "unknown",
+          "provenance": null
+        },
+        "cut_type": {
+          "value": null,
+          "state": "unknown",
+          "provenance": null
+        },
+        "bone_status": {
+          "value": null,
+          "state": "unknown",
+          "provenance": null
+        }
+      }
+    },
+    "assortment": {
+      "status": "single_product",
+      "composition_type": "single",
+      "known_options": [],
+      "is_uniform_size": true,
+      "source_assertions": []
+    },
+    "quantity_semantics": {
+      "sale_unit": "each",
+      "inner_count": 1,
+      "per_inner_content": {
+        "value": 1000,
+        "unit": "gram"
+      },
+      "total_content": {
+        "value": 1000,
+        "unit": "gram"
+      },
+      "is_indivisible_sale_unit": true
+    },
+    "price_terms": {
+      "currency": "SAR",
+      "source_reported_offer_price": "15.50",
+      "source_reported_price_basis": "each",
+      "source_reported_original_price": null,
+      "verified_current_non_member_price": null
+    },
+    "promotion_terms": {
+      "mechanic": "standard_price",
+      "bonus_wording": null,
+      "bonus_fulfillment": "not_applicable",
+      "bonus_already_included_in_inner_count": false,
+      "structured_checkout_rule": null
+    },
+    "eligibility": {
+      "loyalty": {
+        "requirement": "unknown",
+        "program_id": null,
+        "source_path": null,
+        "restriction_coverage": "not_stated_in_inspected_source"
+      },
+      "sales_channel": "unknown",
+      "quantity_limit": {
+        "value": null,
+        "unit": null,
+        "scope": null
+      }
+    },
+    "evidence": {
+      "coordinate_system": "normalized_0_1000_ymin_xmin_ymax_xmax",
+      "offer_price_evidence_complete": true,
+      "original_price_evidence_complete": true
+    },
+    "assessments": {
+      "capabilities": {
+        "offer_display": "supported",
+        "save_to_list": "supported",
+        "selected_offer_subtotal": "supported",
+        "unit_price_calculation": "supported",
+        "exact_product_comparison": "needs_review",
+        "automatic_list_fulfillment": "needs_review"
+      },
+      "structural_capabilities": {
+        "offer_display": "supported",
+        "save_to_list": "supported",
+        "selected_offer_subtotal": "supported",
+        "unit_price_calculation": "supported",
+        "exact_product_comparison": "needs_review",
+        "automatic_list_fulfillment": "needs_review"
+      },
+      "confidence": {
+        "extraction_confidence": "high",
+        "unit_math_confidence": "high",
+        "identity_confidence": "high"
+      },
+      "reason_codes": [
+        "CHANNEL_UNKNOWN",
+        "MEDIA_UPLOAD_PENDING"
+      ]
+    },
+    "assets": {
+      "offer_card": {
+        "local_path_internal": null,
+        "storage_bucket": null,
+        "storage_object_path": null,
+        "subject_scope": "offer_group",
+        "upload_state": "pending"
+      },
+      "product_thumbnail": {
+        "local_path_internal": null,
+        "storage_bucket": null,
+        "storage_object_path": null,
+        "subject_scope": "offer_group",
+        "upload_state": "pending"
+      }
+    }
+  }
+}

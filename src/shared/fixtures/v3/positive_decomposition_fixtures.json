@@ -1,0 +1,1085 @@
+{
+  "fixture_suite": "WIFRAN-EXTRACTOR-IDENTITY-005D-POSITIVE-FIXTURES",
+  "note": "Offline structural & decomposition fixtures built from verified local leaflet crops and canonical JSONs. Not proof of live V3 model extraction accuracy.",
+  "cases": [
+    {
+      "case_id": "pos_radwa_shawarma_3_flavors",
+      "expected_decomposed": true,
+      "expected_child_count": 3,
+      "expected_basis": "explicit_text_slash",
+      "expected_pricing_mode": "shared_assortment_price",
+      "record": {
+        "schema_version": "wifran.extractor.card/3.0",
+        "source_card": {
+          "leaflet_id": "panda-national-national-2026-10-20",
+          "page_number": 3,
+          "source_offer_id": "Panda_Test_p003_012",
+          "source_evidence_ref_internal": "Extracts/Panda_Test/metadata/rev1/page-003/crops/offer-012/offer_card_crop.webp",
+          "retailer_id": "c2cc16c2-0001-4444-b000-c00000000001",
+          "retailer_name": "Panda",
+          "offer_start_date": "2026-10-14",
+          "offer_end_date": "2026-10-20",
+          "location_scope": "national",
+          "city_id": null,
+          "region_id": null,
+          "raw_text": {
+            "title_ar": "شاورما دجاج عادي / حار / قليل الدسم رضوى (٤٠٠ جرام)",
+            "title_en": "Radwa Chicken Shawarma Regular / Spicy / Low Fat (400g)",
+            "size_text": "400g",
+            "promo_badge_text": null,
+            "price_text_candidates": ["13.5", "16.99"]
+          }
+        },
+        "pricing": {
+          "promo_price": 13.5,
+          "original_price": 16.99,
+          "currency": "SAR",
+          "currency_evidence": "printed_sar_symbol",
+          "price_basis": "shared_assortment",
+          "price_role_confidence": "high",
+          "promo_conditions": null,
+          "price_conflict_flags": []
+        },
+        "assortment": {
+          "status": "explicit_assortment",
+          "visible_variant_count": 3,
+          "identifiable_sub_item_count": 3,
+          "assortment_evidence": ["slash_title", "printed_leaflet_text"],
+          "is_enumerated_list_complete": true,
+          "all_options_linkable": true
+        },
+        "sub_items": [
+          {
+            "sub_item_ref": "s01",
+            "brand_en": "Radwa",
+            "brand_ar": "رضوى",
+            "product_name_en": "Radwa Chicken Shawarma Regular",
+            "product_name_ar": "شاورما دجاج عادي رضوى",
+            "variant_or_flavor": "Regular",
+            "product_form": "tray",
+            "each_size_value": 400,
+            "each_size_unit": "g",
+            "manufacturer_pack_count": 1,
+            "printed_retailer_sku_code": null,
+            "is_retailer_sku_only_not_gtin": true,
+            "evidence_refs": ["ev_radwa_title"],
+            "unknown_attributes": [],
+            "conflict_attributes": [],
+            "safe_for_catalog_matching": true
+          },
+          {
+            "sub_item_ref": "s02",
+            "brand_en": "Radwa",
+            "brand_ar": "رضوى",
+            "product_name_en": "Radwa Chicken Shawarma Spicy",
+            "product_name_ar": "شاورما دجاج حار رضوى",
+            "variant_or_flavor": "Spicy",
+            "product_form": "tray",
+            "each_size_value": 400,
+            "each_size_unit": "g",
+            "manufacturer_pack_count": 1,
+            "printed_retailer_sku_code": null,
+            "is_retailer_sku_only_not_gtin": true,
+            "evidence_refs": ["ev_radwa_title"],
+            "unknown_attributes": [],
+            "conflict_attributes": [],
+            "safe_for_catalog_matching": true
+          },
+          {
+            "sub_item_ref": "s03",
+            "brand_en": "Radwa",
+            "brand_ar": "رضوى",
+            "product_name_en": "Radwa Chicken Shawarma Low Fat",
+            "product_name_ar": "شاورما دجاج قليل الدسم رضوى",
+            "variant_or_flavor": "Low Fat",
+            "product_form": "tray",
+            "each_size_value": 400,
+            "each_size_unit": "g",
+            "manufacturer_pack_count": 1,
+            "printed_retailer_sku_code": null,
+            "is_retailer_sku_only_not_gtin": true,
+            "evidence_refs": ["ev_radwa_title"],
+            "unknown_attributes": [],
+            "conflict_attributes": [],
+            "safe_for_catalog_matching": true
+          }
+        ],
+        "quantity_and_promo": {
+          "sale_basis": "single_unit",
+          "each_size_value": 400,
+          "each_size_unit": "g",
+          "manufacturer_pack_count": 1,
+          "retailer_checkout_multibuy_qty": null,
+          "factory_bonus_paid_qty": null,
+          "factory_bonus_free_qty": null,
+          "customer_limit_pcs": null,
+          "shared_promotional_price": 13.5,
+          "quantity_price_tiers": [],
+          "is_per_weight_pricing": false,
+          "loyalty_required": false,
+          "loyalty_program_name": null
+        },
+        "non_grocery_specs": {
+          "domain": "grocery",
+          "excluded_from_default_grocery_feed": false
+        },
+        "category_evidence": {
+          "commodity_tag": "chicken_shawarma",
+          "category_hint": "meat-chicken"
+        },
+        "extraction_confidence": "high",
+        "evidence_conflicts": [],
+        "evidence_ledger": [
+          {
+            "evidence_id": "ev_radwa_title",
+            "target_field": "sub_items",
+            "evidence_type": "printed_leaflet_text",
+            "extracted_value": "Regular / Spicy / Low Fat (400g)",
+            "original_source_evidence": "شاورما دجاج عادي / حار / قليل الدسم رضوى (٤٠٠ جرام)",
+            "normalized_value": "3 variants @ 400g",
+            "confidence": "high"
+          }
+        ],
+        "printed_retailer_sku_codes": []
+      }
+    },
+    {
+      "case_id": "pos_tanmiah_marinated_bbq_kabsa",
+      "expected_decomposed": true,
+      "expected_child_count": 2,
+      "expected_basis": "explicit_package_labels",
+      "expected_pricing_mode": "shared_assortment_price",
+      "record": {
+        "schema_version": "wifran.extractor.card/3.0",
+        "source_card": {
+          "leaflet_id": "panda-national-national-2026-10-20",
+          "page_number": 3,
+          "source_offer_id": "Panda_Test_p003_015",
+          "source_evidence_ref_internal": "Extracts/Panda_Test/metadata/rev1/page-003/crops/offer-015/offer_card_crop.webp",
+          "retailer_id": "c2cc16c2-0001-4444-b000-c00000000001",
+          "retailer_name": "Panda",
+          "offer_start_date": "2026-10-14",
+          "offer_end_date": "2026-10-20",
+          "location_scope": "national",
+          "city_id": null,
+          "region_id": null,
+          "raw_text": {
+            "title_ar": "دجاج متبل التنمية (٧٠٠ جرام)",
+            "title_en": "Tanmiah Marinated Chicken (700g)",
+            "size_text": "700g",
+            "promo_badge_text": "Or / أو",
+            "price_text_candidates": ["14.99", "21.99"]
+          }
+        },
+        "pricing": {
+          "promo_price": 14.99,
+          "original_price": 21.99,
+          "currency": "SAR",
+          "currency_evidence": "printed_sar_symbol",
+          "price_basis": "shared_assortment",
+          "price_role_confidence": "high",
+          "promo_conditions": null,
+          "price_conflict_flags": []
+        },
+        "assortment": {
+          "status": "explicit_assortment",
+          "visible_variant_count": 2,
+          "identifiable_sub_item_count": 2,
+          "assortment_evidence": ["multi_pack_image", "choice_or_separator"],
+          "is_enumerated_list_complete": true,
+          "all_options_linkable": true
+        },
+        "sub_items": [
+          {
+            "sub_item_ref": "s01",
+            "brand_en": "Tanmiah",
+            "brand_ar": "التنمية",
+            "product_name_en": "Tanmiah Marinated Chicken BBQ",
+            "product_name_ar": "دجاج متبل التنمية شواء",
+            "variant_or_flavor": "BBQ",
+            "product_form": "tray",
+            "each_size_value": 700,
+            "each_size_unit": "g",
+            "manufacturer_pack_count": 1,
+            "printed_retailer_sku_code": null,
+            "is_retailer_sku_only_not_gtin": true,
+            "evidence_refs": ["ev_tanmiah_bbq"],
+            "unknown_attributes": [],
+            "conflict_attributes": [],
+            "safe_for_catalog_matching": true
+          },
+          {
+            "sub_item_ref": "s02",
+            "brand_en": "Tanmiah",
+            "brand_ar": "التنمية",
+            "product_name_en": "Tanmiah Marinated Chicken Kabsa",
+            "product_name_ar": "دجاج متبل التنمية كبسة",
+            "variant_or_flavor": "Kabsa",
+            "product_form": "tray",
+            "each_size_value": 700,
+            "each_size_unit": "g",
+            "manufacturer_pack_count": 1,
+            "printed_retailer_sku_code": null,
+            "is_retailer_sku_only_not_gtin": true,
+            "evidence_refs": ["ev_tanmiah_kabsa"],
+            "unknown_attributes": [],
+            "conflict_attributes": [],
+            "safe_for_catalog_matching": true
+          }
+        ],
+        "quantity_and_promo": {
+          "sale_basis": "single_unit",
+          "each_size_value": 700,
+          "each_size_unit": "g",
+          "manufacturer_pack_count": 1,
+          "retailer_checkout_multibuy_qty": null,
+          "factory_bonus_paid_qty": null,
+          "factory_bonus_free_qty": null,
+          "customer_limit_pcs": null,
+          "shared_promotional_price": 14.99,
+          "quantity_price_tiers": [],
+          "is_per_weight_pricing": false,
+          "loyalty_required": false,
+          "loyalty_program_name": null
+        },
+        "non_grocery_specs": {
+          "domain": "grocery",
+          "excluded_from_default_grocery_feed": false
+        },
+        "category_evidence": {
+          "commodity_tag": "marinated_chicken",
+          "category_hint": "meat-chicken"
+        },
+        "extraction_confidence": "high",
+        "evidence_conflicts": [],
+        "evidence_ledger": [
+          {
+            "evidence_id": "ev_tanmiah_bbq",
+            "target_field": "sub_items[0].variant_or_flavor",
+            "evidence_type": "visible_variant_label",
+            "extracted_value": "BBQ",
+            "original_source_evidence": "Green badge BBq + tray sticker الشواء BBQ",
+            "normalized_value": "BBQ",
+            "confidence": "high"
+          },
+          {
+            "evidence_id": "ev_tanmiah_kabsa",
+            "target_field": "sub_items[1].variant_or_flavor",
+            "evidence_type": "visible_variant_label",
+            "extracted_value": "Kabsa",
+            "original_source_evidence": "Green badge Kabsa + tray sticker كبسة Kabsa",
+            "normalized_value": "Kabsa",
+            "confidence": "high"
+          }
+        ],
+        "printed_retailer_sku_codes": []
+      }
+    },
+    {
+      "case_id": "pos_moussy_classic_pomegranate",
+      "expected_decomposed": true,
+      "expected_child_count": 2,
+      "expected_basis": "explicit_package_labels",
+      "expected_pricing_mode": "shared_assortment_price",
+      "record": {
+        "schema_version": "wifran.extractor.card/3.0",
+        "source_card": {
+          "leaflet_id": "panda-national-national-2026-10-20",
+          "page_number": 2,
+          "source_offer_id": "Panda_Test_p002_011",
+          "source_evidence_ref_internal": "Extracts/Panda_Test/metadata/rev1/page-002/crops/offer-011/offer_card_crop.webp",
+          "retailer_id": "c2cc16c2-0001-4444-b000-c00000000001",
+          "retailer_name": "Panda",
+          "offer_start_date": "2026-10-14",
+          "offer_end_date": "2026-10-20",
+          "location_scope": "national",
+          "city_id": null,
+          "region_id": null,
+          "raw_text": {
+            "title_ar": "شراب شعير موسي (6 × 330 مل)",
+            "title_en": "Moussy Beer Classic (6 x 330ml)",
+            "size_text": "6x330ml",
+            "promo_badge_text": "متنوع Assorted",
+            "price_text_candidates": ["28.99", "34.99"]
+          }
+        },
+        "pricing": {
+          "promo_price": 28.99,
+          "original_price": 34.99,
+          "currency": "SAR",
+          "currency_evidence": "printed_sar_symbol",
+          "price_basis": "shared_assortment",
+          "price_role_confidence": "high",
+          "promo_conditions": null,
+          "price_conflict_flags": []
+        },
+        "assortment": {
+          "status": "explicit_assortment",
+          "visible_variant_count": 2,
+          "identifiable_sub_item_count": 2,
+          "assortment_evidence": ["assorted_badge", "multi_pack_image"],
+          "is_enumerated_list_complete": true,
+          "all_options_linkable": true
+        },
+        "sub_items": [
+          {
+            "sub_item_ref": "s01",
+            "brand_en": "Moussy",
+            "brand_ar": "موسي",
+            "product_name_en": "Moussy Malt Beverage Classic",
+            "product_name_ar": "شراب شعير موسي كلاسيك",
+            "variant_or_flavor": "Classic",
+            "product_form": "bottle_6pack",
+            "each_size_value": 330,
+            "each_size_unit": "ml",
+            "manufacturer_pack_count": 6,
+            "printed_retailer_sku_code": null,
+            "is_retailer_sku_only_not_gtin": true,
+            "evidence_refs": ["ev_moussy_classic"],
+            "unknown_attributes": [],
+            "conflict_attributes": [],
+            "safe_for_catalog_matching": true
+          },
+          {
+            "sub_item_ref": "s02",
+            "brand_en": "Moussy",
+            "brand_ar": "موسي",
+            "product_name_en": "Moussy Malt Beverage Pomegranate",
+            "product_name_ar": "شراب شعير موسي بنكهة الرمان",
+            "variant_or_flavor": "Pomegranate",
+            "product_form": "bottle_6pack",
+            "each_size_value": 330,
+            "each_size_unit": "ml",
+            "manufacturer_pack_count": 6,
+            "printed_retailer_sku_code": null,
+            "is_retailer_sku_only_not_gtin": true,
+            "evidence_refs": ["ev_moussy_pom"],
+            "unknown_attributes": [],
+            "conflict_attributes": [],
+            "safe_for_catalog_matching": true
+          }
+        ],
+        "quantity_and_promo": {
+          "sale_basis": "sealed_multipack",
+          "each_size_value": 330,
+          "each_size_unit": "ml",
+          "manufacturer_pack_count": 6,
+          "retailer_checkout_multibuy_qty": null,
+          "factory_bonus_paid_qty": null,
+          "factory_bonus_free_qty": null,
+          "customer_limit_pcs": null,
+          "shared_promotional_price": 28.99,
+          "quantity_price_tiers": [],
+          "is_per_weight_pricing": false,
+          "loyalty_required": false,
+          "loyalty_program_name": null
+        },
+        "non_grocery_specs": {
+          "domain": "grocery",
+          "excluded_from_default_grocery_feed": false
+        },
+        "category_evidence": {
+          "commodity_tag": "malt_beverage",
+          "category_hint": "beverages"
+        },
+        "extraction_confidence": "high",
+        "evidence_conflicts": [],
+        "evidence_ledger": [],
+        "printed_retailer_sku_codes": []
+      }
+    },
+    {
+      "case_id": "pos_lipton_regular_zero_sugar",
+      "expected_decomposed": true,
+      "expected_child_count": 2,
+      "expected_basis": "explicit_package_labels",
+      "expected_pricing_mode": "shared_assortment_price",
+      "record": {
+        "schema_version": "wifran.extractor.card/3.0",
+        "source_card": {
+          "leaflet_id": "panda-national-national-2026-10-20",
+          "page_number": 2,
+          "source_offer_id": "Panda_Test_p002_012",
+          "source_evidence_ref_internal": "Extracts/Panda_Test/metadata/rev1/page-002/crops/offer-012/offer_card_crop.webp",
+          "retailer_id": "c2cc16c2-0001-4444-b000-c00000000001",
+          "retailer_name": "Panda",
+          "offer_start_date": "2026-10-14",
+          "offer_end_date": "2026-10-20",
+          "location_scope": "national",
+          "city_id": null,
+          "region_id": null,
+          "raw_text": {
+            "title_ar": "أيس تي ليبتون علب (6 × 320 مل)",
+            "title_en": "Lipton Ice Tea Can (6 x 320ml)",
+            "size_text": "6x320ml",
+            "promo_badge_text": "متنوع Assorted",
+            "price_text_candidates": ["11.99", "15"]
+          }
+        },
+        "pricing": {
+          "promo_price": 11.99,
+          "original_price": 15,
+          "currency": "SAR",
+          "currency_evidence": "printed_sar_symbol",
+          "price_basis": "shared_assortment",
+          "price_role_confidence": "high",
+          "promo_conditions": null,
+          "price_conflict_flags": []
+        },
+        "assortment": {
+          "status": "explicit_assortment",
+          "visible_variant_count": 2,
+          "identifiable_sub_item_count": 2,
+          "assortment_evidence": ["assorted_badge", "multi_pack_image"],
+          "is_enumerated_list_complete": true,
+          "all_options_linkable": true
+        },
+        "sub_items": [
+          {
+            "sub_item_ref": "s01",
+            "brand_en": "Lipton",
+            "brand_ar": "ليبتون",
+            "product_name_en": "Lipton Ice Tea Regular Can",
+            "product_name_ar": "أيس تي ليبتون عادي علب",
+            "variant_or_flavor": "Regular",
+            "product_form": "can_6pack",
+            "each_size_value": 320,
+            "each_size_unit": "ml",
+            "manufacturer_pack_count": 6,
+            "printed_retailer_sku_code": null,
+            "is_retailer_sku_only_not_gtin": true,
+            "evidence_refs": ["ev_lipton_reg"],
+            "unknown_attributes": [],
+            "conflict_attributes": [],
+            "safe_for_catalog_matching": true
+          },
+          {
+            "sub_item_ref": "s02",
+            "brand_en": "Lipton",
+            "brand_ar": "ليبتون",
+            "product_name_en": "Lipton Ice Tea Zero Sugar Can",
+            "product_name_ar": "أيس تي ليبتون زيرو شوقر علب",
+            "variant_or_flavor": "Zero Sugar",
+            "product_form": "can_6pack",
+            "each_size_value": 320,
+            "each_size_unit": "ml",
+            "manufacturer_pack_count": 6,
+            "printed_retailer_sku_code": null,
+            "is_retailer_sku_only_not_gtin": true,
+            "evidence_refs": ["ev_lipton_zero"],
+            "unknown_attributes": [],
+            "conflict_attributes": [],
+            "safe_for_catalog_matching": true
+          }
+        ],
+        "quantity_and_promo": {
+          "sale_basis": "sealed_multipack",
+          "each_size_value": 320,
+          "each_size_unit": "ml",
+          "manufacturer_pack_count": 6,
+          "retailer_checkout_multibuy_qty": null,
+          "factory_bonus_paid_qty": null,
+          "factory_bonus_free_qty": null,
+          "customer_limit_pcs": null,
+          "shared_promotional_price": 11.99,
+          "quantity_price_tiers": [],
+          "is_per_weight_pricing": false,
+          "loyalty_required": false,
+          "loyalty_program_name": null
+        },
+        "non_grocery_specs": {
+          "domain": "grocery",
+          "excluded_from_default_grocery_feed": false
+        },
+        "category_evidence": {
+          "commodity_tag": "iced_tea",
+          "category_hint": "beverages"
+        },
+        "extraction_confidence": "high",
+        "evidence_conflicts": [],
+        "evidence_ledger": [],
+        "printed_retailer_sku_codes": []
+      }
+    },
+    {
+      "case_id": "pos_baskin_robbins_vanilla_chocolate",
+      "expected_decomposed": true,
+      "expected_child_count": 2,
+      "expected_basis": "explicit_package_labels",
+      "expected_pricing_mode": "shared_assortment_price",
+      "record": {
+        "schema_version": "wifran.extractor.card/3.0",
+        "source_card": {
+          "leaflet_id": "panda-national-national-2026-10-20",
+          "page_number": 2,
+          "source_offer_id": "Panda_Test_p002_007",
+          "source_evidence_ref_internal": "Extracts/Panda_Test/metadata/rev1/page-002/crops/offer-007/offer_card_crop.webp",
+          "retailer_id": "c2cc16c2-0001-4444-b000-c00000000001",
+          "retailer_name": "Panda",
+          "offer_start_date": "2026-10-14",
+          "offer_end_date": "2026-10-20",
+          "location_scope": "national",
+          "city_id": null,
+          "region_id": null,
+          "raw_text": {
+            "title_ar": "أيس كريم باسكين روبنز (500 مل)",
+            "title_en": "Baskin Robbins Ice Cream (500ml)",
+            "size_text": "500ml",
+            "promo_badge_text": "متنوع Assorted",
+            "price_text_candidates": ["17.99", "28.99"]
+          }
+        },
+        "pricing": {
+          "promo_price": 17.99,
+          "original_price": 28.99,
+          "currency": "SAR",
+          "currency_evidence": "printed_sar_symbol",
+          "price_basis": "shared_assortment",
+          "price_role_confidence": "high",
+          "promo_conditions": null,
+          "price_conflict_flags": []
+        },
+        "assortment": {
+          "status": "explicit_assortment",
+          "visible_variant_count": 2,
+          "identifiable_sub_item_count": 2,
+          "assortment_evidence": ["assorted_badge", "multi_pack_image"],
+          "is_enumerated_list_complete": true,
+          "all_options_linkable": true
+        },
+        "sub_items": [
+          {
+            "sub_item_ref": "s01",
+            "brand_en": "Baskin Robbins",
+            "brand_ar": "باسكين روبنز",
+            "product_name_en": "Baskin Robbins Ice Cream Vanilla",
+            "product_name_ar": "أيس كريم باسكين روبنز فانيليا",
+            "variant_or_flavor": "Vanilla",
+            "product_form": "tub",
+            "each_size_value": 500,
+            "each_size_unit": "ml",
+            "manufacturer_pack_count": 1,
+            "printed_retailer_sku_code": null,
+            "is_retailer_sku_only_not_gtin": true,
+            "evidence_refs": ["ev_br_vanilla"],
+            "unknown_attributes": [],
+            "conflict_attributes": [],
+            "safe_for_catalog_matching": true
+          },
+          {
+            "sub_item_ref": "s02",
+            "brand_en": "Baskin Robbins",
+            "brand_ar": "باسكين روبنز",
+            "product_name_en": "Baskin Robbins Ice Cream Chocolate",
+            "product_name_ar": "أيس كريم باسكين روبنز شوكولاتة",
+            "variant_or_flavor": "Chocolate",
+            "product_form": "tub",
+            "each_size_value": 500,
+            "each_size_unit": "ml",
+            "manufacturer_pack_count": 1,
+            "printed_retailer_sku_code": null,
+            "is_retailer_sku_only_not_gtin": true,
+            "evidence_refs": ["ev_br_choc"],
+            "unknown_attributes": [],
+            "conflict_attributes": [],
+            "safe_for_catalog_matching": true
+          }
+        ],
+        "quantity_and_promo": {
+          "sale_basis": "single_unit",
+          "each_size_value": 500,
+          "each_size_unit": "ml",
+          "manufacturer_pack_count": 1,
+          "retailer_checkout_multibuy_qty": null,
+          "factory_bonus_paid_qty": null,
+          "factory_bonus_free_qty": null,
+          "customer_limit_pcs": null,
+          "shared_promotional_price": 17.99,
+          "quantity_price_tiers": [],
+          "is_per_weight_pricing": false,
+          "loyalty_required": false,
+          "loyalty_program_name": null
+        },
+        "non_grocery_specs": {
+          "domain": "grocery",
+          "excluded_from_default_grocery_feed": false
+        },
+        "category_evidence": {
+          "commodity_tag": "ice_cream",
+          "category_hint": "frozen"
+        },
+        "extraction_confidence": "high",
+        "evidence_conflicts": [],
+        "evidence_ledger": [],
+        "printed_retailer_sku_codes": []
+      }
+    },
+    {
+      "case_id": "pos_abukass_mazza_amber",
+      "expected_decomposed": true,
+      "expected_child_count": 2,
+      "expected_basis": "explicit_text_slash",
+      "expected_pricing_mode": "shared_assortment_price",
+      "record": {
+        "schema_version": "wifran.extractor.card/3.0",
+        "source_card": {
+          "leaflet_id": "bin-dawood-national-national-2026-10-20",
+          "page_number": 4,
+          "source_offer_id": "BNDW_Test_p004_001",
+          "source_evidence_ref_internal": "Extracts/BNDW_Test/metadata/rev1/page-004/crops/offer-001/offer_card_crop.webp",
+          "retailer_id": "c2cc16c2-0007-4444-b000-c00000000007",
+          "retailer_name": "BinDawood",
+          "offer_start_date": "2026-10-14",
+          "offer_end_date": "2026-10-20",
+          "location_scope": "national",
+          "city_id": null,
+          "region_id": null,
+          "raw_text": {
+            "title_ar": "أبو كاس أرز مزة / عنبر بسمتي ١٠كيلو",
+            "title_en": "Abu Kass Mazza / Amber Basmati Rice 10Kg",
+            "size_text": "10 Kg",
+            "promo_badge_text": null,
+            "price_text_candidates": ["63.99", "89.95"]
+          }
+        },
+        "pricing": {
+          "promo_price": 63.99,
+          "original_price": 89.95,
+          "currency": "SAR",
+          "currency_evidence": "printed_sar_symbol",
+          "price_basis": "shared_assortment",
+          "price_role_confidence": "high",
+          "promo_conditions": null,
+          "price_conflict_flags": []
+        },
+        "assortment": {
+          "status": "explicit_assortment",
+          "visible_variant_count": 2,
+          "identifiable_sub_item_count": 2,
+          "assortment_evidence": ["slash_title", "sku_code_list"],
+          "is_enumerated_list_complete": true,
+          "all_options_linkable": true
+        },
+        "sub_items": [
+          {
+            "sub_item_ref": "s01",
+            "brand_en": "Abu Kass",
+            "brand_ar": "أبو كاس",
+            "product_name_en": "Abu Kass Indian Mazza Basmati Rice",
+            "product_name_ar": "أبو كاس أرز مزة بسمتي",
+            "variant_or_flavor": "Mazza",
+            "product_form": "bag",
+            "each_size_value": 10,
+            "each_size_unit": "kg",
+            "manufacturer_pack_count": 1,
+            "printed_retailer_sku_code": null,
+            "is_retailer_sku_only_not_gtin": true,
+            "evidence_refs": ["ev_ak_title"],
+            "unknown_attributes": [],
+            "conflict_attributes": [],
+            "safe_for_catalog_matching": true
+          },
+          {
+            "sub_item_ref": "s02",
+            "brand_en": "Abu Kass",
+            "brand_ar": "أبو كاس",
+            "product_name_en": "Abu Kass Amber Basmati Rice",
+            "product_name_ar": "أبو كاس أرز عنبر بسمتي",
+            "variant_or_flavor": "Amber",
+            "product_form": "bag",
+            "each_size_value": 10,
+            "each_size_unit": "kg",
+            "manufacturer_pack_count": 1,
+            "printed_retailer_sku_code": null,
+            "is_retailer_sku_only_not_gtin": true,
+            "evidence_refs": ["ev_ak_title"],
+            "unknown_attributes": [],
+            "conflict_attributes": [],
+            "safe_for_catalog_matching": true
+          }
+        ],
+        "quantity_and_promo": {
+          "sale_basis": "single_unit",
+          "each_size_value": 10,
+          "each_size_unit": "kg",
+          "manufacturer_pack_count": 1,
+          "retailer_checkout_multibuy_qty": null,
+          "factory_bonus_paid_qty": null,
+          "factory_bonus_free_qty": null,
+          "customer_limit_pcs": null,
+          "shared_promotional_price": 63.99,
+          "quantity_price_tiers": [],
+          "is_per_weight_pricing": false,
+          "loyalty_required": false,
+          "loyalty_program_name": null
+        },
+        "non_grocery_specs": {
+          "domain": "grocery",
+          "excluded_from_default_grocery_feed": false
+        },
+        "category_evidence": {
+          "commodity_tag": "basmati_rice",
+          "category_hint": "staples"
+        },
+        "extraction_confidence": "high",
+        "evidence_conflicts": [],
+        "evidence_ledger": [],
+        "printed_retailer_sku_codes": []
+      }
+    },
+    {
+      "case_id": "pos_multibrand_al_arabi_shams",
+      "expected_decomposed": true,
+      "expected_child_count": 2,
+      "expected_basis": "multi_brand_explicit_pairs",
+      "expected_pricing_mode": "shared_assortment_price",
+      "record": {
+        "schema_version": "wifran.extractor.card/3.0",
+        "source_card": {
+          "leaflet_id": "panda-national-national-2026-10-20",
+          "page_number": 1,
+          "source_offer_id": "Panda_Test_p001_008",
+          "source_evidence_ref_internal": "Extracts/Panda_Test/metadata/rev1/page-001/crops/offer-008/offer_card_crop.webp",
+          "retailer_id": "c2cc16c2-0001-4444-b000-c00000000001",
+          "retailer_name": "Panda",
+          "offer_start_date": "2026-10-14",
+          "offer_end_date": "2026-10-20",
+          "location_scope": "national",
+          "city_id": null,
+          "region_id": null,
+          "raw_text": {
+            "title_ar": "زيت نباتي العربي / زيت دوار الشمس شمس (٢ × ١,٥ لتر)",
+            "title_en": "Al Arabi Vegetable Oil / Shams Sunflower Oil (2 x 1.5L)",
+            "size_text": "2x1.5L",
+            "promo_badge_text": null,
+            "price_text_candidates": ["25.99", "44.99"]
+          }
+        },
+        "pricing": {
+          "promo_price": 25.99,
+          "original_price": 44.99,
+          "currency": "SAR",
+          "currency_evidence": "printed_sar_symbol",
+          "price_basis": "shared_assortment",
+          "price_role_confidence": "high",
+          "promo_conditions": null,
+          "price_conflict_flags": []
+        },
+        "assortment": {
+          "status": "explicit_assortment",
+          "visible_variant_count": 2,
+          "identifiable_sub_item_count": 2,
+          "assortment_evidence": ["slash_title", "multi_pack_image"],
+          "is_enumerated_list_complete": true,
+          "all_options_linkable": true
+        },
+        "sub_items": [
+          {
+            "sub_item_ref": "s01",
+            "brand_en": "Al Arabi",
+            "brand_ar": "العربي",
+            "product_name_en": "Al Arabi Vegetable Oil",
+            "product_name_ar": "زيت نباتي العربي",
+            "variant_or_flavor": "Vegetable Oil",
+            "product_form": "bottle_2pack",
+            "each_size_value": 1.5,
+            "each_size_unit": "l",
+            "manufacturer_pack_count": 2,
+            "printed_retailer_sku_code": null,
+            "is_retailer_sku_only_not_gtin": true,
+            "evidence_refs": ["ev_arabi"],
+            "unknown_attributes": [],
+            "conflict_attributes": [],
+            "safe_for_catalog_matching": true
+          },
+          {
+            "sub_item_ref": "s02",
+            "brand_en": "Shams",
+            "brand_ar": "شمس",
+            "product_name_en": "Shams Sunflower Oil",
+            "product_name_ar": "زيت دوار الشمس شمس",
+            "variant_or_flavor": "Sunflower Oil",
+            "product_form": "bottle_2pack",
+            "each_size_value": 1.5,
+            "each_size_unit": "l",
+            "manufacturer_pack_count": 2,
+            "printed_retailer_sku_code": null,
+            "is_retailer_sku_only_not_gtin": true,
+            "evidence_refs": ["ev_shams"],
+            "unknown_attributes": [],
+            "conflict_attributes": [],
+            "safe_for_catalog_matching": true
+          }
+        ],
+        "quantity_and_promo": {
+          "sale_basis": "sealed_multipack",
+          "each_size_value": 1.5,
+          "each_size_unit": "l",
+          "manufacturer_pack_count": 2,
+          "retailer_checkout_multibuy_qty": null,
+          "factory_bonus_paid_qty": null,
+          "factory_bonus_free_qty": null,
+          "customer_limit_pcs": null,
+          "shared_promotional_price": 25.99,
+          "quantity_price_tiers": [],
+          "is_per_weight_pricing": false,
+          "loyalty_required": false,
+          "loyalty_program_name": null
+        },
+        "non_grocery_specs": {
+          "domain": "grocery",
+          "excluded_from_default_grocery_feed": false
+        },
+        "category_evidence": {
+          "commodity_tag": "cooking_oil",
+          "category_hint": "staples"
+        },
+        "extraction_confidence": "high",
+        "evidence_conflicts": [],
+        "evidence_ledger": [],
+        "printed_retailer_sku_codes": []
+      }
+    },
+    {
+      "case_id": "pos_multibrand_al_khair_plyms_paired_sizes",
+      "expected_decomposed": true,
+      "expected_child_count": 2,
+      "expected_basis": "multi_brand_explicit_pairs",
+      "expected_pricing_mode": "shared_assortment_price",
+      "record": {
+        "schema_version": "wifran.extractor.card/3.0",
+        "source_card": {
+          "leaflet_id": "panda-national-national-2026-10-20",
+          "page_number": 1,
+          "source_offer_id": "Panda_Test_p001_007",
+          "source_evidence_ref_internal": "Extracts/Panda_Test/metadata/rev1/page-001/crops/offer-007/offer_card_crop.webp",
+          "retailer_id": "c2cc16c2-0001-4444-b000-c00000000001",
+          "retailer_name": "Panda",
+          "offer_start_date": "2026-10-14",
+          "offer_end_date": "2026-10-20",
+          "location_scope": "national",
+          "city_id": null,
+          "region_id": null,
+          "raw_text": {
+            "title_ar": "تونة الخير / بليمز (١٨٥ جرام / ١٧٠ جرام)",
+            "title_en": "Al Khair / Plyms Tuna (185g / 170g)",
+            "size_text": "185g / 170g",
+            "promo_badge_text": null,
+            "price_text_candidates": ["8.99", "19.98"]
+          }
+        },
+        "pricing": {
+          "promo_price": 8.99,
+          "original_price": 19.98,
+          "currency": "SAR",
+          "currency_evidence": "printed_sar_symbol",
+          "price_basis": "shared_assortment",
+          "price_role_confidence": "high",
+          "promo_conditions": null,
+          "price_conflict_flags": []
+        },
+        "assortment": {
+          "status": "explicit_assortment",
+          "visible_variant_count": 2,
+          "identifiable_sub_item_count": 2,
+          "assortment_evidence": ["slash_title"],
+          "is_enumerated_list_complete": true,
+          "all_options_linkable": true
+        },
+        "sub_items": [
+          {
+            "sub_item_ref": "s01",
+            "brand_en": "Al Khair",
+            "brand_ar": "الخير",
+            "product_name_en": "Al Khair Light Meat Tuna",
+            "product_name_ar": "تونة الخير",
+            "variant_or_flavor": "185g Can",
+            "product_form": "can",
+            "each_size_value": 185,
+            "each_size_unit": "g",
+            "manufacturer_pack_count": 1,
+            "printed_retailer_sku_code": null,
+            "is_retailer_sku_only_not_gtin": true,
+            "evidence_refs": ["ev_khair"],
+            "unknown_attributes": [],
+            "conflict_attributes": [],
+            "safe_for_catalog_matching": true
+          },
+          {
+            "sub_item_ref": "s02",
+            "brand_en": "Plyms",
+            "brand_ar": "بليمز",
+            "product_name_en": "Plyms Light Meat Tuna",
+            "product_name_ar": "تونة بليمز",
+            "variant_or_flavor": "170g Can",
+            "product_form": "can",
+            "each_size_value": 170,
+            "each_size_unit": "g",
+            "manufacturer_pack_count": 1,
+            "printed_retailer_sku_code": null,
+            "is_retailer_sku_only_not_gtin": true,
+            "evidence_refs": ["ev_plyms"],
+            "unknown_attributes": [],
+            "conflict_attributes": [],
+            "safe_for_catalog_matching": true
+          }
+        ],
+        "quantity_and_promo": {
+          "sale_basis": "single_unit",
+          "each_size_value": null,
+          "each_size_unit": "g",
+          "manufacturer_pack_count": 1,
+          "retailer_checkout_multibuy_qty": null,
+          "factory_bonus_paid_qty": null,
+          "factory_bonus_free_qty": null,
+          "customer_limit_pcs": null,
+          "shared_promotional_price": 8.99,
+          "quantity_price_tiers": [],
+          "is_per_weight_pricing": false,
+          "loyalty_required": false,
+          "loyalty_program_name": null
+        },
+        "non_grocery_specs": {
+          "domain": "grocery",
+          "excluded_from_default_grocery_feed": false
+        },
+        "category_evidence": {
+          "commodity_tag": "canned_tuna",
+          "category_hint": "canned-food"
+        },
+        "extraction_confidence": "high",
+        "evidence_conflicts": [],
+        "evidence_ledger": [],
+        "printed_retailer_sku_codes": []
+      }
+    },
+    {
+      "case_id": "pos_fakieh_compound_carton_and_single_tier",
+      "expected_decomposed": true,
+      "expected_child_count": 2,
+      "expected_basis": "compound_price_tier_split",
+      "expected_pricing_mode": "independent_card_price",
+      "record": {
+        "schema_version": "wifran.extractor.card/3.0",
+        "source_card": {
+          "leaflet_id": "noori-jeddah-2026-11-15",
+          "page_number": 1,
+          "source_offer_id": "noori-supermarket-229798534-jeddah_p001_compound_002_003",
+          "source_evidence_ref_internal": "Extracts/noori-supermarket-229798534-jeddah/metadata/rev1/page-001/crops/offer-002/offer_card_crop.webp",
+          "retailer_id": "c2cc16c2-0009-4444-b000-c00000000009",
+          "retailer_name": "Noori",
+          "offer_start_date": "2026-11-05",
+          "offer_end_date": "2026-11-15",
+          "location_scope": "city",
+          "city_id": "a6f7b140-0002-4444-a000-000000000002",
+          "region_id": "b144b6c8-2222-4444-b000-000000000002",
+          "raw_text": {
+            "title_ar": "دجاج فقيه مجمد 10 × 1000 جرام",
+            "title_en": "Fakieh Frozen Chicken 10 x 1000g / Each 1000g",
+            "size_text": "10 x 1000g | 1000g",
+            "promo_badge_text": "كرتون 141.00 | الحبة 15.50",
+            "price_text_candidates": ["141.00", "202.00", "15.50"]
+          }
+        },
+        "pricing": {
+          "promo_price": 15.5,
+          "original_price": 202,
+          "currency": "SAR",
+          "currency_evidence": "printed_sar_symbol",
+          "price_basis": "each",
+          "price_role_confidence": "high",
+          "promo_conditions": "Compound card with separate Carton (141.00) and Each (15.50) badges",
+          "price_conflict_flags": []
+        },
+        "assortment": {
+          "status": "explicit_assortment",
+          "visible_variant_count": 2,
+          "identifiable_sub_item_count": 2,
+          "assortment_evidence": ["multi_pack_image", "printed_leaflet_text"],
+          "is_enumerated_list_complete": true,
+          "all_options_linkable": true
+        },
+        "sub_items": [
+          {
+            "sub_item_ref": "s01",
+            "brand_en": "Fakieh",
+            "brand_ar": "فقيه",
+            "product_name_en": "Fakieh Frozen Chicken Carton 10 x 1000g",
+            "product_name_ar": "دجاج فقيه مجمد كرتون 10 × 1000 جرام",
+            "variant_or_flavor": "Carton 10x1000g",
+            "product_form": "carton",
+            "each_size_value": 1000,
+            "each_size_unit": "g",
+            "manufacturer_pack_count": 10,
+            "printed_retailer_sku_code": null,
+            "is_retailer_sku_only_not_gtin": true,
+            "independent_promo_price": 141,
+            "independent_original_price": 202,
+            "evidence_refs": ["ev_fakieh_carton"],
+            "unknown_attributes": [],
+            "conflict_attributes": [],
+            "safe_for_catalog_matching": true
+          },
+          {
+            "sub_item_ref": "s02",
+            "brand_en": "Fakieh",
+            "brand_ar": "فقيه",
+            "product_name_en": "Fakieh Frozen Chicken Single 1000g",
+            "product_name_ar": "دجاج فقيه مجمد حبة 1000 جرام",
+            "variant_or_flavor": "Single Bag 1000g",
+            "product_form": "bag",
+            "each_size_value": 1000,
+            "each_size_unit": "g",
+            "manufacturer_pack_count": 1,
+            "printed_retailer_sku_code": null,
+            "is_retailer_sku_only_not_gtin": true,
+            "independent_promo_price": 15.5,
+            "independent_original_price": null,
+            "evidence_refs": ["ev_fakieh_single"],
+            "unknown_attributes": [],
+            "conflict_attributes": [],
+            "safe_for_catalog_matching": true
+          }
+        ],
+        "quantity_and_promo": {
+          "sale_basis": "unknown",
+          "each_size_value": 1000,
+          "each_size_unit": "g",
+          "manufacturer_pack_count": null,
+          "retailer_checkout_multibuy_qty": null,
+          "factory_bonus_paid_qty": null,
+          "factory_bonus_free_qty": null,
+          "customer_limit_pcs": null,
+          "shared_promotional_price": null,
+          "quantity_price_tiers": [
+            { "quantity": 10, "unit_or_basis": "carton", "price": 141, "currency": "SAR", "basis": "standard" },
+            { "quantity": 1, "unit_or_basis": "each", "price": 15.5, "currency": "SAR", "basis": "standard" }
+          ],
+          "is_per_weight_pricing": false,
+          "loyalty_required": false,
+          "loyalty_program_name": null
+        },
+        "non_grocery_specs": {
+          "domain": "grocery",
+          "excluded_from_default_grocery_feed": false
+        },
+        "compound_card_context": {
+          "compound_group_id": "fakieh_chicken_cell",
+          "card_shared_caption_en": "Fakieh Frozen Chicken 1000g",
+          "card_shared_caption_ar": "دجاج فقيه مجمد 10 × 1000 جرام",
+          "has_multiple_price_badges_in_card": true,
+          "has_different_packaging_across_entries": true,
+          "inherited_caption_attributes_requiring_override": ["manufacturer_pack_count", "promo_price"]
+        },
+        "category_evidence": {
+          "commodity_tag": "frozen_whole_chicken",
+          "category_hint": "meat-chicken"
+        },
+        "extraction_confidence": "high",
+        "evidence_conflicts": [],
+        "evidence_ledger": [],
+        "printed_retailer_sku_codes": []
+      }
+    }
+  ]
+}

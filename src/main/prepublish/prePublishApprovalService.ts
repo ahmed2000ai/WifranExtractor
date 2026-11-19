@@ -36,6 +36,21 @@ export async function buildPrePublishSummary(
               }
             }
           }
+          if (it.thumbnail_path && !fs.existsSync(it.thumbnail_path)) {
+            const relMatch = it.thumbnail_path.match(/(metadata[\\/].*|crops[\\/].*)/i);
+            if (relMatch) {
+              const candidate = path.join(workspacePath, relMatch[1]);
+              if (fs.existsSync(candidate)) {
+                it.thumbnail_path = candidate;
+              }
+            }
+          }
+          if (!it.thumbnail_path && it.crop_path) {
+            const candidate = path.join(path.dirname(it.crop_path), 'product_thumb_crop.webp');
+            if (fs.existsSync(candidate)) {
+              it.thumbnail_path = candidate;
+            }
+          }
         }
         existingSummary.db_update_status = manifest.db_update_status || 'not_started';
         existingSummary.published_at = (manifest.db_update_status === 'completed' || manifest.stages?.db_update === 'completed')
@@ -77,6 +92,21 @@ export async function buildPrePublishSummary(
 
   if (inMemoryCanonicalOffers && inMemoryCanonicalOffers.length > 0) {
     canonicalOffersToProcess.push(...inMemoryCanonicalOffers);
+    const coveredPages = new Set(inMemoryCanonicalOffers.map(o => o.source.source_page_number));
+    // Also preserve any existing canonical offers from unselected pages on disk
+    if (fs.existsSync(jsonDir)) {
+      const files = fs.readdirSync(jsonDir).filter(f => f.endsWith('.canonical.json'));
+      for (const file of files) {
+        try {
+          const canonical: CanonicalOffer = JSON.parse(fs.readFileSync(path.join(jsonDir, file), 'utf-8'));
+          if (!coveredPages.has(canonical.source.source_page_number)) {
+            canonicalOffersToProcess.push(canonical);
+          }
+        } catch {
+          // Ignore malformed
+        }
+      }
+    }
   } else if (fs.existsSync(jsonDir)) {
     const files = fs.readdirSync(jsonDir);
     const canonicalFiles = files.filter(f => f.endsWith('.canonical.json'));
@@ -129,10 +159,31 @@ export async function buildPrePublishSummary(
 
         const cropPath = canonical.source.crop_path || path.join(cropsDir, `page-${String(canonical.source.source_page_number).padStart(3, '0')}`, `${canonical.source.source_item_number}.jpg`);
 
+        let resolvedThumbPath = canonical.source?.thumbnail_path || canonical.image?.thumbnail_path || null;
+        if (resolvedThumbPath && !fs.existsSync(resolvedThumbPath)) {
+          const relMatch = resolvedThumbPath.match(/(metadata[\\/].*|crops[\\/].*)/i);
+          if (relMatch) {
+            const candidate = path.join(workspacePath, relMatch[1]);
+            if (fs.existsSync(candidate)) {
+              resolvedThumbPath = candidate;
+            }
+          }
+        }
+        if (!resolvedThumbPath && cropPath) {
+          const siblingThumb = path.join(path.dirname(cropPath), 'product_thumb_crop.webp');
+          if (fs.existsSync(siblingThumb)) {
+            resolvedThumbPath = siblingThumb;
+          }
+        }
+
+        const catalogImageUrl = (canonical.image?.image_source_type !== 'leaflet_crop' ? canonical.image?.image_url : null) || null;
+
         items.push({
           source_page_number: canonical.source.source_page_number,
           source_item_number: canonical.source.source_item_number,
           crop_path: cropPath,
+          thumbnail_path: resolvedThumbPath,
+          catalog_image_url: catalogImageUrl,
           publish_decision: dec,
           preview_eligible: canonical.pre_publish?.preview_eligible ?? false,
           display_in_preview: canonical.pre_publish?.display_in_preview ?? true,
@@ -167,6 +218,8 @@ export async function buildPrePublishSummary(
             { field_name: 'display_unit_price_label_ar', value: canonical.display?.display_unit_price_label_ar },
             { field_name: 'display_unit_price_label_en', value: canonical.display?.display_unit_price_label_en },
             { field_name: 'display_unit_price_hidden_reason', value: canonical.display?.hidden_reason },
+            { field_name: 'special_offer', value: canonical.promotion?.special_offer ?? null },
+            { field_name: 'quantity_limit', value: canonical.promotion?.quantity_limit ?? null },
             { field_name: 'publish_decision', value: dec }
           ],
           blocking_errors: errors.map(e => ({ code: e.code, message: e.message })),

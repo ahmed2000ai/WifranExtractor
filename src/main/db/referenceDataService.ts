@@ -10,6 +10,7 @@ import type {
   ReferenceDataBundle
 } from '../../shared/types/referenceData'
 import { error as logError, info as logInfo } from '../logging/logger'
+import { isOfflineUatMode } from '../config/offlineUatGuard'
 
 // =========================================================================
 // Master Saudi Core Catalog Constants (Self-Sufficient Fallback & Seeder)
@@ -153,7 +154,8 @@ function isTestOrMock(): boolean {
   return (
     process.env.NODE_ENV === 'test' ||
     process.env.VITEST === 'true' ||
-    Boolean(process.env.VITEST_WORKER_ID)
+    Boolean(process.env.VITEST_WORKER_ID) ||
+    isOfflineUatMode()
   )
 }
 

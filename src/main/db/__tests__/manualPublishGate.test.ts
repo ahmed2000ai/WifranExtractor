@@ -1,13 +1,19 @@
 import { describe, it, expect, vi, beforeEach, afterAll } from 'vitest';
 import * as fs from 'fs';
+import * as os from 'os';
 import * as path from 'path';
 import sharp from 'sharp';
+import { PDFDocument } from 'pdf-lib';
 import { sharedPageFirstPipelineService } from '../../page-first/pageFirstPipelineService';
 import { buildPrePublishSummary, markPrePublishOpened, markPrePublishApproved } from '../../prepublish/prePublishApprovalService';
 import { syncPreparedOffers } from '../offerSyncService';
 import { persistImportTracking } from '../importTrackingService';
 import { saveExtractionManifest } from '../../extraction/extractionManifestService';
+import { LeafletMetadataService } from '../../metadata/leafletMetadataService';
+import { LeafletMetadataCacheService } from '../../metadata/leafletMetadataCacheService';
 import type { ExtractionManifest } from '../../../shared/types/extractionManifest';
+
+const PANDA_SUPERMARKET_ID = 'c2cc16c2-0001-4444-b000-c00000000001';
 
 // Spy on database interactions
 const dbCallTracker = {
@@ -65,7 +71,9 @@ vi.mock('../../storage/offerImageStorageService', () => ({
 
 describe('Manual DB Publishing Gate (HOTFIX Verification)', () => {
   const createdDirs: string[] = [];
+  const createdFingerprints: string[] = [];
   let testWorkspace: string;
+  let testPdfFingerprint: string;
 
   const mockAnnotation = {
     schema_version: 1,
@@ -178,12 +186,20 @@ describe('Manual DB Publishing Gate (HOTFIX Verification)', () => {
     dbCallTracker.updateCalls = 0;
     dbCallTracker.uploadCalls = 0;
 
-    testWorkspace = path.join(process.cwd(), 'tmp', `test-gate-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`);
+    testWorkspace = fs.mkdtempSync(path.join(os.tmpdir(), 'wifran-manual-gate-'));
     createdDirs.push(testWorkspace);
 
     // Create fresh workspace with pages
     fs.mkdirSync(path.join(testWorkspace, 'pages'), { recursive: true });
     fs.mkdirSync(path.join(testWorkspace, 'metadata'), { recursive: true });
+
+    // Create source PDF on disk so authoritative SHA-256 content identity resolution works end-to-end
+    const pdfDoc = await PDFDocument.create();
+    pdfDoc.addPage([400, 600]);
+    const pdfBytes = Buffer.from(await pdfDoc.save());
+    fs.writeFileSync(path.join(testWorkspace, 'original.pdf'), pdfBytes);
+    testPdfFingerprint = new LeafletMetadataCacheService().computeFingerprint(pdfBytes);
+    createdFingerprints.push(testPdfFingerprint);
 
     // Create dummy rendered page images
     await sharp({
@@ -198,7 +214,7 @@ describe('Manual DB Publishing Gate (HOTFIX Verification)', () => {
     const initialManifest: any = {
       manifest_version: '2.0.0',
       extraction_folder_path: testWorkspace,
-      supermarket: { id: 'sm-panda', slug: 'panda', name_en: 'Panda', name_ar: 'بندا' },
+      supermarket: { id: PANDA_SUPERMARKET_ID, slug: 'panda', name_en: 'Panda', name_ar: 'بندا' },
       location: { location_scope: 'national', location_slug: 'national', city_id: null, region_id: null, label: 'National' },
       validity: { start_date: '2026-10-01', end_date: '2026-10-15' },
       paths: {
@@ -228,6 +244,14 @@ describe('Manual DB Publishing Gate (HOTFIX Verification)', () => {
   });
 
   afterAll(() => {
+    const cacheService = new LeafletMetadataCacheService();
+    for (const fp of createdFingerprints) {
+      try {
+        cacheService.invalidate(fp);
+      } catch {
+        // ignore cleanup errors
+      }
+    }
     for (const dir of createdDirs) {
       try {
         fs.rmSync(dir, { recursive: true, force: true });
@@ -429,7 +453,7 @@ describe('Manual DB Publishing Gate (HOTFIX Verification)', () => {
     expect(dbCallTracker.uploadCalls).toBe(0);
   });
 
-  it('5. DB writes occur ONLY after explicit Publish approval', async () => {
+  it('5. DB writes occur ONLY after explicit Publish approval AND authoritative metadata confirmation', async () => {
     // Run extraction
     const mockMap = new Map<number, any>();
     mockMap.set(1, mockPageResponse);
@@ -438,14 +462,14 @@ describe('Manual DB Publishing Gate (HOTFIX Verification)', () => {
       pdfBaseName: 'test-leaflet',
       pages: [1],
       trustedContext: {
-        supermarketId: 'sm-panda',
+        supermarketId: PANDA_SUPERMARKET_ID,
         supermarketSlug: 'panda',
         locationScope: 'national',
         cityId: null,
         regionId: null,
         offerStartDate: '2026-10-01',
         offerEndDate: '2026-10-15',
-        leafletId: 'leaflet-123'
+        leafletId: testPdfFingerprint
       },
       mockPageResponses: mockMap
     });
@@ -465,26 +489,25 @@ describe('Manual DB Publishing Gate (HOTFIX Verification)', () => {
     expect(manifest.pre_publish_preview?.approved_at).toBeTruthy();
 
     const localImgPath = path.join(testWorkspace, 'pages', 'page-1.jpg');
-
-    // Now publishing is permitted to proceed
-    const syncResult = await syncPreparedOffers({
-      supermarketId: 'sm-panda',
-      locationScope: 'national',
+    const baseSyncInput = {
+      supermarketId: PANDA_SUPERMARKET_ID,
+      locationScope: 'national' as const,
       locationSlug: 'national',
       cityId: null,
       regionId: null,
       offerStartDate: '2026-10-01',
       offerEndDate: '2026-10-15',
+      leafletId: testPdfFingerprint,
       storageBucket: 'offers',
       rows: [
         {
           rowId: 'row-1',
           pageNumber: 1,
-          status: 'prepared',
+          status: 'prepared' as const,
           normalizedData: {},
           localImagePath: localImgPath,
           preparedPayload: {
-            supermarket_id: 'sm-panda',
+            supermarket_id: PANDA_SUPERMARKET_ID,
             coverage_scope: 'national',
             city_id: 'c1',
             offer_start_date: '2026-10-01',
@@ -504,19 +527,50 @@ describe('Manual DB Publishing Gate (HOTFIX Verification)', () => {
       ],
       options: {
         requireImageForDraft: false,
-        defaultOfferStatus: 'published',
-        importDefaultStatus: 'published',
+        defaultOfferStatus: 'published' as const,
+        importDefaultStatus: 'published' as const,
         allowNeedsReviewFallback: true,
         publishWarningsAllowed: true,
         extractionPackagePath: testWorkspace,
         requirePrePublishApproval: true
       }
+    };
+
+    // Unconfirmed metadata MUST STILL BLOCK publishing even after Pre-Publish Preview approval
+    await expect(syncPreparedOffers(baseSyncInput)).rejects.toThrow(/DB publish blocked: PUBLISH_BLOCKED/);
+    expect(dbCallTracker.insertCalls).toBe(0);
+    expect(dbCallTracker.fromCalls.length).toBe(0);
+
+    // Authoritatively confirm leaflet metadata for this PDF SHA-256 fingerprint
+    const metadataService = new LeafletMetadataService();
+    metadataService.confirmMetadata({
+      leafletFingerprint: testPdfFingerprint,
+      sourceFileName: 'original.pdf',
+      supermarketId: PANDA_SUPERMARKET_ID,
+      supermarketSlug: 'panda',
+      startDate: '2026-10-01',
+      endDate: '2026-10-15',
+      locationScope: 'national',
+      operatorId: 'operator_test',
+      workspacePath: testWorkspace
     });
+
+    // Wrong / mismatched fingerprint MUST remain blocked even after confirming the real PDF
+    await expect(
+      syncPreparedOffers({
+        ...baseSyncInput,
+        leafletId: 'f'.repeat(64)
+      })
+    ).rejects.toThrow(/DB publish blocked: PUBLISH_BLOCKED/i);
+    expect(dbCallTracker.insertCalls).toBe(0);
+
+    // Now publishing with valid Pre-Publish approval + valid confirmed metadata proceeds
+    const syncResult = await syncPreparedOffers(baseSyncInput);
 
     expect(syncResult.ok).toBe(true);
     expect(syncResult.publishedRows).toBe(1);
 
-    // DB writes were performed ONLY after explicit operator approval
+    // DB writes were performed ONLY after explicit operator approval & confirmed metadata
     expect(dbCallTracker.fromCalls).toContain('offers');
     expect(dbCallTracker.insertCalls).toBeGreaterThan(0);
   });

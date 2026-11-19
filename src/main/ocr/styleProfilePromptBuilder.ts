@@ -29,7 +29,6 @@ Look for:
 - price block color
 - relative font size
 - crossed-out text
-- proximity to SAR symbol
 - proximity to product title/package
 - position on the crop/page
 - whether values appear inside price blocks or descriptive text areas

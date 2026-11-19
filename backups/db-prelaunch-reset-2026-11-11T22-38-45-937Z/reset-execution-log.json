@@ -1,0 +1,90 @@
+{
+  "timestamp": "2026-11-11T22:41:13.274Z",
+  "host": "db.swratbmclahjyekouned.supabase.co",
+  "tablesReset": {
+    "offer_display_images": 31,
+    "offer_revision_snapshots": 0,
+    "offer_status_history": 0,
+    "offer_visual_group_members": 0,
+    "saved_offers": 0,
+    "shopping_list_items (offer refs)": 0,
+    "issue_reports (offer refs)": 0,
+    "import_rows (created_offer refs)": 0,
+    "validation_errors (offer refs)": 0,
+    "offers": 93,
+    "product_images": 7,
+    "product_aliases": 0,
+    "watched_items (product refs)": 0,
+    "shopping_list_items (product refs)": 0,
+    "products": 11
+  },
+  "storageDeleted": [
+    {
+      "bucket": "product-images",
+      "filesCount": 7,
+      "files": [
+        "catalog/061aef01de2ef766d63ddfc0de6b015e392eecc99c34d8f40eca9ea47c2db08c.webp",
+        "catalog/7dcdeac67905f5881e01483e3bbfdd464886ad5227923d35a938df8d56d605c5.webp",
+        "catalog/d41c7184d3b7ada44354a5fbb576c8a64afb97a5a1a3ec4e22e497b3a446f3bb.jpg",
+        "catalog/daa208f03fd01504206a1e75e686444deae4d8f0484596076ab05756cd42c3ec.jpg",
+        "catalog/dccc2511d236839984f2bf5678bf01b221c3b0ecb64c56eca94e3f1a0629cda0.jpg",
+        "catalog/e1d8c96f1352b7fe640616677741e8c686b861b2d14fd8bf6d1291fed644a2b5.png",
+        "catalog/f358d98b0ad8f10d1b96ac416fcb2ed9f122ad6df87cabe89e0408c150bac337.jpg"
+      ]
+    },
+    {
+      "bucket": "offer-display-images",
+      "filesCount": 31,
+      "files": [
+        "offers/01ddc477b5b408cc847517e1f4b54180a1da8971cc4c0963af631137f97e02e2.png",
+        "offers/07fed820064c25e36cbe39500e839e454ae4aba0d2e56808e5c9aac55f93d82d.jpg",
+        "offers/0a3f37199c58d27fd641790c301f7a6c6d97a4bd8eb6a98fefdf2d5b2b9ff9e2.webp",
+        "offers/0ca59bbcde6686a6377df961105615190785ca43e6c40eb0cd954a4ebd174155.jpg",
+        "offers/10c94526fb90b91dc98ffb0eb0a184270d0ea6ef53aca548616483f206f18230.jpg",
+        "offers/15465ade6bf88c02602e7620a11ffeb151fe395232504f5cccc7ab85725eabba.jpg",
+        "offers/24fcb4bec5ee94c3b57712f4e063ed649adba8225c0576ff9ca336a3482d7652.jpg",
+        "offers/26e04f8e764678af0d67fb3d012699be9e7a1759848ac306523794105f54d313.jpg",
+        "offers/3823a47429c6302c51548fcf9eb7f0934d3a5eb435c21a30f9cb82bc8d082e42.jpg",
+        "offers/39f63696f87ef5f6e09c553ce0db0b7631aa2d2a5417e982e5ab9e773617382d.webp",
+        "offers/3ba5354b5fa4e19e2a42211ff46ab85e67213bb81339e09de9796c0323ede6b7.png",
+        "offers/42c3f2ee7ba4dc8b373479081c4ede7bd8dba855d948087641ad3922871ef7cb.jpg",
+        "offers/4d7df10b712885d210f55a5355460ef92487335646d9c838827e1f2668fe9592.jpg",
+        "offers/4d8f5b6c10619a6cf1f6b34511bc31f22906a0d6dc4ccd6609289ee1930c3a92.jpg",
+        "offers/6f7c6e9e8670987f4febe18fa2c685d9961232397c877290566710c92501f3ed.jpg",
+        "offers/7b528b64afa4033b553004c4e422cf91ebb27c81159e5fe35e80633bd68c6511.jpg",
+        "offers/7f7cda2cc17aa25aab29a5d8ea5026d20f4c9a1ad6f7a0042948f4444f59882f.jpg",
+        "offers/808941be790e0e8ae5b81ccd3ffdd35ad7935f460017d06359f7f56d7e01ba45.png",
+        "offers/847542635f2cbb00d5ff3f4540b87e4b7c87956e2b34746943622cac6e901993.webp",
+        "offers/857ff5b2b2ccea78f449747a94df80aa2dabf8dcc9341577ec4c834a0b3e08af.jpg",
+        "offers/8d34a30670d5b51c7689d97933bcb221ace6a615fa9aca3c37a97727d128ba56.png",
+        "offers/914731da8de22f78c6624c1e1fa94daea3faaa10d4ce6d2059c614f57e87e2f9.png",
+        "offers/9c0faf47894b90cd85606233720f8af3635e4676d824882dc7445fda9b48cfc1.jpg",
+        "offers/a047a287d49c1d25b08fb76567cb1019a276a983710bd069eac188fb14ea1dee.png",
+        "offers/abf74c5170ae8deb484e42f2346b076232033a514e73dcbb4d39fafdec868dec.jpg",
+        "offers/cbdf050a948f38084df45e9e281625797e47b40d7924cd9a309d4e09218e1464.jpg",
+        "offers/ddf61308f905f57c33e8cecf378d5abd07b9c08bb66bf48a3a1c69215799efc0.jpg",
+        "offers/deae954075325205c7122c7c1a1e49ae2f1b7da8679bc88480dcb9dd0a9ed772.jpg",
+        "offers/e85a5b2f3e1ec425f30af9001d6c25ef2342cdd1282452d8b4fa6ab347d5cb61.jpg",
+        "offers/eb422c11c5c7bfb6432f6e0dd6268d0a6d5adf4a4ad07e24377aa0893cd191b7.jpg",
+        "offers/fe628ca8b20a6ce165662ae1f99433f17f070532293b575f8e81a4df1fc993fd.webp"
+      ]
+    }
+  ],
+  "postResetCounts": {
+    "offers": 0,
+    "products": 0,
+    "product_images": 0,
+    "offer_display_images": 0,
+    "product_aliases": 0
+  },
+  "referenceDataVerification": {
+    "supermarkets": 13,
+    "categories": 13,
+    "cities": 25,
+    "regions": 5,
+    "units": 9,
+    "supermarket_regions": 12,
+    "legacy_id_crosswalk": 38
+  },
+  "success": true
+}

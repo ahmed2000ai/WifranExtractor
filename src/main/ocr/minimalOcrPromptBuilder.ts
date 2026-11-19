@@ -23,7 +23,7 @@ For each item, extract only:
 - size including value, unit, and raw text
 - pack_quantity
 - bundle_quantity
-- special offer condition such as 2+1, 1+1, 1+2, 6+1, bundle deal, per kg, per pack, per box, per bag, loyalty-only, selected branches only, or other visible condition.
+- physical multipack or bundle phrasing when printed (such as 2+1, 1+1, 1+2, 6+1, or bundle deal).
 
 Do not extract:
 - bounding boxes

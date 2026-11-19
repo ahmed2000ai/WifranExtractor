@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "2.0",
+  "leafletFingerprint": "1111111111111111111111111111111111111111111111111111111111111111",
+  "sourceFileName": "confirmed_staged_draft",
+  "record": {
+    "schemaVersion": "2.0",
+    "leafletFingerprint": "1111111111111111111111111111111111111111111111111111111111111111",
+    "sourceFileName": "confirmed_staged_draft",
+    "retailer": {
+      "detectedName": "Panda",
+      "resolvedRetailerId": "c2cc16c2-0001-4444-b000-c00000000001",
+      "resolvedSlug": "panda",
+      "resolvedNameEn": "Panda",
+      "resolvedNameAr": "بنده",
+      "status": "confirmed",
+      "confidence": 1,
+      "sourcePage": 1,
+      "evidenceText": "Migrated from operator-confirmed staged draft header",
+      "isAmbiguous": false
+    },
+    "validity": {
+      "startDate": "2026-11-10",
+      "endDate": "2026-11-17",
+      "status": "confirmed",
+      "confidence": 1,
+      "sourcePage": 1,
+      "rawPrintedText": "2026-11-10 to 2026-11-17",
+      "isAmbiguous": false,
+      "calendarType": "gregorian",
+      "isException": false
+    },
+    "locationScope": "region",
+    "cityId": null,
+    "regionId": null,
+    "locationSlug": "central",
+    "conflictingValidity": [],
+    "pageExceptions": [],
+    "operatorConfirmed": true,
+    "confirmedAt": "2026-11-08T16:43:29.929Z",
+    "confirmedBy": "operator_migration",
+    "discoveryMethod": "operator_manual",
+    "rawEvidence": [],
+    "operatorEdits": {
+      "editedRetailerId": "c2cc16c2-0001-4444-b000-c00000000001",
+      "editedStartDate": "2026-11-10",
+      "editedEndDate": "2026-11-17",
+      "editedAt": "2026-11-08T16:43:29.929Z"
+    }
+  },
+  "savedAt": "2026-11-08T16:43:29.929Z"
+}

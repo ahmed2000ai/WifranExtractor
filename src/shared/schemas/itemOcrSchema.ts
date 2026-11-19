@@ -5,7 +5,7 @@ export const LegacyItemOcrSchema = z.record(z.string(), z.unknown())
 export const PriceCandidateSchema = z.object({
   raw_text: z.string(),
   normalized_value: z.number().nullable(),
-  currency: z.enum(['SAR']).nullable(),
+  currency: z.enum(['SAR']).nullable().optional().default('SAR'),
   visual_role: z.enum([
     'prominent_current_price',
     'crossed_out_old_price',
@@ -27,7 +27,7 @@ export const PriceCandidateSchema = z.object({
     price_block_color: z.string().nullable(),
     relative_size: z.enum(['largest', 'large', 'medium', 'small', 'unknown']),
     is_crossed_out: z.boolean().nullable(),
-    near_currency_symbol: z.boolean().nullable(),
+    near_currency_symbol: z.boolean().nullable().optional().default(null),
     attached_unit: z.string().nullable(),
     position_hint: z.enum(['top-left', 'top-right', 'center', 'bottom-left', 'bottom-right', 'unknown']),
     inside_price_block: z.boolean().nullable()
@@ -65,7 +65,7 @@ export const CandidateItemOcrSchema = z.object({
   selected_prices: z.object({
     offer_price: z.number().nullable(),
     original_price: z.number().nullable(),
-    currency: z.enum(['SAR']).nullable(),
+    currency: z.enum(['SAR']).nullable().optional().default('SAR'),
     offer_price_source_raw_text: z.string().nullable(),
     original_price_source_raw_text: z.string().nullable(),
     selection_confidence: z.enum(['high', 'medium', 'low']),
@@ -91,7 +91,7 @@ export const CandidateItemOcrSchema = z.object({
     mechanic: z.enum(['standard_price', 'bogo', 'bundle', 'multi_buy', 'loyalty_required', 'selected_branches', 'unknown']),
     raw_text: z.string().nullable(),
     bundle_quantity: z.number().nullable(),
-    condition_text: z.string().nullable(),
+    condition_text: z.string().nullable().optional().default(null),
     confidence: z.enum(['high', 'medium', 'low']),
     evidence: z.string().nullable()
   }).strict(),
@@ -181,7 +181,6 @@ export function buildItemOcrJsonSchema(): unknown {
               properties: {
                 raw_text: { type: "string" },
                 normalized_value: { type: ["number", "null"] },
-                currency: { type: ["string", "null"], enum: ["SAR", null] },
                 visual_role: { type: "string", enum: ["prominent_current_price", "crossed_out_old_price", "smaller_old_price", "price_label", "ambiguous", "not_a_price"] },
                 classified_as: { type: "string", enum: ["offer_price", "original_price", "ambiguous_price", "not_a_price"] },
                 confidence: { type: "string", enum: ["high", "medium", "low"] },
@@ -193,16 +192,15 @@ export function buildItemOcrJsonSchema(): unknown {
                     price_block_color: { type: ["string", "null"] },
                     relative_size: { type: "string", enum: ["largest", "large", "medium", "small", "unknown"] },
                     is_crossed_out: { type: ["boolean", "null"] },
-                    near_currency_symbol: { type: ["boolean", "null"] },
                     attached_unit: { type: ["string", "null"] },
                     position_hint: { type: "string", enum: ["top-left", "top-right", "center", "bottom-left", "bottom-right", "unknown"] },
                     inside_price_block: { type: ["boolean", "null"] }
                   },
-                  required: ["text_color", "price_block_color", "relative_size", "is_crossed_out", "near_currency_symbol", "attached_unit", "position_hint", "inside_price_block"],
+                  required: ["text_color", "price_block_color", "relative_size", "is_crossed_out", "attached_unit", "position_hint", "inside_price_block"],
                   additionalProperties: false
                 }
               },
-              required: ["raw_text", "normalized_value", "currency", "visual_role", "classified_as", "confidence", "evidence", "visual_evidence"],
+              required: ["raw_text", "normalized_value", "visual_role", "classified_as", "confidence", "evidence", "visual_evidence"],
               additionalProperties: false
             }
           },
@@ -238,13 +236,12 @@ export function buildItemOcrJsonSchema(): unknown {
             properties: {
               offer_price: { type: ["number", "null"] },
               original_price: { type: ["number", "null"] },
-              currency: { type: ["string", "null"], enum: ["SAR", null] },
               offer_price_source_raw_text: { type: ["string", "null"] },
               original_price_source_raw_text: { type: ["string", "null"] },
               selection_confidence: { type: "string", enum: ["high", "medium", "low"] },
               selection_evidence: { type: ["string", "null"] }
             },
-            required: ["offer_price", "original_price", "currency", "offer_price_source_raw_text", "original_price_source_raw_text", "selection_confidence", "selection_evidence"],
+            required: ["offer_price", "original_price", "offer_price_source_raw_text", "original_price_source_raw_text", "selection_confidence", "selection_evidence"],
             additionalProperties: false
           },
           content: {
@@ -276,14 +273,13 @@ export function buildItemOcrJsonSchema(): unknown {
           promotion: {
             type: "object",
             properties: {
-              mechanic: { type: "string", enum: ["standard_price", "bogo", "bundle", "multi_buy", "loyalty_required", "selected_branches", "unknown"] },
+              mechanic: { type: "string", enum: ["standard_price", "bogo", "bundle", "multi_buy", "unknown"] },
               raw_text: { type: ["string", "null"] },
               bundle_quantity: { type: ["number", "null"] },
-              condition_text: { type: ["string", "null"] },
               confidence: { type: "string", enum: ["high", "medium", "low"] },
               evidence: { type: ["string", "null"] }
             },
-            required: ["mechanic", "raw_text", "bundle_quantity", "condition_text", "confidence", "evidence"],
+            required: ["mechanic", "raw_text", "bundle_quantity", "confidence", "evidence"],
             additionalProperties: false
           },
           classification_evidence: {

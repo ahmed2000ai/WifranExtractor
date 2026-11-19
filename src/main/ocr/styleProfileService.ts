@@ -7,6 +7,7 @@ import { buildStyleProfileJsonSchema, leafletStyleProfileModelSchema } from '../
 import type { LeafletStyleProfile } from '../../shared/types/styleProfile';
 import { runWithMistralRateLimit } from './mistralRateLimitQueue';
 import { warn, error as logError, info } from '../logging/logger';
+import { assertNotOfflineUat } from '../config/offlineUatGuard';
 
 export async function generatePageStyleProfile(input: {
   leafletId?: string | null;
@@ -20,6 +21,8 @@ export async function generatePageStyleProfile(input: {
     info('Style profile generation is disabled by default. Skipping.');
     return null;
   }
+
+  assertNotOfflineUat('Live Mistral Style Profile API calls');
 
   const apiKey = config.mistral.apiKey;
   if (!apiKey) {

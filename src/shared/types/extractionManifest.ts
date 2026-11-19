@@ -17,7 +17,21 @@ export type PageFirstManifestSection = {
   crops_generated: number;
 
   estimated_cost_usd: number;
+  is_cost_estimate?: boolean;
   budget_usd: number;
+  gemini_usage_summary?: {
+    api_calls_count: number;
+    cache_hits_count: number;
+    retries_count: number;
+    total_prompt_tokens: number;
+    total_candidates_tokens: number;
+    total_thoughts_tokens: number;
+    total_cached_tokens: number;
+    total_tokens: number;
+    total_cost_usd: number;
+    is_estimate: boolean;
+    models_used: string[];
+  };
 
   started_at: string | null;
   completed_at: string | null;
@@ -41,11 +55,21 @@ export type ExtractionStageStatus =
   | 'failed'
   | 'skipped';
 
+export type ProcessingSelectionManifest = {
+  pdfFingerprint: string;
+  totalDocumentPages: number;
+  selectionMode: 'all' | 'specific';
+  selectedPages: number[];
+  processingStatus: 'not_started' | 'in_progress' | 'completed' | 'partial' | 'failed';
+  coverage: 'full' | 'partial';
+};
+
 export type ExtractionManifest = {
   schema_version: 1;
 
   extraction_mode?: ExtractionMode;
   page_first_ocr?: PageFirstManifestSection;
+  processing_selection?: ProcessingSelectionManifest;
 
   extraction_status: ExtractionStatus;
   db_update_status: 'not_started' | 'in_progress' | 'completed' | 'failed';
@@ -305,6 +329,7 @@ export type DbEligiblePackageItem = {
   pageNumber: number;
   itemNumber: string;
   cropPath: string;
+  thumbnailPath?: string | null;
   jsonPath: string;
   jsonData: Record<string, unknown>;
 };

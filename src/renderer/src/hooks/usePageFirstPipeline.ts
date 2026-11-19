@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import type { PageFirstProgressEvent, PageFirstPipelineResult } from '../../../shared/types/pageFirstPipeline';
 
 export type QuickTestLog = {
@@ -61,6 +61,11 @@ export function usePageFirstPipeline() {
     pageNumber: number;
     trustedContext: any;
     overrideModel?: string;
+    promptProfile?: import('../../../shared/schemas/leafletPageExtractionSchema').LeafletPromptProfile;
+    schemaProfile?: import('../../../shared/schemas/leafletPageExtractionSchema').LeafletSchemaProfile;
+    schemaVersion?: import('../../../shared/schemas/leafletPageExtractionSchema').LeafletSchemaVersion;
+    executionMode?: 'standard' | 'flex';
+    forceReextract?: boolean;
   }) => {
     setRunning(true);
     setError(null);
@@ -101,6 +106,11 @@ export function usePageFirstPipeline() {
     pageNumber: number;
     trustedContext: any;
     maxOffers?: number;
+    promptProfile?: import('../../../shared/schemas/leafletPageExtractionSchema').LeafletPromptProfile;
+    schemaProfile?: import('../../../shared/schemas/leafletPageExtractionSchema').LeafletSchemaProfile;
+    schemaVersion?: import('../../../shared/schemas/leafletPageExtractionSchema').LeafletSchemaVersion;
+    executionMode?: 'standard' | 'flex';
+    forceReextract?: boolean;
   }) => {
     setQuickTestRunning(true);
     setQuickTestError(null);
@@ -144,6 +154,11 @@ export function usePageFirstPipeline() {
     trustedContext: any;
     overrideModel?: string;
     rolloutMode?: 'pilot' | 'primary';
+    promptProfile?: import('../../../shared/schemas/leafletPageExtractionSchema').LeafletPromptProfile;
+    schemaProfile?: import('../../../shared/schemas/leafletPageExtractionSchema').LeafletSchemaProfile;
+    schemaVersion?: import('../../../shared/schemas/leafletPageExtractionSchema').LeafletSchemaVersion;
+    executionMode?: 'standard' | 'flex';
+    forceReextract?: boolean;
   }) => {
     setRunning(true);
     setError(null);
@@ -165,12 +180,17 @@ export function usePageFirstPipeline() {
   const resume = useCallback(async (input: {
     packageDir: string;
     pdfBaseName: string;
+    pages?: number[];
     trustedContext: any;
+    promptProfile?: import('../../../shared/schemas/leafletPageExtractionSchema').LeafletPromptProfile;
+    schemaProfile?: import('../../../shared/schemas/leafletPageExtractionSchema').LeafletSchemaProfile;
+    schemaVersion?: import('../../../shared/schemas/leafletPageExtractionSchema').LeafletSchemaVersion;
+    executionMode?: 'standard' | 'flex';
   }) => {
     setRunning(true);
     setError(null);
     try {
-      const res = await window.wifranExtractor.pageFirst.resume(input);
+      const res = await (window.wifranExtractor.pageFirst as any).resume(input);
       setResult(res);
       return res;
     } catch (err: any) {

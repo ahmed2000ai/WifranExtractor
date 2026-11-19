@@ -343,7 +343,7 @@ describe('WIFRAN-07J Phase 4: Atomic Single-Publish Pipeline & Alias Learning', 
         validTo: '2026-11-07',
         firstPagePublicUrl: 'https://example.com/p1.webp',
         lastPagePublicUrl: 'https://example.com/pn.webp',
-        headerModifiedByOperator: false
+        headerModifiedByOperator: true
       },
       items: [itemA, itemB, itemC]
     }

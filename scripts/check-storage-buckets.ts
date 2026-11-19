@@ -1,14 +1,13 @@
-import { getSupabaseAdminClient } from '../src/main/db/supabaseAdminClient'
+import { getGuardedSupabaseClient } from '../src/main/db/databaseEnvironmentResolver'
 
 async function run() {
-  const supabase = getSupabaseAdminClient()
+  const supabase = getGuardedSupabaseClient('DEVELOPMENT_TEST')
   const { data: buckets, error } = await supabase.storage.listBuckets()
   if (error) {
     console.error('Error listing buckets:', error)
   } else {
-    console.log('Buckets:', buckets?.map((b) => ({ name: b.name, public: b.public })))
+    console.log('Development Storage Buckets:', buckets?.map((b) => ({ id: b.id, name: b.name, public: b.public })))
   }
 }
 
 run().catch(console.error)
-

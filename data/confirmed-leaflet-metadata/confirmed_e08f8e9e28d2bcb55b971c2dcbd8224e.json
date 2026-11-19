@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "2.0",
+  "leafletFingerprint": "e08f8e9e28d2bcb55b971c2dcbd8224e89839cfffa6b22038059edb49d4f295f",
+  "record": {
+    "leafletFingerprint": "e08f8e9e28d2bcb55b971c2dcbd8224e89839cfffa6b22038059edb49d4f295f",
+    "retailer": {
+      "detectedName": "Hyper Alwafa",
+      "resolvedRetailerId": "c2cc16c2-0008-4444-b000-c00000000008",
+      "resolvedSlug": "alwafa",
+      "resolvedNameEn": "Hyper Alwafa",
+      "resolvedNameAr": "هايبر الوفاء",
+      "status": "confirmed"
+    },
+    "validity": {
+      "startDate": "2026-11-05",
+      "endDate": "2026-11-25",
+      "status": "confirmed"
+    },
+    "locationScope": "national",
+    "operatorConfirmed": true,
+    "pageExceptions": [
+      {
+        "pageNumber": 4,
+        "validity": {
+          "startDate": "2026-11-07",
+          "endDate": "2026-11-09"
+        }
+      }
+    ],
+    "resolvedExceptions": [
+      {
+        "pageNumber": 4,
+        "resolution": "quarantined",
+        "scope": "specific_offers",
+        "affectedOfferIds": [
+          "src_weekend_009"
+        ],
+        "reason": "Conflicting dates on fresh meat item"
+      }
+    ],
+    "schemaVersion": "2.0",
+    "confirmedAt": "2026-11-08T23:05:51.795Z"
+  },
+  "savedAt": "2026-11-08T23:05:51.805Z"
+}
